@@ -28,7 +28,6 @@ import io.xream.x7.base.api.BackendService;
 import io.xream.x7.base.exception.BusyException;
 import io.xream.x7.base.exception.RemoteServiceException;
 import io.xream.x7.base.exception.ReyConnectException;
-import io.xream.x7.base.util.ExceptionUtil;
 import io.xream.x7.base.util.StringUtil;
 import io.xream.x7.reyc.api.ReyTemplate;
 import org.slf4j.Logger;
@@ -37,10 +36,9 @@ import org.slf4j.LoggerFactory;
 import java.util.function.Supplier;
 
 /**
- *
- *  wrapped resilience4j: Retry,CircuitBreaker</br>
- *  Retry>CircuitBreaker>RateLimiter>Bulkhead  </br>
- *  but connection problem will retry immediately
+ * wrapped resilience4j: Retry,CircuitBreaker</br>
+ * Retry>CircuitBreaker>RateLimiter>Bulkhead  </br>
+ * but connection problem will retry immediately
  *
  * @author Sim
  */
@@ -65,13 +63,13 @@ public class R4JTemplate implements ReyTemplate {
     @Override
     public String support(String config, boolean isRetry, BackendService<String> backendService) {
 
-        return support(config,config,isRetry,backendService);
+        return support(config, config, isRetry, backendService);
     }
 
     @Override
     public String support(String handlerName, String config, boolean isRetry, BackendService<String> backendService) {
 
-        if (StringUtil.isNullOrEmpty(config)){
+        if (StringUtil.isNullOrEmpty(config)) {
             config = "";
         }
 
@@ -79,20 +77,20 @@ public class R4JTemplate implements ReyTemplate {
 
         CircuitBreakerConfig circuitBreakerConfig = circuitBreakerRegistry.getConfiguration(configName).orElse(circuitBreakerRegistry.getDefaultConfig());
 
-        CircuitBreaker circuitBreaker = circuitBreakerRegistry.circuitBreaker(handlerName,circuitBreakerConfig);
+        CircuitBreaker circuitBreaker = circuitBreakerRegistry.circuitBreaker(handlerName, circuitBreakerConfig);
         Supplier<String> decoratedSupplier = CircuitBreaker
                 .decorateSupplier(circuitBreaker, backendService::handle);
 
         if (isRetry) {
             RetryConfig retryConfig = retryRegistry.getConfiguration(configName).orElse(retryRegistry.getDefaultConfig());
-            Retry retry = retryRegistry.retry(handlerName,retryConfig);
+            Retry retry = retryRegistry.retry(handlerName, retryConfig);
             if (retry != null) {
 
                 retry.getEventPublisher()
                         .onRetry(event -> {
                             if (logger.isDebugEnabled()) {
                                 logger.debug(event.getEventType().toString() + "_" + event.getNumberOfRetryAttempts() + ": backend("
-                                        + handlerName +")");
+                                        + handlerName + ")");
                             }
                         });
 
@@ -101,14 +99,14 @@ public class R4JTemplate implements ReyTemplate {
             }
         }
 
-        String logStr = "Backend("+ handlerName +")";
+        String logStr = "Backend(" + handlerName + ")";
 
         String result = Try.ofSupplier(decoratedSupplier)
                 .recover(e ->
                         hanleException(e, logStr, backendService)
                 ).get();
 
-        handleRemoteException(result,backendService);
+
         return result;
     }
 
@@ -134,40 +132,8 @@ public class R4JTemplate implements ReyTemplate {
             throw new ReyConnectException(tag + " : " + e.getMessage() + (obj == null ? "" : (" : " + obj.toString())));
         }
 
-        throw new RuntimeException(tag + " : " + ExceptionUtil.getMessage(e));
+        throw new RemoteServiceException(e);
     }
 
 
-    private void handleRemoteException(String result,BackendService<String> backendService) {
-
-        if (result == null)
-            return;
-
-        if (reyProperties.getRemoteException() != null && result.contains(reyProperties.getRemoteException())){
-            backendService.fallback();
-
-            if (logger.isErrorEnabled()) {
-                logger.error(result);
-            }
-
-            throw new RemoteServiceException(result);
-
-        } else if (result.contains("RemoteServiceException")
-                || result.contains("RuntimeException")
-                || result.contains("BizException")
-                || result.contains("BusyException")
-                || result.contains("RollbackException")
-                || result.contains("Internal Server Error")
-                || result.contains(".Exception")
-                || result.contains(".Throwable")
-        ) {
-
-            if (logger.isErrorEnabled()) {
-                logger.error(result);
-            }
-
-            throw new RemoteServiceException(result);
-        }
-
-    }
 }

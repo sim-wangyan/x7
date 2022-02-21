@@ -18,11 +18,8 @@ package io.xream.x7.reyc;
 
 import io.opentracing.Span;
 import io.opentracing.Tracer;
-import io.xream.x7.base.KV;
 import io.xream.x7.reyc.api.ClientHeaderInterceptor;
 import org.springframework.http.HttpHeaders;
-import org.springframework.util.LinkedMultiValueMap;
-import org.springframework.util.MultiValueMap;
 
 /**
  * @author Sim

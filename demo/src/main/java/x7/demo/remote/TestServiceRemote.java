@@ -5,6 +5,7 @@ import io.xream.sqli.builder.Criteria;
 import io.xream.sqli.builder.RefreshCondition;
 import io.xream.x7.annotation.ReyClient;
 import io.xream.x7.base.web.ViewEntity;
+import org.springframework.http.HttpHeaders;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import x7.demo.entity.Cat;
@@ -20,8 +21,8 @@ public interface TestServiceRemote {
     @RequestMapping(value = "/reyc/test")
     List<Cat> testFallBack(CatFindRo ro);
 
-    @RequestMapping(value = "/time/test", method = RequestMethod.GET)
-    Boolean testTimeJack();
+    @RequestMapping(value = "/time/test", method = RequestMethod.GET, headers = {"X-SN:1001"})
+    Boolean testTimeJack(HttpHeaders headers);
 
     @RequestMapping(value = "/reyc/base", method = RequestMethod.GET)
     int getBase();

@@ -135,10 +135,11 @@ public class ClientParser {
             String[] headers = requestMapping.headers();
             if (headers != null && headers.length > 0) {
                 for (String header : headers) {
+                    header = header.replace(":","=");
                     int i = header.indexOf("=");
                     String key = header.substring(0, i);
                     String value = header.substring(i + 1);
-                    map.add(key,value);
+                    map.add(key.trim(),value.trim());
                 }
             }
 

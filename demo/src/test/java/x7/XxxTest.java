@@ -158,7 +158,7 @@ public class XxxTest {
 
     public void testTime(){
 
-        boolean flag = testServiceRemote.testTimeJack();
+        boolean flag = testServiceRemote.testTimeJack(null);
 
     }
 

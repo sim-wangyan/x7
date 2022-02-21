@@ -72,20 +72,20 @@ public class ClientBackendImpl implements ClientBackend {
         }
 
         String result = null;
-        if (requestMethod == RequestMethod.POST) {
-
-            if (args != null && args.length > 0) {
-                 result = restTemplate.post(clz,url,args[0],headers);
-            } else {
-                result = restTemplate.post(clz,url,null,headers);
-            }
-        } else {
+        if (requestMethod == RequestMethod.GET) {
             List<String> regExList = StringUtil.listByRegEx(url, pattern);
             int size = regExList.size();
             for (int i = 0; i < size; i++) {
                 url = url.replace(regExList.get(i), args[i].toString());
             }
-            result = restTemplate.get(clz,url,headers);
+            result = restTemplate.exchange(clz,url,null,headers,requestMethod);
+
+        } else {
+            if (args != null && args.length > 0) {
+                result = restTemplate.exchange(clz,url,args[0],headers,requestMethod);
+            } else {
+                result = restTemplate.exchange(clz,url,null,headers,requestMethod);
+            }
         }
 
         return result;

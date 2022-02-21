@@ -1,14 +1,11 @@
 package x7.config;
 
-import io.xream.x7.base.KV;
 import io.xream.x7.reyc.api.ClientHeaderInterceptor;
 import io.xream.x7.reyc.internal.RestTemplateWrapper;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpHeaders;
-import org.springframework.util.LinkedMultiValueMap;
-import org.springframework.util.MultiValueMap;
 
 /**
  * @author Sim

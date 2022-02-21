@@ -16,13 +16,12 @@
  */
 package io.xream.x7.reyc;
 
-import io.opentracing.Tracer;
-import io.xream.x7.base.api.BackendService;
-import io.xream.x7.reyc.api.ClientHeaderInterceptor;
 import io.xream.x7.reyc.api.ReyTemplate;
-import io.xream.x7.reyc.internal.*;
+import io.xream.x7.reyc.internal.ClientBackend;
+import io.xream.x7.reyc.internal.ClientBackendImpl;
+import io.xream.x7.reyc.internal.DefaultRestTemplateWrapper;
+import io.xream.x7.reyc.internal.RestTemplateWrapper;
 import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Import;
 
 /**
  * @author Rolyer Luo

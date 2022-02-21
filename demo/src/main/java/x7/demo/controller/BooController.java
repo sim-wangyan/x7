@@ -8,6 +8,7 @@ import io.xream.x7.base.web.ViewEntity;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpHeaders;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
@@ -58,11 +59,13 @@ public class BooController {
         });
     }
 
-    @io.github.resilience4j.ratelimiter.annotation.RateLimiter(name = "opp",fallbackMethod = "testFallback")
+//    @io.github.resilience4j.ratelimiter.annotation.RateLimiter(name = "opp",fallbackMethod = "testFallback")
     @RequestMapping(value = "/opp", method = RequestMethod.GET)
     public ViewEntity opp(){
         logger.info("opp");
-        boolean flag = testServiceRemote.testTimeJack();
+        HttpHeaders httpHeaders = new HttpHeaders();
+        httpHeaders.add("X-TOKEN","szdaasddie2232");
+        boolean flag = testServiceRemote.testTimeJack(httpHeaders);
         logger.info("opp: " + flag);
         return ViewEntity.ok("xxxx");
     }

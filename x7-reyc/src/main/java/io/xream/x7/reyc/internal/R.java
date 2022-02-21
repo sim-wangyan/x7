@@ -18,6 +18,7 @@ package io.xream.x7.reyc.internal;
 
 import io.xream.x7.base.api.GroupRouter;
 import io.xream.x7.reyc.Url;
+import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.bind.annotation.RequestMethod;
 
@@ -105,21 +106,21 @@ public class R {
         url = url + methodParsed.getRequestMapping();
 
         List<Object> objectList = new ArrayList<>();
-        boolean flag = false;
+        MultiValueMap headers = new LinkedMultiValueMap();
+        headers.addAll(methodParsed.getHeaders());
         if (args != null) {
             for (Object arg : args) {
                 if (arg != null && arg instanceof Url) {
                     Url dynamicUrl = (Url) arg;
                     url = dynamicUrl.value();
-                    flag = true;
+                }else if (arg != null && arg instanceof MultiValueMap) {
+                    headers.addAll((MultiValueMap)arg);
                 } else {
                     objectList.add(arg);
                 }
             }
         }
-        if (flag) {
-            args = objectList.toArray();
-        }
+        args = objectList.toArray();
 
         if (!url.startsWith("http")) {
             url = "http://" + url;
@@ -133,7 +134,7 @@ public class R {
         r.setReturnType(methodParsed.getReturnType());
         r.setGeneType(methodParsed.getGeneType());
         r.setUrl(url);
-        r.setHeaders(methodParsed.getHeaders());
+        r.setHeaders(headers);
         r.setRouter(parsed.getGroupRouter());
         return r;
     }
@@ -149,4 +150,5 @@ public class R {
                 ", headers=" + headers +
                 '}';
     }
+
 }

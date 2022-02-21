@@ -21,7 +21,8 @@ package io.xream.x7.base.exception;
  */
 public class RemoteServiceException extends RuntimeException {
 
-    public RemoteServiceException(){
+    public RemoteServiceException(Throwable e){
+        super(e);
     }
 
     public RemoteServiceException(String message){
