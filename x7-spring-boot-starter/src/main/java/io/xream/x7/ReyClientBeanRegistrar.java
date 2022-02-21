@@ -19,8 +19,13 @@ package io.xream.x7;
 
 import io.xream.x7.annotation.ReyClient;
 import io.xream.x7.base.util.ClassFileReader;
+import io.xream.x7.reyc.internal.ClientBackend;
+import io.xream.x7.reyc.internal.ClientDecoration;
 import io.xream.x7.reyc.internal.ClientParser;
-import io.xream.x7.reyc.internal.HttpClientProxy;
+import io.xream.x7.reyc.internal.ClientBackendProxy;
+import org.springframework.beans.BeansException;
+import org.springframework.beans.factory.BeanFactory;
+import org.springframework.beans.factory.BeanFactoryAware;
 import org.springframework.beans.factory.support.BeanDefinitionBuilder;
 import org.springframework.beans.factory.support.BeanDefinitionRegistry;
 import org.springframework.beans.factory.support.GenericBeanDefinition;
@@ -30,10 +35,11 @@ import org.springframework.core.env.Environment;
 import org.springframework.core.type.AnnotationMetadata;
 
 import java.util.Map;
+import java.util.Objects;
 import java.util.Set;
 
 
-public class ReyClientBeanRegistrar implements EnvironmentAware,ImportBeanDefinitionRegistrar  {
+public class ReyClientBeanRegistrar implements EnvironmentAware,ImportBeanDefinitionRegistrar, BeanFactoryAware {
 
 
     @Override
@@ -71,15 +77,22 @@ public class ReyClientBeanRegistrar implements EnvironmentAware,ImportBeanDefini
 
             boolean retry = annotation.retry();
 
+            ClientBackend clientBackend = this.beanFactory.getBean(ClientBackend.class);
+            Objects.requireNonNull(clientBackend);
 
             if (!registry.containsBeanDefinition(beanName)) {
+
+                ClientDecoration clientDecoration = new ClientDecoration();
+                clientDecoration.setServiceName(clz.getSimpleName());
+                clientDecoration.setBackendName(backend);
+                clientDecoration.setRetry(retry);
 
                 BeanDefinitionBuilder builder = BeanDefinitionBuilder.genericBeanDefinition(clz);
                 GenericBeanDefinition definition = (GenericBeanDefinition) builder.getRawBeanDefinition();
                 definition.getPropertyValues().add("objectType", clz);
-                definition.getPropertyValues().add("backend",backend);
-                definition.getPropertyValues().add("retry",retry);
-                definition.setBeanClass(HttpClientProxy.class);
+                definition.getPropertyValues().add("clientDecoration",clientDecoration);
+                definition.getPropertyValues().add("clientBackend",clientBackend);
+                definition.setBeanClass(ClientBackendProxy.class);
                 definition.setAutowireMode(GenericBeanDefinition.AUTOWIRE_BY_TYPE);
 
                 registry.registerBeanDefinition(beanName, definition);
@@ -93,5 +106,11 @@ public class ReyClientBeanRegistrar implements EnvironmentAware,ImportBeanDefini
     @Override
     public void setEnvironment(Environment environment) {
         this.environment = environment;
+    }
+
+    private BeanFactory beanFactory;
+    @Override
+    public void setBeanFactory(BeanFactory beanFactory) throws BeansException {
+        this.beanFactory = beanFactory;
     }
 }

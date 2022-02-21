@@ -16,12 +16,15 @@
  */
 package io.xream.x7.reyc.internal;
 
-import io.xream.x7.base.KV;
 import io.xream.x7.base.api.GroupRouter;
+import io.xream.x7.reyc.Url;
+import org.springframework.util.MultiValueMap;
 import org.springframework.web.bind.annotation.RequestMethod;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Objects;
 
 /**
  * @author Sim
@@ -32,7 +35,7 @@ public class R {
     private Class<?> geneType;
     private Object[] args;
     private RequestMethod requestMethod;
-    private List<KV> headerList;
+    private MultiValueMap headers;
     private GroupRouter router;
 
     public String getUrl() {
@@ -75,12 +78,12 @@ public class R {
         this.requestMethod = requestMethod;
     }
 
-    public List<KV> getHeaderList() {
-        return headerList;
+    public MultiValueMap getHeaders() {
+        return headers;
     }
 
-    public void setHeaderList(List<KV> headerList) {
-        this.headerList = headerList;
+    public void setHeaders(MultiValueMap headers) {
+        this.headers = headers;
     }
 
     public GroupRouter getRouter() {
@@ -91,6 +94,50 @@ public class R {
         this.router = router;
     }
 
+    public static R build(String clzzName, String methodName, Object[] args) {
+        ClientParsed parsed = ClientParser.get(clzzName);
+        String url = parsed.getUrl();
+
+        MethodParsed methodParsed = parsed.getMap().get(methodName);
+
+        Objects.requireNonNull(methodParsed);
+
+        url = url + methodParsed.getRequestMapping();
+
+        List<Object> objectList = new ArrayList<>();
+        boolean flag = false;
+        if (args != null) {
+            for (Object arg : args) {
+                if (arg != null && arg instanceof Url) {
+                    Url dynamicUrl = (Url) arg;
+                    url = dynamicUrl.value();
+                    flag = true;
+                } else {
+                    objectList.add(arg);
+                }
+            }
+        }
+        if (flag) {
+            args = objectList.toArray();
+        }
+
+        if (!url.startsWith("http")) {
+            url = "http://" + url;
+        }
+
+        RequestMethod requestMethod = methodParsed.getRequestMethod();
+
+        R r = new R();
+        r.setArgs(args);
+        r.setRequestMethod(requestMethod);
+        r.setReturnType(methodParsed.getReturnType());
+        r.setGeneType(methodParsed.getGeneType());
+        r.setUrl(url);
+        r.setHeaders(methodParsed.getHeaders());
+        r.setRouter(parsed.getGroupRouter());
+        return r;
+    }
+
     @Override
     public String toString() {
         return "R{" +
@@ -99,7 +146,7 @@ public class R {
                 ", geneType=" + geneType +
                 ", args=" + Arrays.toString(args) +
                 ", requestMethod=" + requestMethod +
-                ", headerList=" + headerList +
+                ", headers=" + headers +
                 '}';
     }
 }

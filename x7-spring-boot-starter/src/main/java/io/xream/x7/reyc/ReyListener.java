@@ -16,10 +16,15 @@
  */
 package io.xream.x7.reyc;
 
-import io.xream.x7.reyc.api.SimpleRestTemplate;
+import io.github.resilience4j.circuitbreaker.CircuitBreakerRegistry;
+import io.github.resilience4j.retry.RetryRegistry;
+import io.opentracing.Tracer;
+import io.xream.x7.reyc.api.ClientHeaderInterceptor;
+import io.xream.x7.reyc.api.ReyTemplate;
 import io.xream.x7.reyc.api.custom.RestTemplateCustomizer;
-import io.xream.x7.reyc.internal.DefaultRestTemplate;
-import io.xream.x7.reyc.internal.HttpClientResolver;
+import io.xream.x7.reyc.internal.ClientBackendImpl;
+import io.xream.x7.reyc.internal.R4JTemplate;
+import io.xream.x7.reyc.internal.RestTemplateWrapper;
 import org.springframework.boot.context.event.ApplicationStartedEvent;
 import org.springframework.context.ApplicationListener;
 import org.springframework.web.client.RestTemplate;
@@ -29,8 +34,8 @@ public class ReyListener implements
 
     @Override
     public void onApplicationEvent(ApplicationStartedEvent event) {
-        initSimpleRestTemplate(event);
         customizeRestTemplate(event);
+        wrap(event);
     }
 
     private void customizeRestTemplate(ApplicationStartedEvent event) {
@@ -39,30 +44,60 @@ public class ReyListener implements
             RestTemplateCustomizer bean = event.getApplicationContext().getBean(RestTemplateCustomizer.class);
             if (bean == null)
                 return;
-            SimpleRestTemplate simpleRestTemplate = bean.customize();
-            if (simpleRestTemplate == null)
-                return;
-            HttpClientResolver.setRestTemplate(simpleRestTemplate);
+            RestTemplateWrapper wrapper = bean.customize();
+            if (wrapper != null){
+                ClientBackendImpl clientBackend = event.getApplicationContext().getBean(ClientBackendImpl.class);
+                clientBackend.setRestTemplateWrapper(wrapper);
+            }
+
+        }catch (Exception e) {
+
+        }
+
+    }
+
+    private void wrap(ApplicationStartedEvent event){
+        try{
+            RestTemplate restTemplate = restTemplate(event);
+            RestTemplateWrapper wrapper = event.getApplicationContext().getBean(RestTemplateWrapper.class);
+            wrapper.wrap(restTemplate);
+            wrapR4jTemplate(event);
+            headerInterceptor(wrapper,event);
         }catch (Exception e) {
 
         }
     }
 
-    private void initSimpleRestTemplate(ApplicationStartedEvent applicationStartedEvent) {
+    private void headerInterceptor(RestTemplateWrapper wrapper, ApplicationStartedEvent event) {
+        try{
+            Tracer tracer = event.getApplicationContext().getBean(Tracer.class);
+            ClientHeaderInterceptor clientHeaderInterceptor = new TracingClientHeaderInterceptor(tracer);
+            wrapper.headerInterceptor(clientHeaderInterceptor);
+        }catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    private void wrapR4jTemplate(ApplicationStartedEvent event) {
+
+        try{
+            CircuitBreakerRegistry circuitBreakerRegistry = event.getApplicationContext().getBean(CircuitBreakerRegistry.class);
+            RetryRegistry retryRegistry = RetryRegistry.ofDefaults();
+            ReyTemplate reyTemplate = event.getApplicationContext().getBean(ReyTemplate.class);
+            R4JTemplate r4jTemplate = (R4JTemplate) reyTemplate;
+            r4jTemplate.wrap(circuitBreakerRegistry,retryRegistry);
+        }catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+
+    }
+
+    private RestTemplate restTemplate(ApplicationStartedEvent applicationStartedEvent) {
         try {
             RestTemplate restTemplate = applicationStartedEvent.getApplicationContext().getBean(RestTemplate.class);
-            if (restTemplate == null) {
-                return;
-            }
-
-            DefaultRestTemplate defaultRestTemplate = applicationStartedEvent.getApplicationContext().getBean(DefaultRestTemplate.class);
-            if (defaultRestTemplate == null) {
-                return;
-            }
-
-            defaultRestTemplate.setRestTemplate(restTemplate);
+            return restTemplate;
         }catch (Exception e) {
-
+            throw new RuntimeException(e);
         }
     }
 }

@@ -17,101 +17,50 @@
 package io.xream.x7.reyc.internal;
 
 import io.xream.x7.annotation.ReyClient;
-import io.xream.x7.base.KV;
 import io.xream.x7.base.api.BackendService;
 import io.xream.x7.base.api.GroupRouter;
 import io.xream.x7.base.util.JsonX;
 import io.xream.x7.base.util.StringUtil;
-import io.xream.x7.reyc.Url;
 import io.xream.x7.reyc.api.ReyTemplate;
-import io.xream.x7.reyc.api.SimpleRestTemplate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.util.MultiValueMap;
 import org.springframework.web.bind.annotation.RequestMethod;
 
 import java.lang.reflect.Method;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Pattern;
 
 /**
  * @author Sim
  */
-public class HttpClientResolver {
+public class ClientBackendImpl implements ClientBackend {
 
 
     private static Logger logger = LoggerFactory.getLogger(ReyClient.class);
 
-    private static ReyTemplate reyTemplate;
+    private ReyTemplate reyTemplate;
 
-    private static SimpleRestTemplate restTemplate;
+    private RestTemplateWrapper restTemplate;
 
-    public static void init( ReyTemplate rt, SimpleRestTemplate simpleRestTemplate) {
-        reyTemplate = rt;
-        restTemplate = simpleRestTemplate;
+    public void setRestTemplateWrapper(RestTemplateWrapper restTemplate) {
+        this.restTemplate = restTemplate;
     }
 
-    public static void setRestTemplate(SimpleRestTemplate simpleRestTemplate){
-        restTemplate = simpleRestTemplate;
+    public void setReyTemplate( ReyTemplate reyTemplate) {
+        this.reyTemplate = reyTemplate;
     }
 
+    private Pattern pattern = Pattern.compile("\\{[\\w]*\\}");
 
-    private static Pattern pattern = Pattern.compile("\\{[\\w]*\\}");
 
-    protected static R r(String remoteIntfName, String methodName, Object[] args) {
-
-        ClientParsed parsed = ClientParser.get(remoteIntfName);
-        String url = parsed.getUrl();
-
-        MethodParsed methodParsed = parsed.getMap().get(methodName);
-
-        if (methodParsed == null)
-            throw new RuntimeException("RequestMapping NONE: " + remoteIntfName + "." + methodName);
-
-        String mapping = methodParsed.getRequestMapping();
-
-        url = url + mapping;
-
-        List<Object> objectList = new ArrayList<>();
-        boolean flag = false;
-        if (args != null) {
-            for (Object arg : args) {
-                if (arg != null && arg instanceof Url) {
-                    Url dynamicUrl = (Url) arg;
-                    url = dynamicUrl.value();
-                    flag = true;
-                } else {
-                    objectList.add(arg);
-                }
-            }
-        }
-        if (flag) {
-            args = objectList.toArray();
-        }
-
-        if (!url.startsWith("http")) {
-            url = "http://" + url;
-        }
-
-        RequestMethod requestMethod = methodParsed.getRequestMethod();
-
-        R r = new R();
-        r.setArgs(args);
-        r.setRequestMethod(requestMethod);
-        r.setReturnType(methodParsed.getReturnType());
-        r.setGeneType(methodParsed.getGeneType());
-        r.setUrl(url);
-        r.setHeaderList(methodParsed.getHeaderList());
-        r.setRouter(parsed.getGroupRouter());
-        return r;
-    }
-
-    protected static String resolve(R r, Class clz) {
+    @Override
+    public String handle(R r, Class clz) {
 
         RequestMethod requestMethod = r.getRequestMethod();
         Object[] args = r.getArgs();
         String url = r.getUrl();
-        List<KV> headerList = r.getHeaderList();
+        MultiValueMap headers = r.getHeaders();
 
         GroupRouter router = r.getRouter();
         if (router != null){
@@ -126,9 +75,9 @@ public class HttpClientResolver {
         if (requestMethod == RequestMethod.POST) {
 
             if (args != null && args.length > 0) {
-                 result = restTemplate.post(clz,url,args[0],headerList);
+                 result = restTemplate.post(clz,url,args[0],headers);
             } else {
-                result = restTemplate.post(clz,url,null,headerList);
+                result = restTemplate.post(clz,url,null,headers);
             }
         } else {
             List<String> regExList = StringUtil.listByRegEx(url, pattern);
@@ -136,13 +85,14 @@ public class HttpClientResolver {
             for (int i = 0; i < size; i++) {
                 url = url.replace(regExList.get(i), args[i].toString());
             }
-            result = restTemplate.get(clz,url,headerList);
+            result = restTemplate.get(clz,url,headers);
         }
 
         return result;
     }
 
-    protected static Object toObject(Class<?> returnType, Class<?> geneType, String result) {
+    @Override
+    public Object toObject(Class<?> returnType, Class<?> geneType, String result) {
 
         if (StringUtil.isNullOrEmpty(result))
             return null;
@@ -163,17 +113,22 @@ public class HttpClientResolver {
         return obj;
     }
 
-    protected static String wrap(HttpClientProxy proxy, BackendService<String> backendService) {
+    @Override
+    public String service(ClientDecoration clientDecoration, BackendService<String> backendService) {
 
         if (reyTemplate == null)
             return null;
-        String handlerName = proxy.getObjectType().getSimpleName();
-        String result = reyTemplate.support(handlerName, proxy.getBackend(),proxy.isRetry(),backendService);
+        String result = reyTemplate.support(
+                clientDecoration.getServiceName(),
+                clientDecoration.getBackendName(),clientDecoration.isRetry(),
+                backendService
+        );
 
         return result;
     }
 
-    public static String fallback(String intfName, String methodName, Object[] args) {
+    @Override
+    public String fallback(String intfName, String methodName, Object[] args) {
 
         ClientParsed parsed = ClientParser.get(intfName);
         if (parsed.getFallback() == null)

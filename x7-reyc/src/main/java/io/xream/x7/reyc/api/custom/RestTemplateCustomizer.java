@@ -16,12 +16,12 @@
  */
 package io.xream.x7.reyc.api.custom;
 
-import io.xream.x7.reyc.api.SimpleRestTemplate;
+import io.xream.x7.reyc.internal.RestTemplateWrapper;
 
 /**
  * @author Sim
  */
 public interface RestTemplateCustomizer {
 
-    SimpleRestTemplate customize();
+    RestTemplateWrapper customize();
 }

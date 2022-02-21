@@ -16,11 +16,11 @@
  */
 package io.xream.x7.reyc.api;
 
-import io.xream.x7.base.KV;
+import org.springframework.http.HttpHeaders;
 
 /**
  * @author Sim
  */
 public interface ClientHeaderInterceptor {
-    KV apply();
+    void apply(HttpHeaders headers);
 }

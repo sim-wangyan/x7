@@ -16,10 +16,8 @@
  */
 package io.xream.x7.reyc.internal;
 
-import io.xream.x7.base.KV;
+import org.springframework.util.MultiValueMap;
 import org.springframework.web.bind.annotation.RequestMethod;
-
-import java.util.List;
 
 /**
  * @author Sim
@@ -30,7 +28,7 @@ public class MethodParsed {
     private RequestMethod requestMethod;
     private Class<?> returnType;
     private Class<?> geneType;
-    private List<KV> headerList;
+    private MultiValueMap headers;
 
     public String getRequestMapping() {
         return requestMapping;
@@ -56,12 +54,12 @@ public class MethodParsed {
         this.returnType = returnType;
     }
 
-    public List<KV> getHeaderList() {
-        return headerList;
+    public MultiValueMap getHeaders() {
+        return headers;
     }
 
-    public void setHeaderList(List<KV> headerList) {
-        this.headerList = headerList;
+    public void setHeaders(MultiValueMap headers) {
+        this.headers = headers;
     }
 
     public Class<?> getGeneType() {
@@ -79,7 +77,7 @@ public class MethodParsed {
                 ", requestMethod=" + requestMethod +
                 ", returnType=" + returnType +
                 ", geneType=" + geneType +
-                ", headerList=" + headerList +
+                ", headers=" + headers +
                 '}';
     }
 }

@@ -17,11 +17,12 @@
 package io.xream.x7.reyc.internal;
 
 import io.xream.x7.annotation.ReyClient;
-import io.xream.x7.base.KV;
 import io.xream.x7.base.api.GroupRouter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.core.env.Environment;
+import org.springframework.util.LinkedMultiValueMap;
+import org.springframework.util.MultiValueMap;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
@@ -29,7 +30,6 @@ import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -65,9 +65,9 @@ public class ClientParser {
 
         String clzName = clz.getName();
         if (map.containsKey(clzName)) {
-                logger.error("Parsing {}, found repeated class: {}", "ReyClient",clzName);
+            logger.error("Parsing {}, found repeated class: {}", "ReyClient", clzName);
         }
-        map.put(clzName,parsed);
+        map.put(clzName, parsed);
 
         /*
          * fallback
@@ -90,9 +90,9 @@ public class ClientParser {
          */
         Class<? extends GroupRouter> groupRouterClz = reyClient.groupRouter();
         if (groupRouterClz != GroupRouter.class) {
-            try{
+            try {
                 parsed.setGroupRouter(groupRouterClz.newInstance());
-            }catch (Exception e){
+            } catch (Exception e) {
                 e.printStackTrace();
             }
         }
@@ -111,34 +111,34 @@ public class ClientParser {
             }
 
             RequestMapping requestMapping = (RequestMapping) mappingAnno;
-            if (requestMapping.value() == null || requestMapping.value().length ==0) {
+            if (requestMapping.value() == null || requestMapping.value().length == 0) {
                 logger.error(clz.getName() + "." + methodName + " RequestMapping, no mapping value");
                 System.exit(0);
             }
 
             String mapping = requestMapping.value()[0];
 
-            RequestMethod rm = RequestMethod.POST;
-
+            RequestMethod rm = null;
             RequestMethod[] rmArr = requestMapping.method();
             if (rmArr == null || rmArr.length == 0) {
-                if (mapping != null && mapping.contains("{")&&mapping.contains("}")){
+                if (mapping != null && mapping.contains("{") && mapping.contains("}")) {
                     rm = RequestMethod.GET;
+                } else {
+                    rm = RequestMethod.POST;
                 }
-            }else{
+
+            } else {
                 rm = rmArr[0];
             }
 
-            List<KV> hearderList = null;
+            MultiValueMap map = new LinkedMultiValueMap();
             String[] headers = requestMapping.headers();
-            if (headers != null && headers.length > 0){
-                hearderList = new ArrayList<>();
-                for (String header : headers){
+            if (headers != null && headers.length > 0) {
+                for (String header : headers) {
                     int i = header.indexOf("=");
-                    String key = header.substring(0,i);
-                    String value = header.substring(i+1);
-                    KV kv = new KV(key,value);
-                    hearderList.add(kv);
+                    String key = header.substring(0, i);
+                    String value = header.substring(i + 1);
+                    map.add(key,value);
                 }
             }
 
@@ -151,14 +151,14 @@ public class ClientParser {
             Class gtc = null;
             if (returnType == List.class) {
                 Type gt = method.getGenericReturnType();
-                ParameterizedType pt = (ParameterizedType)gt;
+                ParameterizedType pt = (ParameterizedType) gt;
                 Type t = pt.getActualTypeArguments()[0];
                 if (t instanceof ParameterizedType) {
                     logger.error("ReyClient not support complex genericReturnType, like List<List<?>>, or" +
                             "List<Map>，while parsing " + method);
                     System.exit(0);
                 }
-                gtc = (Class)t;
+                gtc = (Class) t;
             }
 
             MethodParsed methodParsed = new MethodParsed();
@@ -166,9 +166,9 @@ public class ClientParser {
             methodParsed.setReturnType(returnType);
             methodParsed.setGeneType(gtc);
             methodParsed.setRequestMethod(rm);
-            methodParsed.setHeaderList(hearderList);
+            methodParsed.setHeaders(map);
 
-            parsed.getMap().put(methodName,methodParsed);
+            parsed.getMap().put(methodName, methodParsed);
         }
 
     }

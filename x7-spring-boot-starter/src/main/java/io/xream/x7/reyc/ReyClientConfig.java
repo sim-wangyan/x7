@@ -17,32 +17,29 @@
 package io.xream.x7.reyc;
 
 import io.opentracing.Tracer;
+import io.xream.x7.base.api.BackendService;
 import io.xream.x7.reyc.api.ClientHeaderInterceptor;
 import io.xream.x7.reyc.api.ReyTemplate;
-import io.xream.x7.reyc.api.SimpleRestTemplate;
-import io.xream.x7.reyc.internal.DefaultRestTemplate;
-import io.xream.x7.reyc.internal.HttpClientResolver;
-import io.xream.x7.reyc.internal.HttpProperties;
-import io.xream.x7.reyc.internal.ReyProperties;
+import io.xream.x7.reyc.internal.*;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Import;
 
 /**
  * @author Rolyer Luo
  */
-@Import({HttpProperties.class, ReyProperties.class})
 public class ReyClientConfig  {
 
-
     @Bean
-    public SimpleRestTemplate simpleRestTemplate(ReyTemplate reyTemplate, Tracer tracer) {
-        DefaultRestTemplate simpleRestTemplate = new DefaultRestTemplate();
-        HttpClientResolver.init(reyTemplate, simpleRestTemplate);
+    public RestTemplateWrapper restTemplateWrapper() {
+        return new DefaultRestTemplateWrapper();
+    }
+    @Bean
+    public ClientBackend clientBackend(ReyTemplate reyTemplate, RestTemplateWrapper wrapper)  {
 
-        ClientHeaderInterceptor interceptor = new TracingClientHeaderInterceptor(tracer);
-        simpleRestTemplate.headerInterceptor(interceptor);
-
-        return simpleRestTemplate;
+        ClientBackendImpl clientBackend = new ClientBackendImpl();
+        clientBackend.setReyTemplate(reyTemplate);
+        clientBackend.setRestTemplateWrapper(wrapper);
+        return clientBackend;
     }
 
 }

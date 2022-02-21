@@ -25,7 +25,7 @@ import org.springframework.context.annotation.Configuration;
 @Configuration
 public class ReyProperties {
 
-    @Value("${x7.reyc.fallback.remote-exception:'Exception'}")
+    @Value("${x7.reyc.fallback.remote-exception:'RemoteException'}")
     private String remoteException;
 
     public String getRemoteException() {

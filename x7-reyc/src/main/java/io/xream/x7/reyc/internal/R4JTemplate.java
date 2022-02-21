@@ -51,12 +51,15 @@ public class R4JTemplate implements ReyTemplate {
     private CircuitBreakerRegistry circuitBreakerRegistry;
     private RetryRegistry retryRegistry;
 
-    private static ReyProperties reyProperties;
+    private ReyProperties reyProperties;
 
-    public R4JTemplate(CircuitBreakerRegistry circuitBreakerRegistry, RetryRegistry retryRegistry, ReyProperties reyProperties) {
+    public R4JTemplate(ReyProperties reyProperties) {
+        this.reyProperties = reyProperties;
+    }
+
+    public void wrap(CircuitBreakerRegistry circuitBreakerRegistry, RetryRegistry retryRegistry) {
         this.circuitBreakerRegistry = circuitBreakerRegistry;
         this.retryRegistry = retryRegistry;
-        this.reyProperties = reyProperties;
     }
 
     @Override
@@ -109,8 +112,6 @@ public class R4JTemplate implements ReyTemplate {
         return result;
     }
 
-
-
     private String hanleException(Throwable e, String tag, BackendService<String> backendService) {
 
         if (logger.isErrorEnabled()) {
@@ -142,7 +143,7 @@ public class R4JTemplate implements ReyTemplate {
         if (result == null)
             return;
 
-        if (result.contains(reyProperties.getRemoteException())){
+        if (reyProperties.getRemoteException() != null && result.contains(reyProperties.getRemoteException())){
             backendService.fallback();
 
             if (logger.isErrorEnabled()) {

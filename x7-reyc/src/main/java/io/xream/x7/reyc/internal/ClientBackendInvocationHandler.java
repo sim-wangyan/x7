@@ -26,12 +26,16 @@ import java.lang.reflect.Method;
 /**
  * @author Sim
  */
-public class HttpClientInvocationHandler implements InvocationHandler {
+public class ClientBackendInvocationHandler implements InvocationHandler {
 
-    private HttpClientProxy httpClientProxy;
+    private ClientBackendProxy clientBackendProxy;
 
-    public HttpClientInvocationHandler(HttpClientProxy httpClientProxy){
-        this.httpClientProxy = httpClientProxy;
+    private ClientBackend getBackend(){
+        return clientBackendProxy.getClientBackend();
+    }
+
+    public ClientBackendInvocationHandler(ClientBackendProxy clientBackendProxy){
+        this.clientBackendProxy = clientBackendProxy;
     }
     
     @Override
@@ -40,33 +44,36 @@ public class HttpClientInvocationHandler implements InvocationHandler {
         if (methodName.equals("toString"))
             return null;
 
-        Class clzz = httpClientProxy.getObjectType();
+        Class clzz = clientBackendProxy.getObjectType();
         long startTime = System.currentTimeMillis();
         try{
 
+            ClientBackend clientBackend = getBackend();
+
             LoggerProxy.debug(clzz,methodName +"(..) start....");
 
-            R r = HttpClientResolver.r(clzz.getName(),methodName,args);
+            R r = R.build(clzz.getName(),methodName,args);
 
-            if (httpClientProxy.getBackend() == null) {
-                String result = HttpClientResolver.resolve(r,clzz);
-                return HttpClientResolver.toObject(r.getReturnType(),r.getGeneType(),result);
+            ClientDecoration clientDecoration = clientBackendProxy.getClientDecoration();
+
+            if (clientDecoration.getBackendName() == null) {
+                String result = getBackend().handle(r,clzz);
+                return clientBackend.toObject(r.getReturnType(),r.getGeneType(),result);
             }
 
-
-            String result = HttpClientResolver.wrap(httpClientProxy, new BackendService<String>() {
+            String result = clientBackend.service(clientBackendProxy.getClientDecoration(), new BackendService<String>() {
                 @Override
                 public String handle() {
-                    return HttpClientResolver.resolve(r,clzz);
+                    return clientBackend.handle(r,clzz);
                 }
 
                 @Override
                 public String fallback() {
-                    return HttpClientResolver.fallback(clzz.getName(),methodName,args);
+                    return clientBackend.fallback(clzz.getName(),methodName,args);
                 }
             });
 
-            return HttpClientResolver.toObject(r.getReturnType(),r.getGeneType(),result);
+            return clientBackend.toObject(r.getReturnType(),r.getGeneType(),result);
 
         } catch (RuntimeException re){
             throw re;

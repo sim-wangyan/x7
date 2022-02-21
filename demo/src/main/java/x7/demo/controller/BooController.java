@@ -62,7 +62,8 @@ public class BooController {
     @RequestMapping(value = "/opp", method = RequestMethod.GET)
     public ViewEntity opp(){
         logger.info("opp");
-        testServiceRemote.testTimeJack();
+        boolean flag = testServiceRemote.testTimeJack();
+        logger.info("opp: " + flag);
         return ViewEntity.ok("xxxx");
     }
 

@@ -20,12 +20,14 @@ import io.opentracing.Span;
 import io.opentracing.Tracer;
 import io.xream.x7.base.KV;
 import io.xream.x7.reyc.api.ClientHeaderInterceptor;
+import org.springframework.http.HttpHeaders;
+import org.springframework.util.LinkedMultiValueMap;
+import org.springframework.util.MultiValueMap;
 
 /**
  * @author Sim
  */
 public class TracingClientHeaderInterceptor implements ClientHeaderInterceptor {
-
 
     private Tracer tracer;
 
@@ -34,12 +36,12 @@ public class TracingClientHeaderInterceptor implements ClientHeaderInterceptor {
     }
 
     @Override
-    public KV apply() {
+    public void apply(HttpHeaders httpHeaders) {
 
         Span span = tracer.scopeManager().activeSpan();
         if (span == null)
-            return null;
+            return;
         String traceId = span.context().toTraceId();
-        return new KV("TraceId",traceId);
+        httpHeaders.add("TraceId",traceId);
     }
 }

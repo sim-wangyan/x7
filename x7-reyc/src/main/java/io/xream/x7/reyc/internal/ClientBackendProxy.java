@@ -25,16 +25,16 @@ import java.lang.reflect.Proxy;
 /**
  * @author Sim
  */
-public class HttpClientProxy implements FactoryBean {
+public class ClientBackendProxy implements FactoryBean {
 
     private Class<?> objectType;
 
-    private String backend;
-    private boolean retry;
+    private ClientDecoration clientDecoration;
+    private ClientBackend clientBackend;
 
     @Override
     public Object getObject() throws Exception {
-        return Proxy.newProxyInstance(objectType.getClassLoader(), new Class[]{objectType},new HttpClientInvocationHandler(this));
+        return Proxy.newProxyInstance(objectType.getClassLoader(), new Class[]{objectType},new ClientBackendInvocationHandler(this));
     }
 
 
@@ -53,19 +53,19 @@ public class HttpClientProxy implements FactoryBean {
         return true;
     }
 
-    public String getBackend() {
-        return backend;
+    public ClientDecoration getClientDecoration() {
+        return clientDecoration;
     }
 
-    public void setBackend(String backend) {
-        this.backend = backend;
+    public void setClientDecoration(ClientDecoration clientDecoration) {
+        this.clientDecoration = clientDecoration;
     }
 
-    public boolean isRetry() {
-        return retry;
+    public ClientBackend getClientBackend() {
+        return clientBackend;
     }
 
-    public void setRetry(boolean retry) {
-        this.retry = retry;
+    public void setClientBackend(ClientBackend clientBackend) {
+        this.clientBackend = clientBackend;
     }
 }
