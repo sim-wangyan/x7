@@ -16,6 +16,7 @@
  */
 package io.xream.x7;
 
+import io.xream.x7.reyc.RemoteExceptionHandler;
 import io.xream.x7.reyc.RestTemplateConfig;
 import io.xream.x7.reyc.ReyClientConfig;
 import io.xream.x7.reyc.ReyTemplateConfig;
@@ -26,7 +27,11 @@ import java.lang.annotation.*;
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.TYPE)
 @Documented
-@Import({RestTemplateConfig.class, ReyTemplateConfig.class, ReyClientConfig.class,ReyClientBeanRegistrar.class})
+@Import({RestTemplateConfig.class,
+        ReyTemplateConfig.class,
+        ReyClientConfig.class,
+        ReyClientBeanRegistrar.class,
+        RemoteExceptionHandler.class})
 public @interface EnableReyClient {
 
     String[] basePackages() default {};

@@ -1,14 +1,12 @@
 package io.xream.x7.reyc.internal;
 
-import io.xream.x7.base.exception.RemoteServiceException;
+import io.xream.x7.base.exception.RemoteBizException;
 import io.xream.x7.base.util.JsonX;
 import io.xream.x7.base.util.LoggerProxy;
 import io.xream.x7.base.util.StringUtil;
+import io.xream.x7.base.web.RemoteExceptionProto;
 import io.xream.x7.reyc.api.ClientHeaderInterceptor;
-import org.springframework.http.HttpEntity;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpMethod;
-import org.springframework.http.MediaType;
+import org.springframework.http.*;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.client.RestTemplate;
@@ -57,7 +55,7 @@ public class DefaultRestTemplateWrapper implements RestTemplateWrapper {
                 || result.contains("Unknown Source")
                 || result.contains("Exception")
                 || result.contains("Throwable"))
-            throw new RemoteServiceException(requestMethod + " " +url + " response:" + result + " RemoteException end    ");
+            throw new RemoteBizException(requestMethod + " " +url + " response:" + result + " RemoteException end    ");
         return result;
     }
 
@@ -91,7 +89,14 @@ public class DefaultRestTemplateWrapper implements RestTemplateWrapper {
         if (this.restTemplate == null)
             throw new NullPointerException(RestTemplate.class.getName());
 
-        return restTemplate.exchange(url, method, new HttpEntity<>(json, headers), String.class).getBody();
+        ResponseEntity<String> re = restTemplate.exchange(url, method, new HttpEntity<>(json, headers), String.class);
+
+        if (re.getStatusCodeValue() == 520) {
+            RemoteExceptionProto proto = JsonX.toObject(re.getBody(),RemoteExceptionProto.class);
+            throw proto.exception(re.getBody());
+        }
+
+        return re.getBody();
 
     }
 

@@ -16,17 +16,23 @@
  */
 package io.xream.x7.base.exception;
 
-/**
- * @author Sim
- */
-public class ReyConnectException extends RuntimeException {
+import io.xream.x7.base.api.ExceptionTyped;
 
-    public ReyConnectException(String message){
+/**
+ * Created by Sim on 2018/6/22.
+ */
+public class RemoteNotFoundException extends RuntimeException implements ExceptionTyped {
+
+    public RemoteNotFoundException(Throwable e){
+        super(e);
+    }
+
+    public RemoteNotFoundException(String message){
         super(message);
     }
 
-    @Override
-    public String getMessage(){
-        return super.getMessage();
+    public String getType(){
+        return RemoteExceptionType.REMOTE_NOT_FOUND_404.name();
     }
+
 }

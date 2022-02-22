@@ -16,6 +16,7 @@
  */
 package io.xream.x7;
 
+import io.xream.x7.reyc.RemoteExceptionHandler;
 import io.xream.x7.reyc.ReyTemplateConfig;
 import org.springframework.context.annotation.Import;
 
@@ -24,7 +25,7 @@ import java.lang.annotation.*;
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.TYPE)
 @Documented
-@Import({ReyTemplateConfig.class})
+@Import({ReyTemplateConfig.class, RemoteExceptionHandler.class})
 public @interface EnableReySupport {
 
 }

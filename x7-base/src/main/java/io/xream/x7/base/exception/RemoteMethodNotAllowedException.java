@@ -16,17 +16,24 @@
  */
 package io.xream.x7.base.exception;
 
+import io.xream.x7.base.api.TaggedException;
+import io.xream.x7.base.api.ExceptionTyped;
+
 /**
  * Created by Sim on 2018/6/22.
  */
-public class RemoteServiceException extends RuntimeException {
+public class RemoteMethodNotAllowedException extends TaggedException implements ExceptionTyped {
 
-    public RemoteServiceException(Throwable e){
+    public RemoteMethodNotAllowedException(Throwable e){
         super(e);
     }
 
-    public RemoteServiceException(String message){
+    public RemoteMethodNotAllowedException(String message){
         super(message);
+    }
+
+    public String getType(){
+        return RemoteExceptionType.REMOTE_METHOD_NOT_ALLOWED_405.name();
     }
 
 }
