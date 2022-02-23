@@ -1,5 +1,6 @@
 package io.xream.x7.reyc.internal;
 
+import io.xream.x7.base.api.ReyHttpStatus;
 import io.xream.x7.base.exception.RemoteBizException;
 import io.xream.x7.base.util.JsonX;
 import io.xream.x7.base.util.LoggerProxy;
@@ -52,8 +53,7 @@ public class DefaultRestTemplateWrapper implements RestTemplateWrapper {
         }
         if (result.contains("Internal Server Error")
                 || result.contains("not support")
-                || result.contains("Unknown Source")
-                || result.contains("Exception")
+                || result.contains("Unknown Source")                || result.contains("Exception")
                 || result.contains("Throwable"))
             throw new RemoteBizException(requestMethod + " " +url + " response:" + result + " RemoteException end    ");
         return result;
@@ -91,12 +91,19 @@ public class DefaultRestTemplateWrapper implements RestTemplateWrapper {
 
         ResponseEntity<String> re = restTemplate.exchange(url, method, new HttpEntity<>(json, headers), String.class);
 
-        if (re.getStatusCodeValue() == 520) {
-            RemoteExceptionProto proto = JsonX.toObject(re.getBody(),RemoteExceptionProto.class);
-            throw proto.exception(re.getBody());
+        final String body = re.getBody();
+        final int status = re.getStatusCodeValue();
+        if (status == ReyHttpStatus.TO_CLIENT.getStatus()) {
+            RemoteExceptionProto proto = JsonX.toObject(body,RemoteExceptionProto.class);
+            throw proto.create(ReyHttpStatus.TO_CLIENT);
         }
+//
+//        if (status == ReyHttpStatus.INTERNAL_SERVER_ERROR.getStatus()) {
+//            RemoteExceptionProto proto = JsonX.toObject(body,RemoteExceptionProto.class);
+//            throw proto.create(ReyHttpStatus.INTERNAL_SERVER_ERROR);
+//        }
 
-        return re.getBody();
+        return body;
 
     }
 

@@ -24,35 +24,33 @@ public class ExceptionUtil {
     private ExceptionUtil() {
     }
 
-    public static String getMessage(Exception e) {
-        String msg = e.getMessage();
-        msg += "\n";
-        StackTraceElement[] eleArr = e.getStackTrace();
-        if (eleArr == null || eleArr.length == 0)
-            return msg;
-
-        int length = eleArr.length;
-        length = length > 6 ? 6 : length;
-        for (int i = 0; i < length; i++) {
-            msg += eleArr[i].toString();
-            msg += "\n";
-        }
-
-        return msg;
-    }
-
     public static String getMessage(Throwable e) {
         String msg = e.getMessage();
-        msg += "\n";
+        msg += " ";
         StackTraceElement[] eleArr = e.getStackTrace();
         if (eleArr == null || eleArr.length == 0)
             return msg;
 
-        int length = eleArr.length;
-        length = length > 6 ? 6 : length;
-        for (int i = 0; i < length; i++) {
-            msg += eleArr[i].toString();
-            msg += "\n";
+        int i = 7;
+        for (StackTraceElement ele: eleArr) {
+            String str = ele.toString();
+            boolean notAppend = str.startsWith("sun.reflect")
+                    ||str.startsWith("java.lang.reflect")
+                    ||str.startsWith("org.spring")
+                    ||str.startsWith("javax")
+                    ||str.startsWith("io.undertow")
+                    ||str.startsWith("org.jboss")
+                    ||str.startsWith("io.xream.x7")
+                    ||str.startsWith("io.opentracing")
+                    ||str.startsWith("java.lang.Thread");
+            if (
+                ! notAppend
+            ) {
+                msg += str;
+                msg += " ";
+                if (--i == 0)
+                    break;
+            }
         }
 
         return msg;

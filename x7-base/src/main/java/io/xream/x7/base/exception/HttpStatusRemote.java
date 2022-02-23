@@ -16,23 +16,19 @@
  */
 package io.xream.x7.base.exception;
 
-import io.xream.x7.base.api.ExceptionTyped;
-
 /**
- * Created by Sim on 2018/6/22.
+ * @Author Sim
  */
-public class RemoteNotFoundException extends RuntimeException implements ExceptionTyped {
+public enum HttpStatusRemote {
 
-    public RemoteNotFoundException(Throwable e){
-        super(e);
+    REMOTE_EXCEPTION(222);
+
+    int status;
+    public int getStatus(){
+        return this.status;
     }
 
-    public RemoteNotFoundException(String message){
-        super(message);
+    HttpStatusRemote(int status){
+        this.status = status;
     }
-
-    public String getType(){
-        return RemoteExceptionType.REMOTE_NOT_FOUND_404.name();
-    }
-
 }

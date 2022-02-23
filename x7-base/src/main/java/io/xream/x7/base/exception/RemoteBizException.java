@@ -32,7 +32,7 @@ public class RemoteBizException extends TaggedException {
     }
 
     public String getType(){
-        return RemoteExceptionType.BIZ_REMOTE.name();
+        return "BIZ_REMOTE";
     }
 
 }

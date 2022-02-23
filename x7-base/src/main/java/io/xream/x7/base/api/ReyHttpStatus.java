@@ -14,26 +14,22 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.xream.x7.base.exception;
-
-import io.xream.x7.base.api.TaggedException;
-import io.xream.x7.base.api.ExceptionTyped;
+package io.xream.x7.base.api;
 
 /**
- * Created by Sim on 2018/6/22.
+ * @Author Sim
  */
-public class RemoteMethodNotAllowedException extends TaggedException implements ExceptionTyped {
+public enum ReyHttpStatus {
 
-    public RemoteMethodNotAllowedException(Throwable e){
-        super(e);
+    INTERNAL_SERVER_ERROR(500),
+    TO_CLIENT(222);
+
+    private int status;
+    public int getStatus(){
+        return this.status;
     }
-
-    public RemoteMethodNotAllowedException(String message){
-        super(message);
-    }
-
-    public String getType(){
-        return RemoteExceptionType.REMOTE_METHOD_NOT_ALLOWED_405.name();
+    ReyHttpStatus(int status) {
+        this.status = status;
     }
 
 }

@@ -25,7 +25,10 @@ import io.github.resilience4j.retry.RetryConfig;
 import io.github.resilience4j.retry.RetryRegistry;
 import io.vavr.control.Try;
 import io.xream.x7.base.api.BackendService;
-import io.xream.x7.base.exception.*;
+import io.xream.x7.base.api.ReyHttpStatus;
+import io.xream.x7.base.exception.BusyException;
+import io.xream.x7.base.exception.RemoteBizException;
+import io.xream.x7.base.exception.ReyException;
 import io.xream.x7.base.util.JsonX;
 import io.xream.x7.base.util.StringUtil;
 import io.xream.x7.reyc.api.ReyTemplate;
@@ -33,6 +36,7 @@ import org.apache.commons.collections.MapUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.web.client.HttpClientErrorException;
+import org.springframework.web.client.HttpServerErrorException;
 import org.springframework.web.client.ResourceAccessException;
 
 import java.net.ConnectException;
@@ -125,23 +129,21 @@ public class R4JTemplate implements ReyTemplate {
             Object obj = backendService.fallback();
             throw new BusyException(obj == null ? null : obj.toString());
         }
-        System.out.println("__________ e.name: " + e.getClass().getName());
-        logger.error("__________ e.name: " + e.getClass().getName());
+
         if (e instanceof ResourceAccessException){
             backendService.fallback();
-            ResourceAccessException ee = (ResourceAccessException)e;
-            Throwable t = ee.getRootCause();
-            System.out.println("___clzz:"+ee.getRootCause().getClass().getName());
-            String str = ee.getLocalizedMessage();
+            ResourceAccessException rae = (ResourceAccessException)e;
+            Throwable t = rae.getRootCause();
+            System.out.println("___clzz:"+rae.getRootCause().getClass().getName());
+            String str = rae.getLocalizedMessage();
             String[] arr = str.split(";");
+            final String message = arr[0];
             if (t instanceof ConnectException) {
-                throw new RemoteConnectionException(arr[0]);
+                throw ReyException.create(ReyHttpStatus.TO_CLIENT, -1 ,message,null,null);
             }else if (t instanceof SocketTimeoutException) {
-                throw new RemoteTimeoutException(arr[0]);
-            }else if (t instanceof SocketTimeoutException) {
-                throw new RemoteUnavailableException(arr[0]);
+                throw ReyException.create(ReyHttpStatus.TO_CLIENT, -2 ,message,null,null);
             }
-            throw new RemoteUnavailableException(arr[0]); //FIXME
+
         }else if (e instanceof HttpClientErrorException){
             backendService.fallback();
             HttpClientErrorException ee = (HttpClientErrorException)e;
@@ -151,26 +153,25 @@ public class R4JTemplate implements ReyTemplate {
             str = str.replace("[","");
             str = str.replace("]","");
             Map<String,Object> map = JsonX.toMap(str);
-            String tip = MapUtils.getString(map, "path");
-            if (e instanceof HttpClientErrorException.NotFound) {
-                throw new RemoteNotFoundException(tip);
-            }else if (e instanceof HttpClientErrorException.MethodNotAllowed) {
-                throw new RemoteMethodNotAllowedException(tip);
-            }else if (e instanceof HttpClientErrorException.BadRequest) {
-                throw new RemoteBadRequestException(tip);
+            String message = MapUtils.getString(map, "path");
+            HttpClientErrorException hee = (HttpClientErrorException)e;
+            throw ReyException.create(ReyHttpStatus.TO_CLIENT, hee.getStatusCode().value() ,message,null,null);
+        }else if (e instanceof HttpServerErrorException) {
+            HttpServerErrorException hse = (HttpServerErrorException)e;
+            String str = hse.getLocalizedMessage();
+            System.out.println("_____111: " + str);
+            str = str.split(": ")[1].trim();
+            str = str.replace("[","");
+            str = str.replace("]","");
+            if (!str.endsWith("\"}")) {
+                str += "\"}";
             }
-        }
-
-        String str = e.getClass().getSimpleName();
-        if (str.contains("ConnectException")
-                || str.contains("ResourceAccessException")
-                || str.contains("TimeoutException")
-                || str.contains("UnknownHostException")
-                || str.contains("IOException")
-        ) {
-            Object obj = backendService.fallback();
-//            throw new ReyConnectException(tag + " : " + e.getMessage() + (obj == null ? "" : (" : " + obj.toString())));
-                throw new RemoteResourceAccessException(e);
+            Map<String,Object> map = JsonX.toMap(str);
+            throw ReyException.create(ReyHttpStatus.INTERNAL_SERVER_ERROR, hse.getStatusCode().value() ,
+                    MapUtils.getString(map,"message"),
+                    MapUtils.getString(map,"stack"),
+                    MapUtils.getString(map,"traceId")
+            );
         }
 
         throw new RemoteBizException(e);

@@ -16,57 +16,49 @@
  */
 package io.xream.x7.base.web;
 
-import io.xream.x7.base.api.ExceptionTyped;
-import io.xream.x7.base.exception.*;
+import io.xream.x7.base.api.ReyHttpStatus;
+import io.xream.x7.base.exception.ReyException;
+import io.xream.x7.base.util.StringUtil;
 
 /**
  * @Author Sim
  */
 public class RemoteExceptionProto {
 
-    private String type;
+    private int status;
     private String traceId;
     private String message;
+    private String stack;
 
-    public RemoteExceptionProto(){
+
+    public RemoteExceptionProto(ReyException exception, String traceId){
+        this.status = exception.getStatus();
+        this.message = exception.getMessage();
+        this.stack = exception.getStack();
+        this.traceId = StringUtil.isNullOrEmpty(exception.getTraceId()) ? traceId : exception.getTraceId();
     }
 
-    public RemoteExceptionProto(RuntimeException e, String traceId) {
-        if (e instanceof ExceptionTyped){
-            this.type = ((ExceptionTyped) e).getType();
-        }
-        this.message = e.getMessage();
+    public RemoteExceptionProto(int status, String message, String statck, String traceId){
+        this.status = status;
+        this.message = message;
+        this.stack = statck;
         this.traceId = traceId;
-    }
-
-    public RuntimeException exception(String message){
-        if (this.type.equals(RemoteExceptionType.RESOURCE.name())){
-            return new RemoteResourceAccessException(this.message);
-        }else if (this.type.equals(RemoteExceptionType.BIZ_REMOTE.name())) {
-            return new RemoteBizException(this.message);
-        }else if (this.type.equals(RemoteExceptionType.REMOTE_BAD_REQUEST_400.name())) {
-            return new RemoteBadRequestException(this.message);
-        }else if (this.type.equals(RemoteExceptionType.REMOTE_NOT_FOUND_404.name())) {
-            return new RemoteNotFoundException(this.message);
-        }else if (this.type.equals(RemoteExceptionType.REMOTE_METHOD_NOT_ALLOWED_405.name())) {
-            return new RemoteMethodNotAllowedException(this.message);
-        }else if (this.type.equals(RemoteExceptionType.REMOTE_CONNECT_FAILED_502.name())) {
-            return new RemoteConnectionException(this.message);
-        }else if (this.type.equals(RemoteExceptionType.REMOTE_UNAVAILABLE_503.name())) {
-            return new RemoteUnavailableException(this.message);
+        if (StringUtil.isNullOrEmpty(this.message)){
+            this.message = this.stack;
+            this.stack = null;
         }
-        else if (this.type.equals(RemoteExceptionType.REMOTE_TIMEOUT_504.name())) {
-            return new RemoteTimeoutException(this.message);
-        }
-        throw new RemoteUnexpectedException(message);
     }
 
-    public String getType() {
-        return type;
+    public ReyException create(ReyHttpStatus reyHttpStatus) {
+        return ReyException.create(reyHttpStatus,this.status,this.message,this.stack, this.traceId);
     }
 
-    public void setType(String type) {
-        this.type = type;
+    public int getStatus() {
+        return status;
+    }
+
+    public void setStatus(int status) {
+        this.status = status;
     }
 
     public String getTraceId() {
@@ -83,5 +75,13 @@ public class RemoteExceptionProto {
 
     public void setMessage(String message) {
         this.message = message;
+    }
+
+    public String getStack() {
+        return stack;
+    }
+
+    public void setStack(String stack) {
+        this.stack = stack;
     }
 }
