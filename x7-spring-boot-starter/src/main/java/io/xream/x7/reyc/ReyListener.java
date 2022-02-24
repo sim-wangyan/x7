@@ -19,12 +19,12 @@ package io.xream.x7.reyc;
 import io.github.resilience4j.circuitbreaker.CircuitBreakerRegistry;
 import io.github.resilience4j.retry.RetryRegistry;
 import io.opentracing.Tracer;
+import io.xream.x7.reyc.api.ClientExceptionResolver;
 import io.xream.x7.reyc.api.ClientHeaderInterceptor;
 import io.xream.x7.reyc.api.ReyTemplate;
+import io.xream.x7.reyc.api.custom.ClientExceptionResolverCustomizer;
 import io.xream.x7.reyc.api.custom.RestTemplateCustomizer;
-import io.xream.x7.reyc.internal.ClientBackendImpl;
-import io.xream.x7.reyc.internal.R4JTemplate;
-import io.xream.x7.reyc.internal.RestTemplateWrapper;
+import io.xream.x7.reyc.internal.*;
 import org.springframework.boot.context.event.ApplicationStartedEvent;
 import org.springframework.context.ApplicationListener;
 import org.springframework.web.client.RestTemplate;
@@ -34,8 +34,47 @@ public class ReyListener implements
 
     @Override
     public void onApplicationEvent(ApplicationStartedEvent event) {
+
+        ClientExceptionHandler handler = clientExceptionHandler(event);
+        if (handler == null)
+            return;
+        customizeClientExceptionResolver(event, handler);
         customizeRestTemplate(event);
         wrap(event);
+    }
+
+    private ClientExceptionHandler clientExceptionHandler(ApplicationStartedEvent event){
+        try{
+            ClientExceptionHandler handler = event
+                    .getApplicationContext()
+                    .getBean(ClientExceptionHandler.class);
+
+            if (handler == null)
+                return null;
+
+            handler.setClientExceptionResolver(new DefaultClientExceptionResolver());
+
+            return handler;
+        }catch (Exception e) {
+
+        }
+        return null;
+    }
+
+    private void customizeClientExceptionResolver(ApplicationStartedEvent event, ClientExceptionHandler handler) {
+
+        try{
+            ClientExceptionResolverCustomizer customizer = event.getApplicationContext().getBean(ClientExceptionResolverCustomizer.class);
+            if (customizer == null)
+                return;
+            ClientExceptionResolver resolver = customizer.customize();
+            if (resolver == null)
+                return;
+            handler.setClientExceptionResolver(resolver);
+
+        }catch (Exception e) {
+
+        }
     }
 
     private void customizeRestTemplate(ApplicationStartedEvent event) {

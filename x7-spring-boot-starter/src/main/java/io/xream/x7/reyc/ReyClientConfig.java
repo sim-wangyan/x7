@@ -26,15 +26,9 @@ import org.springframework.context.annotation.Bean;
 public class ReyClientConfig  {
 
     @Bean
-    public ClientExceptionHandler clientExceptionHandler(){
-        return new ClientExceptionHandler();
-    }
-
-    @Bean
     public RestTemplateWrapper restTemplateWrapper(ClientExceptionHandler clientExceptionHandler) {
         return new DefaultRestTemplateWrapper(clientExceptionHandler);
     }
-
     @Bean
     public ClientBackend clientBackend(ReyTemplate reyTemplate, RestTemplateWrapper wrapper)  {
 
