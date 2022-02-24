@@ -17,6 +17,7 @@
 package io.xream.x7.reyc;
 
 import io.xream.x7.reyc.api.ReyTemplate;
+import io.xream.x7.reyc.internal.ClientExceptionHandler;
 import io.xream.x7.reyc.internal.R4JTemplate;
 import io.xream.x7.reyc.internal.ReyProperties;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
@@ -28,7 +29,7 @@ public class ReyTemplateConfig {
 
     @ConditionalOnMissingBean(ReyTemplate.class)
     @Bean
-    public ReyTemplate reyTemplate(ReyProperties reyProperties) {
-        return new R4JTemplate(reyProperties);
+    public ReyTemplate reyTemplate(ReyProperties reyProperties, ClientExceptionHandler clientExceptionHandler) {
+        return new R4JTemplate(reyProperties,clientExceptionHandler);
     }
 }
