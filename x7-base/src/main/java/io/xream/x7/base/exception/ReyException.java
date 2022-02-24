@@ -19,7 +19,7 @@ package io.xream.x7.base.exception;
 import io.xream.x7.base.api.ReyHttpStatus;
 
 /**
- * @Author Sim
+ * @author Sim
  */
 public abstract class ReyException extends RuntimeException {
 

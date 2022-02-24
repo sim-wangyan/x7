@@ -7,6 +7,8 @@ import io.xream.x7.base.exception.BizException;
 import io.xream.x7.base.exception.RemoteBizException;
 import io.xream.x7.base.util.ExceptionUtil;
 import io.xream.x7.base.web.RemoteExceptionProto;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -17,6 +19,7 @@ import javax.annotation.Resource;
 @RestControllerAdvice
 public class DefaultExceptionHandler {
 
+    private static final Logger logger = LoggerFactory.getLogger(DefaultExceptionHandler.class);
     @Resource
     private Tracer tracer;
 
@@ -24,22 +27,27 @@ public class DefaultExceptionHandler {
             NullPointerException.class,
             IllegalArgumentException.class,
             BizException.class,
-            RemoteBizException.class
+            RemoteBizException.class,
+            RuntimeException.class
     })
     @ResponseBody
     public ResponseEntity<RemoteExceptionProto> handleDefaultException(RuntimeException e){
+
+        final String stack = ExceptionUtil.getMessage(e);
+        logger.error(stack);
+
+        if (e.getClass().getName().startsWith("org.springframework.http"))
+            throw e;
 
         Span span = tracer.scopeManager().activeSpan();
         String traceId = span == null ? "" : span.context().toTraceId()+ ":" + span.context().toSpanId();
 
         int status = 500;
         String message = null;
-        String stack = null;
         if (e instanceof NullPointerException){
-            message = ExceptionUtil.getMessage(e);
+            message = stack;
         }else {
             message = e.getMessage();
-            stack = ExceptionUtil.getMessage(e);
         }
 
         return ResponseEntity.status(ReyHttpStatus.INTERNAL_SERVER_ERROR.getStatus()).body(

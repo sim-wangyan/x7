@@ -4,7 +4,7 @@ import java.util.*;
 
 /**
  * near by
- * @author sim-wangyan
+ * @author Sim-wangyan
  * @creation 2020年7月13日 16:52:37
  * GeoHash geoHash = GeoHash.of5m();
  */

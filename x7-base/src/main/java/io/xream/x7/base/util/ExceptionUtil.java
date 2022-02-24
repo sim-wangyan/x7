@@ -24,6 +24,38 @@ public class ExceptionUtil {
     private ExceptionUtil() {
     }
 
+    private static boolean startWithJava(String str) {
+        if (str.startsWith("java")) {
+            return str.startsWith("java.lang.reflect")
+                    || str.startsWith("java.lang.Thread")
+                    || str.startsWith("javax");
+        }
+        return false;
+    }
+
+    private static boolean startWithIO(String str) {
+        if (str.startsWith("io")) {
+            return str.startsWith("io.github.resili")
+                    || str.startsWith("io.vavr")
+                    || str.startsWith("io.undertow")
+                    || str.startsWith("io.xream.x7")
+                    || str.startsWith("io.opentracing");
+        }
+        return false;
+    }
+
+    private static boolean startWithOrg(String str) {
+        if (str.startsWith("org")) {
+            return (str.startsWith("org.spring")
+                    && !(
+                            str.startsWith("org.springframework.jdbc")
+                        )
+                    )
+                    || str.startsWith("org.jboss");
+        }
+        return false;
+    }
+
     public static String getMessage(Throwable e) {
         String msg = e.getMessage();
         msg += " ";
@@ -32,19 +64,15 @@ public class ExceptionUtil {
             return msg;
 
         int i = 7;
-        for (StackTraceElement ele: eleArr) {
+        for (StackTraceElement ele : eleArr) {
             String str = ele.toString();
             boolean notAppend = str.startsWith("sun.reflect")
-                    ||str.startsWith("java.lang.reflect")
-                    ||str.startsWith("org.spring")
-                    ||str.startsWith("javax")
-                    ||str.startsWith("io.undertow")
-                    ||str.startsWith("org.jboss")
-                    ||str.startsWith("io.xream.x7")
-                    ||str.startsWith("io.opentracing")
-                    ||str.startsWith("java.lang.Thread");
+                    || startWithJava(str)
+                    || startWithOrg(str)
+                    || startWithIO(str)
+                    || str.startsWith("com.sun");
             if (
-                ! notAppend
+                    !notAppend
             ) {
                 msg += str;
                 msg += " ";

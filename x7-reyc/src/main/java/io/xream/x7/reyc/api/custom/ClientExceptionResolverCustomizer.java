@@ -14,22 +14,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.xream.x7.base.api;
+package io.xream.x7.reyc.api.custom;
+
+import io.xream.x7.reyc.api.ClientExceptionResolver;
 
 /**
  * @author Sim
  */
-public enum ReyHttpStatus {
+public interface ClientExceptionResolverCustomizer {
 
-    INTERNAL_SERVER_ERROR(500),
-    TO_CLIENT(222);
-
-    private int status;
-    public int getStatus(){
-        return this.status;
-    }
-    ReyHttpStatus(int status) {
-        this.status = status;
-    }
-
+    ClientExceptionResolver customize();
 }

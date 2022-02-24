@@ -18,10 +18,11 @@ package io.xream.x7.base.web;
 
 import io.xream.x7.base.api.ReyHttpStatus;
 import io.xream.x7.base.exception.ReyException;
+import io.xream.x7.base.util.JsonX;
 import io.xream.x7.base.util.StringUtil;
 
 /**
- * @Author Sim
+ * @author Sim
  */
 public class RemoteExceptionProto {
 
@@ -30,6 +31,8 @@ public class RemoteExceptionProto {
     private String message;
     private String stack;
 
+    public RemoteExceptionProto(){
+    }
 
     public RemoteExceptionProto(ReyException exception, String traceId){
         this.status = exception.getStatus();
@@ -83,5 +86,14 @@ public class RemoteExceptionProto {
 
     public void setStack(String stack) {
         this.stack = stack;
+    }
+
+    public String toJson(){
+        return JsonX.toJson(this);
+    }
+
+    @Override
+    public String toString() {
+        return toJson();
     }
 }

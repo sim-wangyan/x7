@@ -17,7 +17,7 @@
 package io.xream.x7.base.api;
 
 /**
- * @Author Sim
+ * @author Sim
  */
 public class TaggedException extends RuntimeException{
 
