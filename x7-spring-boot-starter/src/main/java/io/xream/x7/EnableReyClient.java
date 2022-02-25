@@ -39,4 +39,5 @@ import java.lang.annotation.*;
 public @interface EnableReyClient {
 
     String[] basePackages() default {};
+    boolean isReyTemplateNotRequired() default false;
 }

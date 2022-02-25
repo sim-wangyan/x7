@@ -29,7 +29,7 @@ public interface ClientBackend {
 
     Object toObject(Class<?> returnType, Class<?> geneType, String result);
 
-    String service(ClientDecoration clientDecoration, BackendService<Object> backendService) throws ReyInternalException;
+    String service(boolean isReyTemplateNotRequired, ClientDecoration clientDecoration, BackendService<Object> backendService) throws ReyInternalException;
 
     ResponseString handle(R r, Class clz);
 

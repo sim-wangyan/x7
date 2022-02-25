@@ -51,6 +51,9 @@ public class ReyClientBeanRegistrar implements EnvironmentAware,ImportBeanDefini
         Set<Class<?>> set = ClassFileReader.getClasses(basePackage);
 
         Map<String, Object> attributes = annotationMetadata.getAnnotationAttributes(EnableReyClient.class.getName());
+
+        Object isReyTemplateNotRequired = attributes.get("isReyTemplateNotRequired");
+
         Object obj = attributes.get("basePackages");
         if (obj != null){
             String[] strs = (String[]) obj;
@@ -92,6 +95,7 @@ public class ReyClientBeanRegistrar implements EnvironmentAware,ImportBeanDefini
                 definition.getPropertyValues().add("objectType", clz);
                 definition.getPropertyValues().add("clientDecoration",clientDecoration);
                 definition.getPropertyValues().add("clientBackend",clientBackend);
+                definition.getPropertyValues().add("reyTemplateNotRequired", isReyTemplateNotRequired);
                 definition.setBeanClass(ClientBackendProxy.class);
                 definition.setAutowireMode(GenericBeanDefinition.AUTOWIRE_BY_TYPE);
 

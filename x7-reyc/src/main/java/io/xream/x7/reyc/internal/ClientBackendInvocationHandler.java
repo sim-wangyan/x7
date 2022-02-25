@@ -64,7 +64,7 @@ public class ClientBackendInvocationHandler implements InvocationHandler {
                 return clientBackend.toObject(r.getReturnType(),r.getGeneType(),result.getBody());
             }
 
-            String result = clientBackend.service(clientBackendProxy.getClientDecoration(), new BackendService<Object>() {
+            String result = clientBackend.service(clientBackendProxy.isReyTemplateNotRequired(),clientBackendProxy.getClientDecoration(), new BackendService<Object>() {
                 @Override
                 public Object handle() {
                     return clientBackend.handle(r,clzz);

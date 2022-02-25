@@ -31,6 +31,7 @@ public class ClientBackendProxy implements FactoryBean {
 
     private ClientDecoration clientDecoration;
     private ClientBackend clientBackend;
+    private boolean reyTemplateNotRequired;
 
     @Override
     public Object getObject() throws Exception {
@@ -67,5 +68,13 @@ public class ClientBackendProxy implements FactoryBean {
 
     public void setClientBackend(ClientBackend clientBackend) {
         this.clientBackend = clientBackend;
+    }
+
+    public void setReyTemplateNotRequired(boolean reyTemplateNotRequired) {
+        this.reyTemplateNotRequired = reyTemplateNotRequired;
+    }
+
+    public boolean isReyTemplateNotRequired() {
+        return this.reyTemplateNotRequired;
     }
 }

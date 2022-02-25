@@ -121,11 +121,11 @@ public class ClientBackendImpl implements ClientBackend {
     }
 
     @Override
-    public String service(ClientDecoration clientDecoration, BackendService<Object> backendService) throws ReyInternalException {
+    public String service(boolean isReyTemplateNotRequired, ClientDecoration clientDecoration, BackendService<Object> backendService) throws ReyInternalException {
 
         Object result = null;
         try {
-            if (reyTemplate == null) {
+            if (isReyTemplateNotRequired || reyTemplate == null) {
                 try {
                     result = backendService.handle();
                 }catch (Exception e) {
