@@ -24,7 +24,9 @@ import io.github.resilience4j.retry.RetryConfig;
 import io.github.resilience4j.retry.RetryRegistry;
 import io.vavr.control.Try;
 import io.xream.x7.base.api.BackendService;
+import io.xream.x7.base.exception.ReyBizException;
 import io.xream.x7.base.util.StringUtil;
+import io.xream.x7.base.web.ResponseString;
 import io.xream.x7.reyc.api.ReyTemplate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -45,12 +47,9 @@ public class R4JTemplate implements ReyTemplate {
     private CircuitBreakerRegistry circuitBreakerRegistry;
     private RetryRegistry retryRegistry;
 
-    private ReyProperties reyProperties;
-
     private ClientExceptionHandler clientExceptionHandler;
 
-    public R4JTemplate(ReyProperties reyProperties, ClientExceptionHandler clientExceptionHandler) {
-        this.reyProperties = reyProperties;
+    public R4JTemplate(ClientExceptionHandler clientExceptionHandler) {
         this.clientExceptionHandler = clientExceptionHandler;
     }
 
@@ -60,13 +59,13 @@ public class R4JTemplate implements ReyTemplate {
     }
 
     @Override
-    public String support(String config, boolean isRetry, BackendService<String> backendService) {
+    public String support(String config, boolean isRetry, BackendService<ResponseString> backendService) {
 
         return support(config, config, isRetry, backendService);
     }
 
     @Override
-    public String support(String handlerName, String config, boolean isRetry, BackendService<String> backendService) {
+    public String support(String handlerName, String config, boolean isRetry, BackendService<ResponseString> backendService) {
 
         if (StringUtil.isNullOrEmpty(config)) {
             config = "";
@@ -77,7 +76,7 @@ public class R4JTemplate implements ReyTemplate {
         CircuitBreakerConfig circuitBreakerConfig = circuitBreakerRegistry.getConfiguration(configName).orElse(circuitBreakerRegistry.getDefaultConfig());
 
         CircuitBreaker circuitBreaker = circuitBreakerRegistry.circuitBreaker(handlerName, circuitBreakerConfig);
-        Supplier<String> decoratedSupplier = CircuitBreaker
+        Supplier<ResponseString> decoratedSupplier = CircuitBreaker
                 .decorateSupplier(circuitBreaker, backendService::handle);
 
         if (isRetry) {
@@ -98,22 +97,37 @@ public class R4JTemplate implements ReyTemplate {
             }
         }
 
-        String logStr = "Backend(" + handlerName + ")";
+        final String tag = "Backend(" + handlerName + ")";
 
-        String result = Try.ofSupplier(decoratedSupplier)
-                .recover(e ->
-                        hanleException(e, logStr, backendService)
+        ResponseString response = Try.ofSupplier(decoratedSupplier)
+                .recover(e -> {
+                        logger.error(tag + ": " + e.getMessage());
+                        return handleException(e); }
                 ).get();
 
+        if (! isNotFallback(response.getStatus())) {
+            Object obj = backendService.fallback();
+            if (obj != null) {
+                throw new ReyBizException(tag + " FALLBACK",obj);
+            }
+        }
 
-        return result;
+        this.clientExceptionHandler.resolver().convertNot200ToException(
+                response.getStatus(),
+                response.getBody()
+        );
+
+        return response.getBody();
     }
 
-    private String hanleException(Throwable e, String tag, BackendService<String> backendService) {
+    private ResponseString handleException(Throwable e) {
 
-        logger.error(tag + ": " + e.getMessage());
+        return this.clientExceptionHandler.resolver().handleException(e);
+    }
 
-        return this.clientExceptionHandler.resolver().handleException(e, backendService);
+    private boolean isNotFallback(int status){
+        return this.clientExceptionHandler.resolver()
+                .fallbackHandler().isNotFallback(status);
     }
 
 

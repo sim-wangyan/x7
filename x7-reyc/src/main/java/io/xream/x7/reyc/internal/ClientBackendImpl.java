@@ -16,14 +16,12 @@
  */
 package io.xream.x7.reyc.internal;
 
-import io.xream.x7.annotation.ReyClient;
 import io.xream.x7.base.api.BackendService;
 import io.xream.x7.base.api.GroupRouter;
 import io.xream.x7.base.util.JsonX;
 import io.xream.x7.base.util.StringUtil;
+import io.xream.x7.base.web.ResponseString;
 import io.xream.x7.reyc.api.ReyTemplate;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.bind.annotation.RequestMethod;
 
@@ -36,8 +34,6 @@ import java.util.regex.Pattern;
  */
 public class ClientBackendImpl implements ClientBackend {
 
-
-    private static Logger logger = LoggerFactory.getLogger(ReyClient.class);
 
     private ReyTemplate reyTemplate;
 
@@ -55,7 +51,7 @@ public class ClientBackendImpl implements ClientBackend {
 
 
     @Override
-    public String handle(R r, Class clz) {
+    public ResponseString handle(R r, Class clz) {
 
         RequestMethod requestMethod = r.getRequestMethod();
         Object[] args = r.getArgs();
@@ -71,7 +67,7 @@ public class ClientBackendImpl implements ClientBackend {
             url = url.replace(router.replaceHolder(),router.replaceValue(arg));
         }
 
-        String result = null;
+        ResponseString result = null;
         if (requestMethod == RequestMethod.GET) {
             List<String> regExList = StringUtil.listByRegEx(url, pattern);
             int size = regExList.size();
@@ -114,7 +110,7 @@ public class ClientBackendImpl implements ClientBackend {
     }
 
     @Override
-    public String service(ClientDecoration clientDecoration, BackendService<String> backendService) {
+    public String service(ClientDecoration clientDecoration, BackendService<ResponseString> backendService) {
 
         if (reyTemplate == null)
             return null;
@@ -128,25 +124,21 @@ public class ClientBackendImpl implements ClientBackend {
     }
 
     @Override
-    public String fallback(String intfName, String methodName, Object[] args) {
+    public void fallback(String intfName, String methodName, Object[] args) {
 
         ClientParsed parsed = ClientParser.get(intfName);
         if (parsed.getFallback() == null)
-            return null;
+            return;
         Method method = parsed.getFallbackMethodMap().get(methodName);
 
         if (method == null)
-            return null;
-
+            return;
         try {
             if (method.getReturnType() == void.class) {
                 method.invoke(parsed.getFallback(), args);
-                return null;
+                return;
             }
-            Object obj = method.invoke(parsed.getFallback(), args);
-            if (obj == null)
-                return (String) obj;
-            return obj.toString();
+            method.invoke(parsed.getFallback(), args);
         } catch (Exception e) {
             e.printStackTrace();
             throw new RuntimeException("Exception of fallback: " + intfName + "." + methodName);

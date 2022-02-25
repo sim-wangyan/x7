@@ -16,12 +16,10 @@
  */
 package io.xream.x7.reyc.internal;
 
-import io.xream.x7.base.api.ReyHttpStatus;
-import io.xream.x7.base.exception.RemoteBizException;
 import io.xream.x7.base.util.JsonX;
 import io.xream.x7.base.util.LoggerProxy;
 import io.xream.x7.base.util.StringUtil;
-import io.xream.x7.base.web.RemoteExceptionProto;
+import io.xream.x7.base.web.ResponseString;
 import io.xream.x7.reyc.api.ClientHeaderInterceptor;
 import org.springframework.http.*;
 import org.springframework.util.MultiValueMap;
@@ -41,12 +39,6 @@ public class DefaultRestTemplateWrapper implements RestTemplateWrapper {
 
     private List<ClientHeaderInterceptor> clientHeaderInterceptorList = new ArrayList<>();
 
-    private ClientExceptionHandler clientExceptionHandler;
-
-    public DefaultRestTemplateWrapper(ClientExceptionHandler handler) {
-        this.clientExceptionHandler = handler;
-    }
-
 
     @Override
     public void wrap(Object impl) {
@@ -59,8 +51,8 @@ public class DefaultRestTemplateWrapper implements RestTemplateWrapper {
     }
 
     @Override
-    public String exchange(Class clz, String url, Object request, MultiValueMap headers, RequestMethod requestMethod) {
-        String result = null;
+    public ResponseString exchange(Class clz, String url, Object request, MultiValueMap headers, RequestMethod requestMethod) {
+        ResponseString result = null;
         switch (requestMethod) {
             case GET:
                 result = this.execute(clz,url,request,headers,HttpMethod.GET);
@@ -74,16 +66,12 @@ public class DefaultRestTemplateWrapper implements RestTemplateWrapper {
             default:
                 result = this.execute(clz,url,request,headers,HttpMethod.POST);
         }
-        if (result.contains("Internal Server Error")
-                || result.contains("not support")
-                || result.contains("Unknown Source")                || result.contains("Exception")
-                || result.contains("Throwable"))
-            throw new RemoteBizException(requestMethod + " " +url + " response:" + result + " RemoteException end    ");
+
         return result;
     }
 
 
-    private String execute(Class clz, String url, Object request, MultiValueMap headerMap, HttpMethod method) {
+    private ResponseString execute(Class clz, String url, Object request, MultiValueMap headerMap, HttpMethod method) {
 
         HttpHeaders headers = new HttpHeaders();
         if (headerMap != null) {
@@ -114,22 +102,12 @@ public class DefaultRestTemplateWrapper implements RestTemplateWrapper {
 
         ResponseEntity<String> re = restTemplate.exchange(url, method, new HttpEntity<>(json, headers), String.class);
 
-        final String body = re.getBody();
-
-        if (! isIgnore222()) {
-            final int status = re.getStatusCodeValue();
-            if (status == ReyHttpStatus.TO_CLIENT.getStatus()) {
-                RemoteExceptionProto proto = JsonX.toObject(body, RemoteExceptionProto.class);
-                throw proto.create(ReyHttpStatus.TO_CLIENT);
-            }
-        }
-
-        return body;
+        ResponseString responseString = new ResponseString();
+        responseString.setBody(re.getBody());
+        responseString.setStatus(re.getStatusCodeValue());
+        return responseString;
 
     }
 
-    private boolean isIgnore222(){
-        return this.clientExceptionHandler.resolver().ignore222();
-    }
 
 }

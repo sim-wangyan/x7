@@ -17,7 +17,7 @@
 package io.xream.x7.base.web;
 
 import io.xream.x7.base.api.ReyHttpStatus;
-import io.xream.x7.base.exception.ReyException;
+import io.xream.x7.base.exception.ReyInternalException;
 import io.xream.x7.base.util.JsonX;
 import io.xream.x7.base.util.StringUtil;
 
@@ -34,7 +34,7 @@ public class RemoteExceptionProto {
     public RemoteExceptionProto(){
     }
 
-    public RemoteExceptionProto(ReyException exception, String traceId){
+    public RemoteExceptionProto(ReyInternalException exception, String traceId){
         this.status = exception.getStatus();
         this.message = exception.getMessage();
         this.stack = exception.getStack();
@@ -52,8 +52,8 @@ public class RemoteExceptionProto {
         }
     }
 
-    public ReyException create(ReyHttpStatus reyHttpStatus) {
-        return ReyException.create(reyHttpStatus,this.status,this.message,this.stack, this.traceId);
+    public ReyInternalException create(ReyHttpStatus reyHttpStatus) {
+        return ReyInternalException.create(reyHttpStatus,this.status,this.message,this.stack, this.traceId);
     }
 
     public int getStatus() {

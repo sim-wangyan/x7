@@ -14,19 +14,29 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.xream.x7.reyc.internal;
-
-import io.xream.x7.base.web.ResponseString;
-import io.xream.x7.reyc.api.ClientHeaderInterceptor;
-import org.springframework.util.MultiValueMap;
-import org.springframework.web.bind.annotation.RequestMethod;
+package io.xream.x7.base.web;
 
 /**
  * @author Sim
  */
-public interface RestTemplateWrapper {
+public class ResponseString {
 
-    void wrap(Object impl);
-    void headerInterceptor(ClientHeaderInterceptor interceptor);
-    ResponseString exchange(Class clz, String url, Object request, MultiValueMap headers, RequestMethod httpMethod);
+    private int status;
+    private String body;
+
+    public int getStatus() {
+        return status;
+    }
+
+    public void setStatus(int status) {
+        this.status = status;
+    }
+
+    public String getBody() {
+        return body;
+    }
+
+    public void setBody(String body) {
+        this.body = body;
+    }
 }

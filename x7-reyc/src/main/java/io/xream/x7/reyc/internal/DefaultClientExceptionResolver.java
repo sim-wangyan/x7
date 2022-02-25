@@ -17,14 +17,15 @@
 package io.xream.x7.reyc.internal;
 
 import io.github.resilience4j.circuitbreaker.CallNotPermittedException;
-import io.xream.x7.base.api.BackendService;
 import io.xream.x7.base.api.ReyHttpStatus;
-import io.xream.x7.base.exception.BusyException;
-import io.xream.x7.base.exception.RemoteBizException;
-import io.xream.x7.base.exception.ReyException;
+import io.xream.x7.base.exception.ReyBizException;
+import io.xream.x7.base.exception.ReyInternalException;
 import io.xream.x7.base.util.ExceptionUtil;
 import io.xream.x7.base.util.JsonX;
+import io.xream.x7.base.web.RemoteExceptionProto;
+import io.xream.x7.base.web.ResponseString;
 import io.xream.x7.reyc.api.ClientExceptionResolver;
+import io.xream.x7.reyc.api.FallbackHandler;
 import org.apache.commons.collections.MapUtils;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.HttpServerErrorException;
@@ -38,33 +39,40 @@ import java.util.Map;
  * @author Sim
  */
 public class DefaultClientExceptionResolver implements ClientExceptionResolver {
-    @Override
-    public boolean ignore222() {
-        return false;
+
+    private FallbackHandler fallbackHandler;
+
+    public void setFallbackHandler(FallbackHandler fallbackHandler) {
+        this.fallbackHandler = fallbackHandler;
     }
 
     @Override
-    public String handleException(Throwable e, BackendService backendService) {
+    public void convertNot200ToException(int status, String response) {
+        if (status == ReyHttpStatus.TO_CLIENT.getStatus()) {
+            RemoteExceptionProto proto = JsonX.toObject(response, RemoteExceptionProto.class);
+            throw proto.create(ReyHttpStatus.TO_CLIENT);
+        }
+    }
+
+    @Override
+    public ResponseString handleException(Throwable e) {
 
         if (e instanceof CallNotPermittedException) {
-            Object obj = backendService.fallback();
-            throw new BusyException(obj == null ? null : obj.toString());
+            throw ReyInternalException.create(ReyHttpStatus.TO_CLIENT, 0 ,e.getMessage(), ExceptionUtil.getMessage(e),null);
         }
 
         if (e instanceof ResourceAccessException){
-            backendService.fallback();
             ResourceAccessException rae = (ResourceAccessException)e;
             Throwable t = rae.getRootCause();
             String str = rae.getLocalizedMessage();
             String[] arr = str.split(";");
             final String message = arr[0];
             if (t instanceof ConnectException) {
-                throw ReyException.create(ReyHttpStatus.TO_CLIENT, -1 ,message, ExceptionUtil.getMessage(e),null);
+                throw ReyInternalException.create(ReyHttpStatus.TO_CLIENT, -1 ,message, ExceptionUtil.getMessage(e),null);
             }else if (t instanceof SocketTimeoutException) {
-                throw ReyException.create(ReyHttpStatus.TO_CLIENT, -2 ,message,ExceptionUtil.getMessage(e),null);
+                throw ReyInternalException.create(ReyHttpStatus.TO_CLIENT, -2 ,message,ExceptionUtil.getMessage(e),null);
             }
         }else if (e instanceof HttpClientErrorException){
-            backendService.fallback();
             HttpClientErrorException ee = (HttpClientErrorException)e;
             String str = ee.getLocalizedMessage();
             str = str.split(": ")[1].trim();
@@ -72,7 +80,7 @@ public class DefaultClientExceptionResolver implements ClientExceptionResolver {
             str = str.replace("]","");
             Map<String,Object> map = JsonX.toMap(str);
             String message = MapUtils.getString(map, "path");
-            throw ReyException.create(ReyHttpStatus.TO_CLIENT, ee.getStatusCode().value() ,message,ExceptionUtil.getMessage(e),null);
+            throw ReyInternalException.create(ReyHttpStatus.TO_CLIENT, ee.getStatusCode().value() ,message,ExceptionUtil.getMessage(e),null);
         }else if (e instanceof HttpServerErrorException) {
             HttpServerErrorException hse = (HttpServerErrorException)e;
             String str = hse.getLocalizedMessage();
@@ -87,13 +95,20 @@ public class DefaultClientExceptionResolver implements ClientExceptionResolver {
             if (stack == null) {
                 stack = ExceptionUtil.getMessage(e);
             }
-            throw ReyException.create(ReyHttpStatus.INTERNAL_SERVER_ERROR, hse.getStatusCode().value() ,
+            throw ReyInternalException.create(ReyHttpStatus.INTERNAL_SERVER_ERROR, hse.getStatusCode().value() ,
                     MapUtils.getString(map,"message"),
                     stack,
                     MapUtils.getString(map,"traceId")
             );
         }
 
-        throw new RemoteBizException(e);
+        throw new ReyBizException(e);
     }
+
+    @Override
+    public FallbackHandler fallbackHandler() {
+        return this.fallbackHandler;
+    }
+
+
 }

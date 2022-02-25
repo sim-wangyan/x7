@@ -16,13 +16,14 @@
  */
 package io.xream.x7.reyc.api;
 
-import io.xream.x7.base.api.BackendService;
+import io.xream.x7.base.web.ResponseString;
 
 /**
  * @author Sim
  */
 public interface ClientExceptionResolver {
 
-    boolean ignore222();
-    String handleException(Throwable e, BackendService backendService);
+    void convertNot200ToException(int status, String response);
+    ResponseString handleException(Throwable e);
+    FallbackHandler fallbackHandler();
 }

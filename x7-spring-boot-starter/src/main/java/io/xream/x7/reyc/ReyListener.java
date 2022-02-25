@@ -21,6 +21,7 @@ import io.github.resilience4j.retry.RetryRegistry;
 import io.opentracing.Tracer;
 import io.xream.x7.reyc.api.ClientExceptionResolver;
 import io.xream.x7.reyc.api.ClientHeaderInterceptor;
+import io.xream.x7.reyc.api.FallbackHandler;
 import io.xream.x7.reyc.api.ReyTemplate;
 import io.xream.x7.reyc.api.custom.ClientExceptionResolverCustomizer;
 import io.xream.x7.reyc.api.custom.RestTemplateCustomizer;
@@ -43,6 +44,7 @@ public class ReyListener implements
         wrap(event);
     }
 
+
     private ClientExceptionHandler clientExceptionHandler(ApplicationStartedEvent event){
         try{
             ClientExceptionHandler handler = event
@@ -51,8 +53,21 @@ public class ReyListener implements
 
             if (handler == null)
                 return null;
+            DefaultClientExceptionResolver defaultClientExceptionResolver = new DefaultClientExceptionResolver();
 
-            handler.setClientExceptionResolver(new DefaultClientExceptionResolver());
+            handler.setClientExceptionResolver(defaultClientExceptionResolver);
+
+            defaultClientExceptionResolver.setFallbackHandler(new DefaultFallbackHandler());
+
+            try{
+                FallbackHandler fallbackHandler = event.getApplicationContext()
+                        .getBean(FallbackHandler.class);
+                if (fallbackHandler != null) {
+                    defaultClientExceptionResolver.setFallbackHandler(fallbackHandler);
+                }
+            }catch (Exception e){
+
+            }
 
             return handler;
         }catch (Exception e) {

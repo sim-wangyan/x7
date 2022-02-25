@@ -19,16 +19,23 @@ package io.xream.x7.base.exception;
 import io.xream.x7.base.api.TaggedException;
 
 /**
+ * @author Sim
  * Created by Sim on 2018/6/22.
+ * catch it and handle if fallback return obj
  */
-public class RemoteBizException extends TaggedException {
+public class ReyBizException extends TaggedException {
 
-    public RemoteBizException(Throwable e){
+    public ReyBizException(Throwable e){
         super(e);
     }
 
-    public RemoteBizException(String message){
+    public ReyBizException(String message){
         super(message);
+    }
+
+    public ReyBizException(String message,Object tag){
+        super(message);
+        super.setTag(tag);
     }
 
     public String getType(){

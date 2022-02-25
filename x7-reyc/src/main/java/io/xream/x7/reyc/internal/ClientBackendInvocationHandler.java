@@ -19,6 +19,7 @@ package io.xream.x7.reyc.internal;
 import io.xream.x7.base.api.BackendService;
 import io.xream.x7.base.util.ExceptionUtil;
 import io.xream.x7.base.util.LoggerProxy;
+import io.xream.x7.base.web.ResponseString;
 
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
@@ -57,19 +58,22 @@ public class ClientBackendInvocationHandler implements InvocationHandler {
             ClientDecoration clientDecoration = clientBackendProxy.getClientDecoration();
 
             if (clientDecoration.getBackendName() == null) {
-                String result = getBackend().handle(r,clzz);
-                return clientBackend.toObject(r.getReturnType(),r.getGeneType(),result);
+                ResponseString result = getBackend().handle(r,clzz);
+                if (result == null)
+                    return null;
+                return clientBackend.toObject(r.getReturnType(),r.getGeneType(),result.getBody());
             }
 
-            String result = clientBackend.service(clientBackendProxy.getClientDecoration(), new BackendService<String>() {
+            String result = clientBackend.service(clientBackendProxy.getClientDecoration(), new BackendService<ResponseString>() {
                 @Override
-                public String handle() {
+                public ResponseString handle() {
                     return clientBackend.handle(r,clzz);
                 }
 
                 @Override
-                public String fallback() {
-                    return clientBackend.fallback(clzz.getName(),methodName,args);
+                public ResponseString fallback() {
+                    clientBackend.fallback(clzz.getName(),methodName,args);
+                    return null;
                 }
             });
 

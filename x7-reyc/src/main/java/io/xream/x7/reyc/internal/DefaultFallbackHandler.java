@@ -14,13 +14,16 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.xream.x7.base.exception;
+package io.xream.x7.reyc.internal;
 
-public class BusyException extends RuntimeException {
+import io.xream.x7.reyc.api.FallbackHandler;
 
-    public BusyException(String message) {
-        super(message);
+/**
+ * @author Sim
+ */
+public class DefaultFallbackHandler implements FallbackHandler {
+    @Override
+    public boolean isNotFallback(int status) {
+        return status < 400;
     }
-
 }
-

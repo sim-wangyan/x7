@@ -21,7 +21,7 @@ import io.xream.x7.base.api.ReyHttpStatus;
 /**
  * @author Sim
  */
-public abstract class ReyException extends RuntimeException {
+public abstract class ReyInternalException extends RuntimeException {
 
     private int status;
     private String traceId;
@@ -52,21 +52,21 @@ public abstract class ReyException extends RuntimeException {
         this.stack = stack;
     }
 
-    private ReyException(String message){
+    private ReyInternalException(String message){
         super(message);
     }
 
-    public static ReyException create(ReyHttpStatus reyHttpStatus, int status, String message,
-                                      String stack,
-                                      String traceId){
+    public static ReyInternalException create(ReyHttpStatus reyHttpStatus, int status, String message,
+                                              String stack,
+                                              String traceId){
         if (reyHttpStatus == ReyHttpStatus.INTERNAL_SERVER_ERROR){
-            return new ReyException.InternalServerError(status,message,stack,traceId);
+            return new ReyInternalException.InternalServerError(status,message,stack,traceId);
         }else {
             return new ToClient(status,message,stack,traceId);
         }
     }
 
-    public static final class InternalServerError extends ReyException {
+    public static final class InternalServerError extends ReyInternalException {
 
         private InternalServerError(int status,String message,String stack, String traceId) {
             super(message);
@@ -81,7 +81,7 @@ public abstract class ReyException extends RuntimeException {
 
     }
 
-    public static final class ToClient extends ReyException {
+    public static final class ToClient extends ReyInternalException {
 
         private ToClient(int status, String message,String stack, String traceId) {
             super(message);
