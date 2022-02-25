@@ -23,7 +23,7 @@ import io.xream.x7.reyc.api.FallbackHandler;
  */
 public class DefaultFallbackHandler implements FallbackHandler {
     @Override
-    public boolean isNotFallback(int status) {
+    public boolean isNotRequireFallback(int status) {
         return status < 400;
     }
 }

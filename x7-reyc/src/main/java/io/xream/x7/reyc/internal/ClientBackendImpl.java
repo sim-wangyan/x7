@@ -142,7 +142,7 @@ public class ClientBackendImpl implements ClientBackend {
             }catch (ReyInternalException rie) {
 
                 if (! this.clientExceptionHandler.resolver()
-                        .fallbackHandler().isNotFallback(rie.getStatus())) {
+                        .fallbackHandler().isNotRequireFallback(rie.getStatus())) {
                     Object fallback = backendService.fallback();
                     if (fallback != null) {
                         final String tag = "Backend(" + clientDecoration.getServiceName() + ")";
