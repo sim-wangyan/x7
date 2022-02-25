@@ -24,9 +24,9 @@ import io.github.resilience4j.retry.RetryConfig;
 import io.github.resilience4j.retry.RetryRegistry;
 import io.vavr.control.Try;
 import io.xream.x7.base.api.BackendService;
-import io.xream.x7.base.exception.ReyBizException;
+import io.xream.x7.base.exception.ReyInternalException;
+import io.xream.x7.base.exception.ReyRuntimeException;
 import io.xream.x7.base.util.StringUtil;
-import io.xream.x7.base.web.ResponseString;
 import io.xream.x7.reyc.api.ReyTemplate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -47,11 +47,6 @@ public class R4JTemplate implements ReyTemplate {
     private CircuitBreakerRegistry circuitBreakerRegistry;
     private RetryRegistry retryRegistry;
 
-    private ClientExceptionHandler clientExceptionHandler;
-
-    public R4JTemplate(ClientExceptionHandler clientExceptionHandler) {
-        this.clientExceptionHandler = clientExceptionHandler;
-    }
 
     public void wrap(CircuitBreakerRegistry circuitBreakerRegistry, RetryRegistry retryRegistry) {
         this.circuitBreakerRegistry = circuitBreakerRegistry;
@@ -59,13 +54,13 @@ public class R4JTemplate implements ReyTemplate {
     }
 
     @Override
-    public Object support(String config, boolean isRetry, BackendService<Object> backendService) {
+    public Object support(String config, boolean isRetry, BackendService<Object> backendService) throws ReyInternalException{
 
         return support(config, config, isRetry, backendService);
     }
 
     @Override
-    public Object support(String handlerName, String config, boolean isRetry, BackendService<Object> backendService) {
+    public Object support(String handlerName, String config, boolean isRetry, BackendService<Object> backendService) throws ReyInternalException{
 
         if (StringUtil.isNullOrEmpty(config)) {
             config = "";
@@ -98,41 +93,26 @@ public class R4JTemplate implements ReyTemplate {
         }
 
         final String tag = "Backend(" + handlerName + ")";
-
-        Object result = Try.ofSupplier(decoratedSupplier)
-                .recover(e -> {
-                        logger.error(tag + ": " + e.getMessage());
-                        return handleException(e); }
-                ).get();
-
-        if (result == null)
-            return null;
-        ResponseString response = (ResponseString) result;
-
-        if (! isNotFallback(response.getStatus())) {
-            Object obj = backendService.fallback();
-            if (obj != null) {
-                throw new ReyBizException(tag + " FALLBACK",obj);
-            }
+        try {
+            return Try.ofSupplier(decoratedSupplier)
+                    .recover(e -> {
+                                logger.error(tag + ": " + e.getMessage());
+                                return handleException(e);
+                            }
+                    ).get();
+        }catch (ReyRuntimeException re) {
+            throw new ReyInternalException(re.getCause()) {
+                @Override
+                public int httpStatus() {
+                    return 0;
+                }
+            };
         }
 
-        this.clientExceptionHandler.resolver().convertNot200ToException(
-                response.getStatus(),
-                response.getBody()
-        );
-
-        return response.getBody();
     }
 
-    private ResponseString handleException(Throwable e) {
-
-        return this.clientExceptionHandler.resolver().handleException(e);
+    private Object handleException(Throwable e) {
+        throw new ReyRuntimeException(e);
     }
-
-    private boolean isNotFallback(int status){
-        return this.clientExceptionHandler.resolver()
-                .fallbackHandler().isNotFallback(status);
-    }
-
 
 }

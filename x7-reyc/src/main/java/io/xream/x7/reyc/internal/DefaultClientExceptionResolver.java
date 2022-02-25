@@ -23,7 +23,6 @@ import io.xream.x7.base.exception.ReyInternalException;
 import io.xream.x7.base.util.ExceptionUtil;
 import io.xream.x7.base.util.JsonX;
 import io.xream.x7.base.web.RemoteExceptionProto;
-import io.xream.x7.base.web.ResponseString;
 import io.xream.x7.reyc.api.ClientExceptionResolver;
 import io.xream.x7.reyc.api.FallbackHandler;
 import org.apache.commons.collections.MapUtils;
@@ -47,7 +46,7 @@ public class DefaultClientExceptionResolver implements ClientExceptionResolver {
     }
 
     @Override
-    public void convertNot200ToException(int status, String response) {
+    public void convertNot200ToException(int status, String response) throws ReyInternalException{
         if (status == ReyHttpStatus.TO_CLIENT.getStatus()) {
             RemoteExceptionProto proto = JsonX.toObject(response, RemoteExceptionProto.class);
             throw proto.create(ReyHttpStatus.TO_CLIENT);
@@ -55,7 +54,7 @@ public class DefaultClientExceptionResolver implements ClientExceptionResolver {
     }
 
     @Override
-    public ResponseString handleException(Throwable e) {
+    public void handleException(Throwable e) throws ReyInternalException{
 
         if (e instanceof CallNotPermittedException) {
             throw ReyInternalException.create(ReyHttpStatus.TO_CLIENT, 0 ,e.getMessage(), ExceptionUtil.getMessage(e),null);
@@ -109,6 +108,5 @@ public class DefaultClientExceptionResolver implements ClientExceptionResolver {
     public FallbackHandler fallbackHandler() {
         return this.fallbackHandler;
     }
-
 
 }

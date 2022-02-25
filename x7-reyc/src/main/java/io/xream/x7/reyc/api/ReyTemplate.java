@@ -17,12 +17,13 @@
 package io.xream.x7.reyc.api;
 
 import io.xream.x7.base.api.BackendService;
+import io.xream.x7.base.exception.ReyInternalException;
 
 /**
  * @author Sim
  */
 public interface ReyTemplate {
 
-    Object support(String configName, boolean isRetry, BackendService<Object> service);
-    Object support(String handlerName, String configName, boolean isRetry, BackendService<Object> service);
+    Object support(String configName, boolean isRetry, BackendService<Object> service) throws ReyInternalException;
+    Object support(String handlerName, String configName, boolean isRetry, BackendService<Object> service) throws ReyInternalException;
 }

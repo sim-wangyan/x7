@@ -18,6 +18,8 @@ package io.xream.x7.reyc.internal;
 
 import io.xream.x7.base.api.BackendService;
 import io.xream.x7.base.api.GroupRouter;
+import io.xream.x7.base.exception.ReyBizException;
+import io.xream.x7.base.exception.ReyInternalException;
 import io.xream.x7.base.util.JsonX;
 import io.xream.x7.base.util.StringUtil;
 import io.xream.x7.base.web.ResponseString;
@@ -35,12 +37,25 @@ import java.util.regex.Pattern;
 public class ClientBackendImpl implements ClientBackend {
 
 
+    private ClientExceptionHandler clientExceptionHandler;
+
     private ReyTemplate reyTemplate;
 
-    private RestTemplateWrapper restTemplate;
+    private RestTemplateWrapper restTemplateWrapper;
+
+    public ClientBackendImpl(ClientExceptionHandler clientExceptionHandler, ReyTemplate reyTemplate, RestTemplateWrapper wrapper) {
+        this.clientExceptionHandler = clientExceptionHandler;
+        this.reyTemplate = reyTemplate;
+        this.restTemplateWrapper = wrapper;
+    }
+
+    @Override
+    public void setClientExceptionHandler(ClientExceptionHandler clientExceptionHandler) {
+        this.clientExceptionHandler = clientExceptionHandler;
+    }
 
     public void setRestTemplateWrapper(RestTemplateWrapper restTemplate) {
-        this.restTemplate = restTemplate;
+        this.restTemplateWrapper = restTemplate;
     }
 
     public void setReyTemplate( ReyTemplate reyTemplate) {
@@ -74,13 +89,13 @@ public class ClientBackendImpl implements ClientBackend {
             for (int i = 0; i < size; i++) {
                 url = url.replace(regExList.get(i), args[i].toString());
             }
-            result = restTemplate.exchange(clz,url,null,headers,requestMethod);
+            result = restTemplateWrapper.exchange(clz,url,null,headers,requestMethod);
 
         } else {
             if (args != null && args.length > 0) {
-                result = restTemplate.exchange(clz,url,args[0],headers,requestMethod);
+                result = restTemplateWrapper.exchange(clz,url,args[0],headers,requestMethod);
             } else {
-                result = restTemplate.exchange(clz,url,null,headers,requestMethod);
+                result = restTemplateWrapper.exchange(clz,url,null,headers,requestMethod);
             }
         }
 
@@ -104,43 +119,71 @@ public class ClientBackendImpl implements ClientBackend {
             return JsonX.toList(result,geneType);
         }
 
-        Object obj = JsonX.toObject(result, returnType);
-
-        return obj;
+        return JsonX.toObject(result, returnType);
     }
 
     @Override
-    public String service(ClientDecoration clientDecoration, BackendService<Object> backendService) {
+    public String service(ClientDecoration clientDecoration, BackendService<Object> backendService) throws ReyInternalException {
 
-        if (reyTemplate == null)
-            return null;
-        Object result = reyTemplate.support(
-                clientDecoration.getServiceName(),
-                clientDecoration.getBackendName(),clientDecoration.isRetry(),
-                backendService
-        );
+        Object result = null;
+        try {
+            if (reyTemplate == null) {
+                result = backendService.handle();
+            } else {
+                result = reyTemplate.support(
+                        clientDecoration.getServiceName(),
+                        clientDecoration.getBackendName(), clientDecoration.isRetry(),
+                        backendService
+                );
+            }
+        }catch (ReyInternalException e) {
+            try {
+                this.clientExceptionHandler.resolver().handleException(e.getCause());
+            }catch (ReyInternalException rie) {
+
+                if (! this.clientExceptionHandler.resolver()
+                        .fallbackHandler().isNotFallback(rie.getStatus())) {
+                    Object fallback = backendService.fallback();
+                    if (fallback != null) {
+                        final String tag = "Backend(" + clientDecoration.getServiceName() + ")";
+                        throw new ReyBizException(tag + " FALLBACK", fallback);
+                    }
+                }
+
+                throw rie;
+            }
+        }catch (Exception e) {
+            throw e;
+        }
 
         if (result == null)
             return null;
-        return (String) result;
+
+        ResponseString responseString = (ResponseString) result;
+        final int status = responseString.getStatus();
+        final String body = responseString.getBody();
+
+        this.clientExceptionHandler.resolver().convertNot200ToException(status,body);
+
+        return body;
     }
 
     @Override
-    public void fallback(String intfName, String methodName, Object[] args) {
+    public Object fallback(String intfName, String methodName, Object[] args) {
 
         ClientParsed parsed = ClientParser.get(intfName);
         if (parsed.getFallback() == null)
-            return;
+            return null;
         Method method = parsed.getFallbackMethodMap().get(methodName);
 
         if (method == null)
-            return;
+            return null;
         try {
             if (method.getReturnType() == void.class) {
                 method.invoke(parsed.getFallback(), args);
-                return;
+                return null;
             }
-            method.invoke(parsed.getFallback(), args);
+            return method.invoke(parsed.getFallback(), args);
         } catch (Exception e) {
             e.printStackTrace();
             throw new RuntimeException("Exception of fallback: " + intfName + "." + methodName);

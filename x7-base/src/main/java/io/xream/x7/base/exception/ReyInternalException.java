@@ -21,7 +21,7 @@ import io.xream.x7.base.api.ReyHttpStatus;
 /**
  * @author Sim
  */
-public abstract class ReyInternalException extends RuntimeException {
+public abstract class ReyInternalException extends Exception {
 
     private int status;
     private String traceId;
@@ -50,6 +50,11 @@ public abstract class ReyInternalException extends RuntimeException {
 
     public void setStack(String stack) {
         this.stack = stack;
+    }
+
+
+    public ReyInternalException(Throwable e) {
+        super(e);
     }
 
     private ReyInternalException(String message){

@@ -16,14 +16,14 @@
  */
 package io.xream.x7.reyc.api;
 
-import io.xream.x7.base.web.ResponseString;
+import io.xream.x7.base.exception.ReyInternalException;
 
 /**
  * @author Sim
  */
 public interface ClientExceptionResolver {
 
-    void convertNot200ToException(int status, String response);
-    ResponseString handleException(Throwable e);
+    void convertNot200ToException(int status, String response) throws ReyInternalException;
+    void handleException(Throwable e) throws ReyInternalException;
     FallbackHandler fallbackHandler();
 }

@@ -72,8 +72,7 @@ public class ClientBackendInvocationHandler implements InvocationHandler {
 
                 @Override
                 public Object fallback() {
-                    clientBackend.fallback(clzz.getName(),methodName,args);
-                    return null;
+                    return clientBackend.fallback(clzz.getName(),methodName,args);
                 }
             });
 

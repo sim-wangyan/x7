@@ -27,7 +27,6 @@ public class DefaultExceptionHandler {
             NullPointerException.class,
             IllegalArgumentException.class,
             BizException.class,
-            ReyBizException.class,
             RuntimeException.class
     })
     @ResponseBody
@@ -46,6 +45,8 @@ public class DefaultExceptionHandler {
         String message = null;
         if (e instanceof NullPointerException){
             message = stack;
+        }else if (e instanceof ReyBizException){
+            throw e;
         }else {
             message = e.getMessage();
         }

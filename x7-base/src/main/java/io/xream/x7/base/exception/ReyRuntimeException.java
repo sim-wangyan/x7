@@ -14,24 +14,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.xream.x7.reyc.internal;
-
-import io.xream.x7.base.api.BackendService;
-import io.xream.x7.base.exception.ReyInternalException;
-import io.xream.x7.base.web.ResponseString;
+package io.xream.x7.base.exception;
 
 /**
- * @author Sim
+ * @Author Sim
  */
-public interface ClientBackend {
+public class ReyRuntimeException extends RuntimeException{
 
-    void setClientExceptionHandler(ClientExceptionHandler clientExceptionHandler);
-
-    Object toObject(Class<?> returnType, Class<?> geneType, String result);
-
-    String service(ClientDecoration clientDecoration, BackendService<Object> backendService) throws ReyInternalException;
-
-    ResponseString handle(R r, Class clz);
-
-    Object fallback(String intfName, String methodName, Object[] args);
+    public ReyRuntimeException(Throwable e){
+        super(e);
+    }
 }
