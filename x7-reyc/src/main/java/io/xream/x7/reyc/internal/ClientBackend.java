@@ -26,7 +26,7 @@ public interface ClientBackend {
 
     Object toObject(Class<?> returnType, Class<?> geneType, String result);
 
-    String service(ClientDecoration clientDecoration, BackendService<ResponseString> backendService);
+    String service(ClientDecoration clientDecoration, BackendService<Object> backendService);
 
     ResponseString handle(R r, Class clz);
 

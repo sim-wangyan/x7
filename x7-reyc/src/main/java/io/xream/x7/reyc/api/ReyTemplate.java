@@ -17,13 +17,12 @@
 package io.xream.x7.reyc.api;
 
 import io.xream.x7.base.api.BackendService;
-import io.xream.x7.base.web.ResponseString;
 
 /**
  * @author Sim
  */
 public interface ReyTemplate {
 
-    String support(String configName, boolean isRetry, BackendService<ResponseString> service);
-    String support(String handlerName, String configName, boolean isRetry, BackendService<ResponseString> service);
+    Object support(String configName, boolean isRetry, BackendService<Object> service);
+    Object support(String handlerName, String configName, boolean isRetry, BackendService<Object> service);
 }

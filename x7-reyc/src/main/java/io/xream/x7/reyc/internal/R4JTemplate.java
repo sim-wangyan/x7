@@ -59,13 +59,13 @@ public class R4JTemplate implements ReyTemplate {
     }
 
     @Override
-    public String support(String config, boolean isRetry, BackendService<ResponseString> backendService) {
+    public Object support(String config, boolean isRetry, BackendService<Object> backendService) {
 
         return support(config, config, isRetry, backendService);
     }
 
     @Override
-    public String support(String handlerName, String config, boolean isRetry, BackendService<ResponseString> backendService) {
+    public Object support(String handlerName, String config, boolean isRetry, BackendService<Object> backendService) {
 
         if (StringUtil.isNullOrEmpty(config)) {
             config = "";
@@ -76,7 +76,7 @@ public class R4JTemplate implements ReyTemplate {
         CircuitBreakerConfig circuitBreakerConfig = circuitBreakerRegistry.getConfiguration(configName).orElse(circuitBreakerRegistry.getDefaultConfig());
 
         CircuitBreaker circuitBreaker = circuitBreakerRegistry.circuitBreaker(handlerName, circuitBreakerConfig);
-        Supplier<ResponseString> decoratedSupplier = CircuitBreaker
+        Supplier<Object> decoratedSupplier = CircuitBreaker
                 .decorateSupplier(circuitBreaker, backendService::handle);
 
         if (isRetry) {
@@ -99,11 +99,15 @@ public class R4JTemplate implements ReyTemplate {
 
         final String tag = "Backend(" + handlerName + ")";
 
-        ResponseString response = Try.ofSupplier(decoratedSupplier)
+        Object result = Try.ofSupplier(decoratedSupplier)
                 .recover(e -> {
                         logger.error(tag + ": " + e.getMessage());
                         return handleException(e); }
                 ).get();
+
+        if (result == null)
+            return null;
+        ResponseString response = (ResponseString) result;
 
         if (! isNotFallback(response.getStatus())) {
             Object obj = backendService.fallback();

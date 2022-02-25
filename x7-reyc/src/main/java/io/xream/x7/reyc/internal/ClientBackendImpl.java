@@ -110,17 +110,19 @@ public class ClientBackendImpl implements ClientBackend {
     }
 
     @Override
-    public String service(ClientDecoration clientDecoration, BackendService<ResponseString> backendService) {
+    public String service(ClientDecoration clientDecoration, BackendService<Object> backendService) {
 
         if (reyTemplate == null)
             return null;
-        String result = reyTemplate.support(
+        Object result = reyTemplate.support(
                 clientDecoration.getServiceName(),
                 clientDecoration.getBackendName(),clientDecoration.isRetry(),
                 backendService
         );
 
-        return result;
+        if (result == null)
+            return null;
+        return (String) result;
     }
 
     @Override

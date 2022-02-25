@@ -64,14 +64,14 @@ public class ClientBackendInvocationHandler implements InvocationHandler {
                 return clientBackend.toObject(r.getReturnType(),r.getGeneType(),result.getBody());
             }
 
-            String result = clientBackend.service(clientBackendProxy.getClientDecoration(), new BackendService<ResponseString>() {
+            String result = clientBackend.service(clientBackendProxy.getClientDecoration(), new BackendService<Object>() {
                 @Override
-                public ResponseString handle() {
+                public Object handle() {
                     return clientBackend.handle(r,clzz);
                 }
 
                 @Override
-                public ResponseString fallback() {
+                public Object fallback() {
                     clientBackend.fallback(clzz.getName(),methodName,args);
                     return null;
                 }
