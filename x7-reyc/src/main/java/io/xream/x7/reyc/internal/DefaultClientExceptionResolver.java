@@ -56,8 +56,8 @@ public class DefaultClientExceptionResolver implements ClientExceptionResolver {
     @Override
     public void handleException(Throwable e) throws ReyInternalException{
 
-        if (e instanceof CallNotPermittedException) {
-            throw ReyInternalException.create(ReyHttpStatus.TO_CLIENT, 0 ,e.getMessage(), ExceptionUtil.getMessage(e),null);
+        if (e instanceof CallNotPermittedException) {//503
+            throw ReyInternalException.create(ReyHttpStatus.TO_CLIENT, 503 ,e.getMessage(), ExceptionUtil.getMessage(e),null);
         }
 
         if (e instanceof ResourceAccessException){
