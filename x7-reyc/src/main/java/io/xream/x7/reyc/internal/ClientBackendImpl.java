@@ -43,8 +43,7 @@ public class ClientBackendImpl implements ClientBackend {
 
     private RestTemplateWrapper restTemplateWrapper;
 
-    public ClientBackendImpl(ClientExceptionHandler clientExceptionHandler, ReyTemplate reyTemplate, RestTemplateWrapper wrapper) {
-        this.clientExceptionHandler = clientExceptionHandler;
+    public ClientBackendImpl(ReyTemplate reyTemplate, RestTemplateWrapper wrapper) {
         this.reyTemplate = reyTemplate;
         this.restTemplateWrapper = wrapper;
     }

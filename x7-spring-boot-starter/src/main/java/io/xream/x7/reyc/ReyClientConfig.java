@@ -32,7 +32,8 @@ public class ReyClientConfig  {
     @Bean
     public ClientBackend clientBackend(ClientExceptionHandler clientExceptionHandler, ReyTemplate reyTemplate, RestTemplateWrapper wrapper)  {
 
-        ClientBackendImpl clientBackend = new ClientBackendImpl(clientExceptionHandler,reyTemplate,wrapper);
+        ClientBackendImpl clientBackend = new ClientBackendImpl(reyTemplate,wrapper);
+        clientBackend.setClientExceptionHandler(clientExceptionHandler);
         return clientBackend;
     }
 
