@@ -43,8 +43,7 @@ public class ClientBackendImpl implements ClientBackend {
 
     private RestTemplateWrapper restTemplateWrapper;
 
-    public ClientBackendImpl(ReyTemplate reyTemplate, RestTemplateWrapper wrapper) {
-        this.reyTemplate = reyTemplate;
+    public ClientBackendImpl(RestTemplateWrapper wrapper) {
         this.restTemplateWrapper = wrapper;
     }
 
@@ -127,7 +126,16 @@ public class ClientBackendImpl implements ClientBackend {
         Object result = null;
         try {
             if (reyTemplate == null) {
-                result = backendService.handle();
+                try {
+                    result = backendService.handle();
+                }catch (Exception e) {
+                    throw new ReyInternalException(e) {
+                        @Override
+                        public int httpStatus() {
+                            return 0;
+                        }
+                    };
+                }
             } else {
                 result = reyTemplate.support(
                         clientDecoration.getServiceName(),

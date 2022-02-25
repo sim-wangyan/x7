@@ -16,7 +16,6 @@
  */
 package io.xream.x7.reyc;
 
-import io.xream.x7.reyc.api.ReyTemplate;
 import io.xream.x7.reyc.internal.*;
 import org.springframework.context.annotation.Bean;
 
@@ -30,9 +29,9 @@ public class ReyClientConfig  {
         return new DefaultRestTemplateWrapper();
     }
     @Bean
-    public ClientBackend clientBackend(ClientExceptionHandler clientExceptionHandler, ReyTemplate reyTemplate, RestTemplateWrapper wrapper)  {
+    public ClientBackend clientBackend(ClientExceptionHandler clientExceptionHandler, RestTemplateWrapper wrapper)  {
 
-        ClientBackendImpl clientBackend = new ClientBackendImpl(reyTemplate,wrapper);
+        ClientBackendImpl clientBackend = new ClientBackendImpl(wrapper);
         clientBackend.setClientExceptionHandler(clientExceptionHandler);
         return clientBackend;
     }

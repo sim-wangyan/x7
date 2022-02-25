@@ -16,7 +16,10 @@
  */
 package io.xream.x7;
 
-import io.xream.x7.reyc.*;
+import io.xream.x7.reyc.DefaultExceptionHandler;
+import io.xream.x7.reyc.RemoteExceptionHandler;
+import io.xream.x7.reyc.RestTemplateConfig;
+import io.xream.x7.reyc.ReyClientConfig;
 import io.xream.x7.reyc.internal.ClientExceptionHandler;
 import org.springframework.context.annotation.Import;
 
@@ -28,7 +31,6 @@ import java.lang.annotation.*;
 @Import({
         ClientExceptionHandler.class,
         RestTemplateConfig.class,
-        ReyTemplateConfig.class,
         ReyClientConfig.class,
         ReyClientBeanRegistrar.class,
         RemoteExceptionHandler.class,

@@ -140,6 +140,11 @@ public class ReyListener implements
             ReyTemplate reyTemplate = event.getApplicationContext().getBean(ReyTemplate.class);
             R4JTemplate r4jTemplate = (R4JTemplate) reyTemplate;
             r4jTemplate.wrap(circuitBreakerRegistry,retryRegistry);
+
+            ClientBackend clientBackend = event.getApplicationContext().getBean(ClientBackend.class);
+            ClientBackendImpl impl = (ClientBackendImpl) clientBackend;
+            impl.setReyTemplate(reyTemplate);
+
         }catch (Exception e) {
             throw new RuntimeException(e);
         }
