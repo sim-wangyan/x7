@@ -16,18 +16,36 @@
  */
 package io.xream.x7.reyc.internal;
 
-import io.xream.x7.base.web.ResponseString;
-
 /**
  * @author Sim
  */
-public interface ClientBackend extends ReyClient{
+public class BackendDecoration {
 
-    void setClientExceptionHandler(ClientExceptionHandler clientExceptionHandler);
+    private String serviceName;
+    private String configName;
+    private boolean retry;
 
-    Object toObject(Class<?> returnType, Class<?> geneType, String result);
+    public String getServiceName() {
+        return serviceName;
+    }
 
-    ResponseString handle(R r, Class clz);
+    public void setServiceName(String serviceName) {
+        this.serviceName = serviceName;
+    }
 
-    Object fallback(String intfName, String methodName, Object[] args);
+    public String getConfigName() {
+        return configName;
+    }
+
+    public void setConfigName(String configName) {
+        this.configName = configName;
+    }
+
+    public boolean isRetry() {
+        return retry;
+    }
+
+    public void setRetry(boolean retry) {
+        this.retry = retry;
+    }
 }

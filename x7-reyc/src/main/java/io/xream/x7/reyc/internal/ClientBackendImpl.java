@@ -121,11 +121,11 @@ public class ClientBackendImpl implements ClientBackend {
     }
 
     @Override
-    public String service(boolean isReyTemplateNotRequired, ClientDecoration clientDecoration, BackendService<Object> backendService) throws ReyInternalException {
+    public String service(BackendDecoration backendDecoration, BackendService<Object> backendService) throws ReyInternalException {
 
         Object result = null;
         try {
-            if (isReyTemplateNotRequired || reyTemplate == null) {
+            if (backendDecoration == null || reyTemplate == null) {
                 try {
                     result = backendService.handle();
                 }catch (Exception e) {
@@ -138,8 +138,8 @@ public class ClientBackendImpl implements ClientBackend {
                 }
             } else {
                 result = reyTemplate.support(
-                        clientDecoration.getServiceName(),
-                        clientDecoration.getBackendName(), clientDecoration.isRetry(),
+                        backendDecoration.getServiceName(),
+                        backendDecoration.getConfigName(), backendDecoration.isRetry(),
                         backendService
                 );
             }
@@ -152,7 +152,7 @@ public class ClientBackendImpl implements ClientBackend {
                         .fallbackHandler().isNotRequireFallback(rie.getStatus())) {
                     Object fallback = backendService.fallback();
                     if (fallback != null) {
-                        final String tag = "Backend(" + clientDecoration.getServiceName() + ")";
+                        final String tag = "Backend(" + backendDecoration.getServiceName() + ")";
                         throw new ReyBizException(tag + " FALLBACK", fallback);
                     }
                 }

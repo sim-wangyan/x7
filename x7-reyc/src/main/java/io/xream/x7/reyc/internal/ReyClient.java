@@ -16,36 +16,13 @@
  */
 package io.xream.x7.reyc.internal;
 
+import io.xream.x7.base.api.BackendService;
+import io.xream.x7.base.exception.ReyInternalException;
+
 /**
  * @author Sim
  */
-public class ClientDecoration {
+public interface ReyClient {
 
-    private String serviceName;
-    private String backendName;
-    private boolean retry;
-
-    public String getServiceName() {
-        return serviceName;
-    }
-
-    public void setServiceName(String serviceName) {
-        this.serviceName = serviceName;
-    }
-
-    public String getBackendName() {
-        return backendName;
-    }
-
-    public void setBackendName(String backendName) {
-        this.backendName = backendName;
-    }
-
-    public boolean isRetry() {
-        return retry;
-    }
-
-    public void setRetry(boolean retry) {
-        this.retry = retry;
-    }
+    String service(BackendDecoration backendDecoration, BackendService<Object> backendService) throws ReyInternalException;
 }

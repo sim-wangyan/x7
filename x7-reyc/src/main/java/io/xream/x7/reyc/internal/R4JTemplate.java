@@ -54,36 +54,36 @@ public class R4JTemplate implements ReyTemplate {
     }
 
     @Override
-    public Object support(String config, boolean isRetry, BackendService<Object> backendService) throws ReyInternalException{
+    public Object support(String configName, boolean isRetry, BackendService<Object> backendService) throws ReyInternalException{
 
-        return support(config, config, isRetry, backendService);
+        return support(configName, configName, isRetry, backendService);
     }
 
     @Override
-    public Object support(String handlerName, String config, boolean isRetry, BackendService<Object> backendService) throws ReyInternalException{
+    public Object support(String serviceName, String backendName, boolean isRetry, BackendService<Object> backendService) throws ReyInternalException{
 
-        if (StringUtil.isNullOrEmpty(config)) {
-            config = "";
+        if (StringUtil.isNullOrEmpty(backendName)) {
+            backendName = "";
         }
 
-        final String configName = config.equals("") ? "default" : config;
+        final String configName = backendName.equals("") ? "default" : backendName;
 
         CircuitBreakerConfig circuitBreakerConfig = circuitBreakerRegistry.getConfiguration(configName).orElse(circuitBreakerRegistry.getDefaultConfig());
 
-        CircuitBreaker circuitBreaker = circuitBreakerRegistry.circuitBreaker(handlerName, circuitBreakerConfig);
+        CircuitBreaker circuitBreaker = circuitBreakerRegistry.circuitBreaker(serviceName, circuitBreakerConfig);
         Supplier<Object> decoratedSupplier = CircuitBreaker
                 .decorateSupplier(circuitBreaker, backendService::handle);
 
         if (isRetry) {
             RetryConfig retryConfig = retryRegistry.getConfiguration(configName).orElse(retryRegistry.getDefaultConfig());
-            Retry retry = retryRegistry.retry(handlerName, retryConfig);
+            Retry retry = retryRegistry.retry(serviceName, retryConfig);
             if (retry != null) {
 
                 retry.getEventPublisher()
                         .onRetry(event -> {
                             if (logger.isDebugEnabled()) {
                                 logger.debug(event.getEventType().toString() + "_" + event.getNumberOfRetryAttempts() + ": backend("
-                                        + handlerName + ")");
+                                        + serviceName + ")");
                             }
                         });
 
@@ -92,7 +92,7 @@ public class R4JTemplate implements ReyTemplate {
             }
         }
 
-        final String tag = "Backend(" + handlerName + ")";
+        final String tag = "Backend(" + serviceName + ")";
         try {
             return Try.ofSupplier(decoratedSupplier)
                     .recover(e -> {

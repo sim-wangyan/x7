@@ -55,16 +55,18 @@ public class ClientBackendInvocationHandler implements InvocationHandler {
 
             R r = R.build(clzz.getName(),methodName,args);
 
-            ClientDecoration clientDecoration = clientBackendProxy.getClientDecoration();
+            BackendDecoration backendDecoration = clientBackendProxy.getBackendDecoration();
 
-            if (clientDecoration.getBackendName() == null) {
+            if (backendDecoration.getConfigName() == null) {
                 ResponseString result = getBackend().handle(r,clzz);
                 if (result == null)
                     return null;
                 return clientBackend.toObject(r.getReturnType(),r.getGeneType(),result.getBody());
             }
 
-            String result = clientBackend.service(clientBackendProxy.isReyTemplateNotRequired(),clientBackendProxy.getClientDecoration(), new BackendService<Object>() {
+            BackendDecoration cd = clientBackendProxy.isReyTemplateNotRequired() ? null : clientBackendProxy.getBackendDecoration();
+
+            String result = clientBackend.service(cd, new BackendService<Object>() {
                 @Override
                 public Object handle() {
                     return clientBackend.handle(r,clzz);

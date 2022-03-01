@@ -29,7 +29,7 @@ public class ClientBackendProxy implements FactoryBean {
 
     private Class<?> objectType;
 
-    private ClientDecoration clientDecoration;
+    private BackendDecoration backendDecoration;
     private ClientBackend clientBackend;
     private boolean reyTemplateNotRequired;
 
@@ -54,12 +54,12 @@ public class ClientBackendProxy implements FactoryBean {
         return true;
     }
 
-    public ClientDecoration getClientDecoration() {
-        return clientDecoration;
+    public BackendDecoration getBackendDecoration() {
+        return backendDecoration;
     }
 
-    public void setClientDecoration(ClientDecoration clientDecoration) {
-        this.clientDecoration = clientDecoration;
+    public void setBackendDecoration(BackendDecoration backendDecoration) {
+        this.backendDecoration = backendDecoration;
     }
 
     public ClientBackend getClientBackend() {
