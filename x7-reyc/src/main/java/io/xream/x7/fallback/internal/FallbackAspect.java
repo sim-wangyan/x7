@@ -14,10 +14,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.xream.x7.fallback.inner;
+package io.xream.x7.fallback.internal;
 
 import io.xream.x7.base.util.ExceptionUtil;
-import io.xream.x7.fallback.FallbackOnly;
+import io.xream.x7.fallback.Fallback;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.Signature;
 import org.aspectj.lang.annotation.Around;
@@ -32,23 +32,23 @@ import org.slf4j.LoggerFactory;
  * @author Sim
  */
 @Aspect
-public class FallbackOnlyAspect {
+public class FallbackAspect {
 
 
-    private final static Logger logger = LoggerFactory.getLogger(FallbackOnly.class);
+    private final static Logger logger = LoggerFactory.getLogger(Fallback.class);
 
-    public FallbackOnlyAspect() {
-        logger.info("FallbackOnly Enabled");
+    public FallbackAspect() {
+        logger.info("Fallback Enabled");
     }
 
 
-    @Pointcut("@annotation(io.xream.x7.fallback.FallbackOnly))")
+    @Pointcut("@annotation(io.xream.x7.fallback.Fallback))")
     public void cut() {
 
     }
 
-    @Around("cut() && @annotation(fallbackOnly) ")
-    public Object around(ProceedingJoinPoint proceedingJoinPoint, FallbackOnly fallbackOnly) {
+    @Around("cut() && @annotation(fallback) ")
+    public Object around(ProceedingJoinPoint proceedingJoinPoint, Fallback fallback) {
 
         long startTime = System.currentTimeMillis();
 
@@ -58,9 +58,9 @@ public class FallbackOnlyAspect {
         String logStr = signature.getDeclaringTypeName() + "." + signature.getName();
 
         if (args == null || args.length == 0)
-            throw new IllegalArgumentException(logStr + ", @fallbackOnly not support no args' method");
+            throw new IllegalArgumentException(logStr + ", @Fallback not support no args' method");
 
-        Class<? extends Throwable>[] clzzArr = fallbackOnly.exceptions();
+        Class<? extends Throwable>[] clzzArr = fallback.exceptions();
 
         try {
             MethodSignature ms = ((MethodSignature) signature);
@@ -74,7 +74,7 @@ public class FallbackOnlyAspect {
 
             for (Class<? extends Throwable> clzz : clzzArr) {
                 if (e.getClass() == clzz || e.getClass().isAssignableFrom(clzz)) {
-                    Class fallbackClzz = fallbackOnly.fallback();
+                    Class fallbackClzz = fallback.fallback();
                     if (fallbackClzz == void.class)
                         break;
                     try {

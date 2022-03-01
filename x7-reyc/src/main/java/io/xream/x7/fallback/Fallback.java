@@ -24,7 +24,7 @@ import java.lang.annotation.*;
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.METHOD)
 @Documented
-public @interface FallbackOnly {
+public @interface Fallback {
 
     Class<? extends Throwable>[] exceptions() default {Exception.class};
     Class<?> fallback() default void.class;

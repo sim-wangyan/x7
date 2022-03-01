@@ -3,7 +3,7 @@ package x7.demo.service;
 import io.xream.sqli.builder.Criteria;
 import io.xream.sqli.builder.RefreshCondition;
 import io.xream.sqli.core.RowHandler;
-import io.xream.x7.fallback.FallbackOnly;
+import io.xream.x7.fallback.Fallback;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import x7.demo.entity.Cat;
@@ -19,7 +19,7 @@ public class CatServiceImpl implements CatService{
     private CatRepository catRepository;
 
     @Override
-    @FallbackOnly(exceptions = {RuntimeException.class}, fallback = CatServiceFallback.class)
+    @Fallback(exceptions = {RuntimeException.class}, fallback = CatServiceFallback.class)
     public boolean refresh(RefreshCondition<Cat> refreshCondition) {
         if (true){
             throw new RuntimeException("test fall back");

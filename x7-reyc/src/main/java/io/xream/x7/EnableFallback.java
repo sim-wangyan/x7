@@ -16,14 +16,17 @@
  */
 package io.xream.x7;
 
-import io.xream.x7.sqli.repository.config.datasource.DataSourceAspect;
+import io.xream.x7.fallback.internal.FallbackAspect;
 import org.springframework.context.annotation.Import;
 
 import java.lang.annotation.*;
 
+/**
+ * @author Sim
+ */
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.TYPE)
 @Documented
-@Import({DataSourceAspect.class})
-public @interface EnableReadOnly {
+@Import({FallbackAspect.class})
+public @interface EnableFallback {
 }
