@@ -26,7 +26,7 @@ import java.lang.annotation.*;
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.TYPE)
 @Documented
-@Import({ReyFallbackBeanRegistrar.class})
+//@Import({ReyFallbackBeanRegistrar.class})
 public @interface EnableFallback {
     String[] basePackages() default {};
 }
