@@ -20,8 +20,6 @@ import io.xream.x7.base.api.TaggedException;
 
 /**
  * @author Sim
- * Created by Sim on 2018/6/22.
- * catch it and handle if fallback return obj
  */
 public class ReyBizException extends TaggedException {
 
@@ -33,13 +31,13 @@ public class ReyBizException extends TaggedException {
         super(message);
     }
 
-    public ReyBizException(String message,Object tag){
+    public ReyBizException(String message, Object tag){
         super(message);
         super.setTag(tag);
     }
 
     public String getType(){
-        return "BIZ_REMOTE";
+        return "REMOTE_BIZ";
     }
 
 }

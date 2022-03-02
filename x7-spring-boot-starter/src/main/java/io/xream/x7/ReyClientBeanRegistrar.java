@@ -19,10 +19,10 @@ package io.xream.x7;
 
 import io.xream.x7.annotation.ReyClient;
 import io.xream.x7.base.util.ClassFileReader;
+import io.xream.x7.reyc.internal.BackendDecoration;
 import io.xream.x7.reyc.internal.ClientBackend;
 import io.xream.x7.reyc.internal.ClientBackendProxy;
-import io.xream.x7.reyc.internal.BackendDecoration;
-import io.xream.x7.reyc.internal.ClientParser;
+import io.xream.x7.reyc.internal.ReyParser;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.BeanFactory;
 import org.springframework.beans.factory.BeanFactoryAware;
@@ -56,8 +56,8 @@ public class ReyClientBeanRegistrar implements EnvironmentAware,ImportBeanDefini
 
         Object obj = attributes.get("basePackages");
         if (obj != null){
-            String[] strs = (String[]) obj;
-            for (String str : strs){
+            String[] strArr = (String[]) obj;
+            for (String str : strArr){
                 Set<Class<?>> set1 = ClassFileReader.getClasses(str);
                 set.addAll(set1);
             }
@@ -69,7 +69,9 @@ public class ReyClientBeanRegistrar implements EnvironmentAware,ImportBeanDefini
             if (annotation == null)
                 continue;
 
-            ClientParser.parse(clz,environment);
+            ReyParser.parse(clz,
+                    urlPattern -> environment.resolvePlaceholders(urlPattern),
+                    fallback -> beanFactory.getBean(fallback));
 
             String beanName = clz.getName();
 
@@ -93,7 +95,7 @@ public class ReyClientBeanRegistrar implements EnvironmentAware,ImportBeanDefini
                 BeanDefinitionBuilder builder = BeanDefinitionBuilder.genericBeanDefinition(clz);
                 GenericBeanDefinition definition = (GenericBeanDefinition) builder.getRawBeanDefinition();
                 definition.getPropertyValues().add("objectType", clz);
-                definition.getPropertyValues().add("clientDecoration", backendDecoration);
+                definition.getPropertyValues().add("backendDecoration", backendDecoration);
                 definition.getPropertyValues().add("clientBackend",clientBackend);
                 definition.getPropertyValues().add("reyTemplateNotRequired", isReyTemplateNotRequired);
                 definition.setBeanClass(ClientBackendProxy.class);

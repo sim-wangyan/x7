@@ -18,9 +18,9 @@ package io.xream.x7.reyc.internal;
 
 import io.xream.x7.annotation.ReyClient;
 import io.xream.x7.base.api.GroupRouter;
+import io.xream.x7.fallback.internal.FallbackParser;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.core.env.Environment;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -37,18 +37,20 @@ import java.util.Map;
 /**
  * @author Sim
  */
-public class ClientParser {
+public class ReyParser {
 
-    private static Logger logger = LoggerFactory.getLogger(ClientParser.class);
+    private static Logger logger = LoggerFactory.getLogger(ReyParser.class);
 
-    private final static Map<String, ClientParsed> map = new HashMap<>();
+    private final static Map<String, ReyParsed> map = new HashMap<>();
 
-    public static ClientParsed get(String intfName) {
+    public static ReyParsed get(String intfName) {
 
         return map.get(intfName);
     }
 
-    public static void parse(Class<?> clz, Environment environment) {
+    public static void parse(Class<?> clz,
+                             UrlConfigurable urlConfigurable,
+                             FallbackParser.FallbackInstance fallbackInstance) {
 
         Annotation reyClientAnno = clz.getAnnotation(ReyClient.class);
         if (reyClientAnno == null)
@@ -56,10 +58,9 @@ public class ClientParser {
 
         ReyClient reyClient = (ReyClient) reyClientAnno;
 
-        String url = reyClient.value();
-        url = environment.resolvePlaceholders(url);
+        String url = urlConfigurable.config(reyClient.value());
 
-        ClientParsed parsed = new ClientParsed();
+        ReyParsed parsed = new ReyParsed();
         parsed.setObjectType(clz);
         parsed.setUrl(url);
 
@@ -72,18 +73,7 @@ public class ClientParser {
         /*
          * fallback
          */
-        Class<?> fallbackClz = reyClient.fallback();
-        if (fallbackClz != null && fallbackClz != void.class) {
-            Method[] fallbackMethodArr = fallbackClz.getMethods();
-            for (Method fm : fallbackMethodArr) {
-                parsed.getFallbackMethodMap().put(fm.getName(), fm);
-            }
-            try {
-                parsed.setFallback(fallbackClz.newInstance());
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-        }
+        FallbackParser.parse(clz,reyClient.fallback(),fallbackInstance);
 
         /*
          * groupRouter
@@ -98,7 +88,6 @@ public class ClientParser {
         }
 
         Method[] arr = clz.getDeclaredMethods();
-
         for (Method method : arr) {
 
             String methodName = method.getName();
@@ -174,4 +163,8 @@ public class ClientParser {
 
     }
 
+
+    public interface UrlConfigurable {
+        String config(String pattern);
+    }
 }

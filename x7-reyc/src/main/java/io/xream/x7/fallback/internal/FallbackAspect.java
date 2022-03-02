@@ -16,8 +16,8 @@
  */
 package io.xream.x7.fallback.internal;
 
-import io.xream.x7.base.util.ExceptionUtil;
-import io.xream.x7.fallback.Fallback;
+import io.xream.x7.annotation.Fallback;
+import io.xream.x7.base.exception.FallbackUnexpectedReturnTypeException;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.Signature;
 import org.aspectj.lang.annotation.Around;
@@ -27,13 +27,14 @@ import org.aspectj.lang.reflect.MethodSignature;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.lang.reflect.Method;
+
 
 /**
  * @author Sim
  */
 @Aspect
-public class FallbackAspect {
-
+public class FallbackAspect implements io.xream.x7.fallback.Fallback {
 
     private final static Logger logger = LoggerFactory.getLogger(Fallback.class);
 
@@ -41,29 +42,22 @@ public class FallbackAspect {
         logger.info("Fallback Enabled");
     }
 
-
-    @Pointcut("@annotation(io.xream.x7.fallback.Fallback))")
+    @Pointcut("@annotation(io.xream.x7.annotation.Fallback))")
     public void cut() {
-
     }
 
     @Around("cut() && @annotation(fallback) ")
     public Object around(ProceedingJoinPoint proceedingJoinPoint, Fallback fallback) {
 
-        long startTime = System.currentTimeMillis();
-
         Object[] args = proceedingJoinPoint.getArgs();
 
         Signature signature = proceedingJoinPoint.getSignature();
-        String logStr = signature.getDeclaringTypeName() + "." + signature.getName();
 
-        if (args == null || args.length == 0)
-            throw new IllegalArgumentException(logStr + ", @Fallback not support no args' method");
-
-        Class<? extends Throwable>[] clzzArr = fallback.exceptions();
+        Method method = null;
 
         try {
             MethodSignature ms = ((MethodSignature) signature);
+            method = ms.getMethod();
             if (ms.getReturnType() == void.class) {
                 proceedingJoinPoint.proceed();
                 return null;
@@ -72,27 +66,23 @@ public class FallbackAspect {
             }
         } catch (Throwable e) {
 
-            for (Class<? extends Throwable> clzz : clzzArr) {
-                if (e.getClass() == clzz || e.getClass().isAssignableFrom(clzz)) {
-                    Class fallbackClzz = fallback.fallback();
-                    if (fallbackClzz == void.class)
-                        break;
-                    try {
-                        Object obj = fallbackClzz.newInstance();
-                        String methodName = signature.getName();
-                        Class[] clzzs= new Class[args.length];
-                        for (int i=0; i<args.length; i++){
-                            clzzs[i] = args[i].getClass();
-                        }
-                        fallbackClzz.getDeclaredMethod(methodName,clzzs).invoke(obj,args);
-                    }catch (Exception ee){
-                        e.printStackTrace();
+            Class fallbackClzz = fallback.fallback();
+            if (fallbackClzz != void.class) {
+                Class<? extends Throwable>[] exceptionClzzArr = fallback.exceptions();
+
+                for (Class ec : exceptionClzzArr) {
+                    if (e.getClass() == ec || e.getClass().isAssignableFrom(ec)) {
+                        return fallback(FallbacKey.of(method), args,e);
                     }
-                    break;
                 }
             }
 
-            throw new RuntimeException(ExceptionUtil.getMessage(e));
+            if (e instanceof RuntimeException) {
+                throw (RuntimeException) e;
+            }else {
+                throw new FallbackUnexpectedReturnTypeException(e);
+            }
+
         }
 
     }

@@ -18,11 +18,15 @@ package io.xream.x7.reyc.internal;
 
 import io.xream.x7.base.api.BackendService;
 import io.xream.x7.base.exception.ReyInternalException;
+import io.xream.x7.base.web.ResponseString;
+import io.xream.x7.fallback.Fallback;
+
 
 /**
  * @author Sim
  */
-public interface ReyClient {
+public interface ReyClient extends Fallback {
 
-    String service(BackendDecoration backendDecoration, BackendService<Object> backendService) throws ReyInternalException;
+    Object service(BackendDecoration backendDecoration, BackendService<ResponseString> backendService) throws ReyInternalException;
+
 }

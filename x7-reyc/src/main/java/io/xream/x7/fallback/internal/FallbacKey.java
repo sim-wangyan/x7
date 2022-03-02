@@ -14,9 +14,39 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.xream.x7.base.api;
+package io.xream.x7.fallback.internal;
 
-public interface BackendService<T> {
-    T handle();
-    Object fallback(Throwable e);
+import java.lang.reflect.Method;
+import java.util.Objects;
+
+/**
+ * @author Sim
+ */
+public class FallbacKey {
+
+    private Method method;
+
+    public static FallbacKey of(Method method) {
+        FallbacKey key = new FallbacKey();
+        key.method = method;
+        return key;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        FallbacKey that = (FallbacKey) o;
+        return Objects.equals(method, that.method);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(method);
+    }
+
+    @Override
+    public String toString() {
+        return method.toString();
+    }
 }

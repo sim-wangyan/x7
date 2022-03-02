@@ -21,7 +21,7 @@ import io.xream.x7.base.web.ResponseString;
 /**
  * @author Sim
  */
-public interface ClientBackend extends ReyClient{
+public interface ClientBackend extends ReyClient {
 
     void setClientExceptionHandler(ClientExceptionHandler clientExceptionHandler);
 
@@ -29,5 +29,4 @@ public interface ClientBackend extends ReyClient{
 
     ResponseString handle(R r, Class clz);
 
-    Object fallback(String intfName, String methodName, Object[] args);
 }

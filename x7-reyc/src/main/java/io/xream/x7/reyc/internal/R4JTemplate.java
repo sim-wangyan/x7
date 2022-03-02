@@ -40,7 +40,7 @@ import java.util.function.Supplier;
  *
  * @author Sim
  */
-public class R4JTemplate implements ReyTemplate {
+public class R4JTemplate<T> implements ReyTemplate<T> {
 
     private static Logger logger = LoggerFactory.getLogger(ReyTemplate.class);
 
@@ -54,13 +54,13 @@ public class R4JTemplate implements ReyTemplate {
     }
 
     @Override
-    public Object support(String configName, boolean isRetry, BackendService<Object> backendService) throws ReyInternalException{
+    public T support(String configName, boolean isRetry, BackendService<T> backendService) throws ReyInternalException{
 
         return support(configName, configName, isRetry, backendService);
     }
 
     @Override
-    public Object support(String serviceName, String backendName, boolean isRetry, BackendService<Object> backendService) throws ReyInternalException{
+    public T support(String serviceName, String backendName, boolean isRetry, BackendService<T> backendService) throws ReyInternalException{
 
         if (StringUtil.isNullOrEmpty(backendName)) {
             backendName = "";
@@ -71,7 +71,7 @@ public class R4JTemplate implements ReyTemplate {
         CircuitBreakerConfig circuitBreakerConfig = circuitBreakerRegistry.getConfiguration(configName).orElse(circuitBreakerRegistry.getDefaultConfig());
 
         CircuitBreaker circuitBreaker = circuitBreakerRegistry.circuitBreaker(serviceName, circuitBreakerConfig);
-        Supplier<Object> decoratedSupplier = CircuitBreaker
+        Supplier<T> decoratedSupplier = CircuitBreaker
                 .decorateSupplier(circuitBreaker, backendService::handle);
 
         if (isRetry) {
@@ -101,17 +101,12 @@ public class R4JTemplate implements ReyTemplate {
                             }
                     ).get();
         }catch (ReyRuntimeException re) {
-            throw new ReyInternalException(re.getCause()) {
-                @Override
-                public int httpStatus() {
-                    return 0;
-                }
-            };
+            throw new ReyInternalException(re.getCause());
         }
 
     }
 
-    private Object handleException(Throwable e) {
+    private T handleException(Throwable e) {
         throw new ReyRuntimeException(e);
     }
 

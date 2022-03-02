@@ -96,7 +96,7 @@ public class R {
     }
 
     public static R build(String clzzName, String methodName, Object[] args) {
-        ClientParsed parsed = ClientParser.get(clzzName);
+        ReyParsed parsed = ReyParser.get(clzzName);
         String url = parsed.getUrl();
 
         MethodParsed methodParsed = parsed.getMap().get(methodName);

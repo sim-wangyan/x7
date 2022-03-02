@@ -73,7 +73,7 @@ public final class DefaultL2CacheStorage implements L2CacheStorage {
             }
 
             @Override
-            public Boolean fallback() {
+            public Boolean fallback(Throwable e) {
 
                 return true;
             }
@@ -93,7 +93,7 @@ public final class DefaultL2CacheStorage implements L2CacheStorage {
             }
 
             @Override
-            public Boolean fallback() {
+            public Boolean fallback(Throwable e) {
                 return true;
             }
         });
@@ -112,7 +112,7 @@ public final class DefaultL2CacheStorage implements L2CacheStorage {
             }
 
             @Override
-            public String fallback() {
+            public String fallback(Throwable e) {
                 return null;
             }
         });
@@ -132,7 +132,7 @@ public final class DefaultL2CacheStorage implements L2CacheStorage {
             }
 
             @Override
-            public List<String> fallback() {
+            public List<String> fallback(Throwable e) {
                 return null;
             }
         });
@@ -148,7 +148,7 @@ public final class DefaultL2CacheStorage implements L2CacheStorage {
             }
 
             @Override
-            public Boolean fallback() {
+            public Boolean fallback(Throwable e) {
                 return null;
             }
         });
@@ -162,7 +162,7 @@ public final class DefaultL2CacheStorage implements L2CacheStorage {
             }
 
             @Override
-            public Set<String> fallback() {
+            public Set<String> fallback(Throwable e) {
                 return null;
             }
         });

@@ -17,9 +17,11 @@
 package io.xream.x7.reyc.internal;
 
 import io.xream.x7.base.api.BackendService;
-import io.xream.x7.base.util.ExceptionUtil;
+import io.xream.x7.base.exception.FallbackUnexpectedReturnTypeException;
+import io.xream.x7.base.exception.ReyInternalException;
 import io.xream.x7.base.util.LoggerProxy;
 import io.xream.x7.base.web.ResponseString;
+import io.xream.x7.fallback.internal.FallbacKey;
 
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
@@ -40,20 +42,21 @@ public class ClientBackendInvocationHandler implements InvocationHandler {
     }
     
     @Override
-    public Object invoke(Object proxy, Method method, Object[] args)  {
+    public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
         final String methodName = method.getName();
         if (methodName.equals("toString"))
             return null;
 
         Class clzz = clientBackendProxy.getObjectType();
         long startTime = System.currentTimeMillis();
+        final String clzzName = clzz.getName();
         try{
 
             ClientBackend clientBackend = getBackend();
 
             LoggerProxy.debug(clzz,methodName +"(..) start....");
 
-            R r = R.build(clzz.getName(),methodName,args);
+            R r = R.build(clzzName,methodName,args);
 
             BackendDecoration backendDecoration = clientBackendProxy.getBackendDecoration();
 
@@ -66,25 +69,34 @@ public class ClientBackendInvocationHandler implements InvocationHandler {
 
             BackendDecoration cd = clientBackendProxy.isReyTemplateNotRequired() ? null : clientBackendProxy.getBackendDecoration();
 
-            String result = clientBackend.service(cd, new BackendService<Object>() {
+            Object result = clientBackend.service(cd, new BackendService<ResponseString>() {
                 @Override
-                public Object handle() {
+                public ResponseString handle() {
                     return clientBackend.handle(r,clzz);
                 }
 
                 @Override
-                public Object fallback() {
-                    return clientBackend.fallback(clzz.getName(),methodName,args);
+                public Object fallback(Throwable e) {
+                    return clientBackend.fallback(FallbacKey.of(method),args,e);
                 }
             });
 
-            return clientBackend.toObject(r.getReturnType(),r.getGeneType(),result);
+            if (result == null)
+                return null;
 
+            if (result instanceof ResponseString) {
+                ResponseString responseString = (ResponseString) result;
+                return clientBackend.toObject(r.getReturnType(), r.getGeneType(), responseString.getBody());
+            }else if (result.getClass() == r.getReturnType()){
+                return result;
+            }else {
+                throw new FallbackUnexpectedReturnTypeException("FALLBACK AND GET RESULT, catch to invoke e.getTag() ",result);
+            }
         } catch (RuntimeException re){
             throw re;
-        } catch (Exception e){
-            throw new RuntimeException(ExceptionUtil.getMessage(e));
-        }finally {
+        } catch (ReyInternalException rie){
+            throw rie;
+        } finally{
             long endTime = System.currentTimeMillis();
             LoggerProxy.debug(clzz,methodName + "(..) end, cost time: " + (endTime - startTime) + "ms");
         }

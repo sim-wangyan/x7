@@ -16,16 +16,73 @@
  */
 package io.xream.x7.fallback;
 
-import java.lang.annotation.*;
+import io.xream.x7.base.exception.ReyBizException;
+import io.xream.x7.fallback.internal.FallbacKey;
+import io.xream.x7.fallback.internal.FallbackParsed;
+import io.xream.x7.fallback.internal.FallbackParser;
+
+import java.lang.reflect.InvocationTargetException;
 
 /**
  * @author Sim
  */
-@Retention(RetentionPolicy.RUNTIME)
-@Target(ElementType.METHOD)
-@Documented
-public @interface Fallback {
+public interface Fallback {
 
-    Class<? extends Throwable>[] exceptions() default {Exception.class};
-    Class<?> fallback() default void.class;
+    default Object fallback(FallbacKey key, Object[] args, Throwable e) {
+        FallbackParsed parsed = FallbackParser.get(key);
+
+        if (parsed == null) {
+            if (e instanceof RuntimeException) {
+                throw (RuntimeException)e;
+            }else {
+                throw new ReyBizException(e);
+            }
+        }
+        boolean isCatchRequired = false;
+        Class[] es = parsed.getExceptions();
+        if (es != null && es.length > 0) {
+            for (Class ec: parsed.getExceptions()) {
+                if (e.getClass() == ec || e.getClass().isAssignableFrom(ec)) {
+                    isCatchRequired = true;
+                    break;
+                }
+            }
+        }
+        if (isCatchRequired) {
+            if (e instanceof RuntimeException) {
+                throw (RuntimeException)e;
+            }else {
+                throw new ReyBizException(e);
+            }
+        }
+        try {
+            if (parsed.getMethod().getReturnType() == void.class) {
+                if (args == null || args.length == 0) {
+                    parsed.getMethod().invoke(parsed.getFallback());
+                }else {
+                    parsed.getMethod().invoke(parsed.getFallback(), args);
+                }
+                return null;
+            }
+            if (args == null || args.length == 0) {
+                return parsed.getMethod().invoke(parsed.getFallback());
+            }else {
+                return parsed.getMethod().invoke(parsed.getFallback(), args);
+            }
+        }catch (InvocationTargetException tte){
+            Throwable t = tte.getTargetException();
+            if (t instanceof RuntimeException){
+                throw (RuntimeException) t;
+            }else {
+                throw new RuntimeException(t);
+            }
+        }catch (Exception ee) {
+            if (ee instanceof RuntimeException){
+                throw (RuntimeException) ee;
+            }else {
+                throw new RuntimeException(ee);
+            }
+        }
+    }
+
 }

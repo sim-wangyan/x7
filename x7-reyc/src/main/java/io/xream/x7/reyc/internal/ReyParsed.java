@@ -18,20 +18,17 @@ package io.xream.x7.reyc.internal;
 
 import io.xream.x7.base.api.GroupRouter;
 
-import java.lang.reflect.Method;
 import java.util.HashMap;
 import java.util.Map;
 
 /**
  * @author Sim
  */
-public class ClientParsed {
+public class ReyParsed {
 
     private Class<?> objectType;
     private String url;
     private Map<String,MethodParsed> map = new HashMap<>();
-    private Map<String, Method> fallbackMethodMap = new HashMap<>();
-    private Object fallback;
     private GroupRouter groupRouter;
 
     public Class<?> getObjectType() {
@@ -58,22 +55,6 @@ public class ClientParsed {
         this.map = map;
     }
 
-    public Map<String, Method> getFallbackMethodMap() {
-        return fallbackMethodMap;
-    }
-
-    public void setFallbackMethodMap(Map<String, Method> fallbackMethodMap) {
-        this.fallbackMethodMap = fallbackMethodMap;
-    }
-
-    public Object getFallback() {
-        return fallback;
-    }
-
-    public void setFallback(Object fallback) {
-        this.fallback = fallback;
-    }
-
     public GroupRouter getGroupRouter() {
         return groupRouter;
     }
@@ -88,8 +69,6 @@ public class ClientParsed {
                 "objectType=" + objectType +
                 ", value='" + url + '\'' +
                 ", map=" + map +
-                ", fallbackMethodMap=" + fallbackMethodMap +
-                ", fallback=" + fallback +
                 ", groupRouter=" + groupRouter +
                 '}';
     }

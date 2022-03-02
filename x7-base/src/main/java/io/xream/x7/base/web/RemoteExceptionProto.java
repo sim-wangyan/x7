@@ -30,6 +30,7 @@ public class RemoteExceptionProto {
     private String traceId;
     private String message;
     private String stack;
+    private String fallback;
 
     public RemoteExceptionProto(){
     }
@@ -39,6 +40,7 @@ public class RemoteExceptionProto {
         this.message = exception.getMessage();
         this.stack = exception.getStack();
         this.traceId = StringUtil.isNullOrEmpty(exception.getTraceId()) ? traceId : exception.getTraceId();
+        this.fallback = exception.getFallback();
     }
 
     public RemoteExceptionProto(int status, String message, String statck, String traceId){
@@ -53,7 +55,7 @@ public class RemoteExceptionProto {
     }
 
     public ReyInternalException create(ReyHttpStatus reyHttpStatus) {
-        return ReyInternalException.create(reyHttpStatus,this.status,this.message,this.stack, this.traceId);
+        return ReyInternalException.create(reyHttpStatus,this.status,this.message,this.stack,this.fallback, this.traceId);
     }
 
     public int getStatus() {
@@ -88,8 +90,20 @@ public class RemoteExceptionProto {
         this.stack = stack;
     }
 
+    public String getFallback() {
+        return fallback;
+    }
+
+    public void setFallback(String fallback) {
+        this.fallback = fallback;
+    }
+
     public String toJson(){
-        return JsonX.toJson(this);
+        System.out.println(this.message);
+        System.out.println(this.fallback);
+        String str = JsonX.toJson(this);
+        System.out.println(str);
+        return str;
     }
 
     @Override

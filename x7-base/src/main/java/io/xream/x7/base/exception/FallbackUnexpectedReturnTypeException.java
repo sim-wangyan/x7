@@ -14,19 +14,32 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.xream.x7;
+package io.xream.x7.base.exception;
 
-import io.xream.x7.fallback.internal.FallbackAspect;
-import org.springframework.context.annotation.Import;
-
-import java.lang.annotation.*;
+import io.xream.x7.base.api.TaggedException;
 
 /**
  * @author Sim
+ * Created by Sim on 2018/6/22.
+ * catch it and handle if fallback return obj
  */
-@Retention(RetentionPolicy.RUNTIME)
-@Target(ElementType.TYPE)
-@Documented
-@Import({FallbackAspect.class})
-public @interface EnableFallback {
+public class FallbackUnexpectedReturnTypeException extends TaggedException {
+
+    public FallbackUnexpectedReturnTypeException(Throwable e){
+        super(e);
+    }
+
+    public FallbackUnexpectedReturnTypeException(String message){
+        super(message);
+    }
+
+    public FallbackUnexpectedReturnTypeException(String message, Object tag){
+        super(message);
+        super.setTag(tag);
+    }
+
+    public String getType(){
+        return "FALLBACK";
+    }
+
 }

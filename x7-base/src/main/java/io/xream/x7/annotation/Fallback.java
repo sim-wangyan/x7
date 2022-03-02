@@ -14,9 +14,18 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.xream.x7.base.api;
+package io.xream.x7.annotation;
 
-public interface BackendService<T> {
-    T handle();
-    Object fallback(Throwable e);
+import java.lang.annotation.*;
+
+/**
+ * @author Sim
+ */
+@Retention(RetentionPolicy.RUNTIME)
+@Target(ElementType.TYPE)
+@Documented
+public @interface Fallback {
+
+    Class<? extends Throwable>[] exceptions() default {Exception.class};
+    Class<?> fallback() default void.class;
 }

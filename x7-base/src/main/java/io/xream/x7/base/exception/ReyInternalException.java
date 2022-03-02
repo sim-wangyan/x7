@@ -21,12 +21,15 @@ import io.xream.x7.base.api.ReyHttpStatus;
 /**
  * @author Sim
  */
-public abstract class ReyInternalException extends Exception {
+public class ReyInternalException extends Exception {
 
     private int status;
     private String traceId;
     private String stack;
-    public abstract int httpStatus();
+    private String fallback;
+    public int httpStatus(){
+        return 0;
+    }
 
     public int getStatus() {
         return status;
@@ -52,10 +55,18 @@ public abstract class ReyInternalException extends Exception {
         this.stack = stack;
     }
 
+    public String getFallback() {
+        return fallback;
+    }
+
+    public void setFallback(String fallback) {
+        this.fallback = fallback;
+    }
 
     public ReyInternalException(Throwable e) {
         super(e);
     }
+
 
     private ReyInternalException(String message){
         super(message);
@@ -63,20 +74,22 @@ public abstract class ReyInternalException extends Exception {
 
     public static ReyInternalException create(ReyHttpStatus reyHttpStatus, int status, String message,
                                               String stack,
+                                              String fallback,
                                               String traceId){
         if (reyHttpStatus == ReyHttpStatus.INTERNAL_SERVER_ERROR){
-            return new ReyInternalException.InternalServerError(status,message,stack,traceId);
+            return new ReyInternalException.InternalServerError(status,message,stack,fallback,traceId);
         }else {
-            return new ToClient(status,message,stack,traceId);
+            return new ToClient(status,message,stack,fallback,traceId);
         }
     }
 
     public static final class InternalServerError extends ReyInternalException {
 
-        private InternalServerError(int status,String message,String stack, String traceId) {
+        private InternalServerError(int status,String message,String stack,String fallback, String traceId) {
             super(message);
             super.setStatus(status);
             super.setStack(stack);
+            super.setFallback(fallback);
             super.setTraceId(traceId);
         }
 
@@ -88,10 +101,11 @@ public abstract class ReyInternalException extends Exception {
 
     public static final class ToClient extends ReyInternalException {
 
-        private ToClient(int status, String message,String stack, String traceId) {
+        private ToClient(int status, String message,String stack, String fallback, String traceId) {
             super(message);
             super.setStatus(status);
             super.setStack(stack);
+            super.setFallback(fallback);
             super.setTraceId(traceId);
         }
 

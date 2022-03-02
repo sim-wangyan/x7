@@ -18,8 +18,8 @@ package io.xream.x7.reyc.internal;
 
 import io.xream.x7.base.api.BackendService;
 import io.xream.x7.base.api.GroupRouter;
-import io.xream.x7.base.exception.ReyBizException;
 import io.xream.x7.base.exception.ReyInternalException;
+import io.xream.x7.base.util.ExceptionUtil;
 import io.xream.x7.base.util.JsonX;
 import io.xream.x7.base.util.StringUtil;
 import io.xream.x7.base.web.ResponseString;
@@ -27,7 +27,6 @@ import io.xream.x7.reyc.api.ReyTemplate;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.bind.annotation.RequestMethod;
 
-import java.lang.reflect.Method;
 import java.util.List;
 import java.util.regex.Pattern;
 
@@ -121,7 +120,7 @@ public class ClientBackendImpl implements ClientBackend {
     }
 
     @Override
-    public String service(BackendDecoration backendDecoration, BackendService<Object> backendService) throws ReyInternalException {
+    public Object service(BackendDecoration backendDecoration, BackendService<ResponseString> backendService) throws ReyInternalException {
 
         Object result = null;
         try {
@@ -150,10 +149,11 @@ public class ClientBackendImpl implements ClientBackend {
 
                 if (! this.clientExceptionHandler.resolver()
                         .fallbackHandler().isNotRequireFallback(rie.getStatus())) {
-                    Object fallback = backendService.fallback();
-                    if (fallback != null) {
-                        final String tag = "Backend(" + backendDecoration.getServiceName() + ")";
-                        throw new ReyBizException(tag + " FALLBACK", fallback);
+                    try {
+                        return backendService.fallback(rie);
+                    }catch (Throwable t) {
+                        rie.setFallback(ExceptionUtil.getMessage(t));
+                        throw rie;
                     }
                 }
 
@@ -165,37 +165,13 @@ public class ClientBackendImpl implements ClientBackend {
 
         if (result == null)
             return null;
-
         ResponseString responseString = (ResponseString) result;
         final int status = responseString.getStatus();
         final String body = responseString.getBody();
 
         this.clientExceptionHandler.resolver().convertNot200ToException(status,body);
 
-        return body;
-    }
-
-    @Override
-    public Object fallback(String intfName, String methodName, Object[] args) {
-
-        ClientParsed parsed = ClientParser.get(intfName);
-        if (parsed.getFallback() == null)
-            return null;
-        Method method = parsed.getFallbackMethodMap().get(methodName);
-
-        if (method == null)
-            return null;
-        try {
-            if (method.getReturnType() == void.class) {
-                method.invoke(parsed.getFallback(), args);
-                return null;
-            }
-            return method.invoke(parsed.getFallback(), args);
-        } catch (Exception e) {
-            e.printStackTrace();
-            throw new RuntimeException("Exception of fallback: " + intfName + "." + methodName);
-        }
-
+        return result;
     }
 
 }

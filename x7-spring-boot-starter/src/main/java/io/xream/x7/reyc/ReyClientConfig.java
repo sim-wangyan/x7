@@ -16,6 +16,7 @@
  */
 package io.xream.x7.reyc;
 
+import io.xream.x7.fallback.internal.FallbackInterceptor;
 import io.xream.x7.reyc.internal.*;
 import org.springframework.context.annotation.Bean;
 
@@ -23,6 +24,11 @@ import org.springframework.context.annotation.Bean;
  * @author Rolyer Luo
  */
 public class ReyClientConfig  {
+
+    @Bean
+    public FallbackInterceptor fallbackInterceptor(){
+        return new FallbackInterceptor();
+    }
 
     @Bean
     public RestTemplateWrapper restTemplateWrapper() {

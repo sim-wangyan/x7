@@ -22,8 +22,8 @@ import io.xream.x7.base.exception.ReyInternalException;
 /**
  * @author Sim
  */
-public interface ReyTemplate {
+public interface ReyTemplate<T> {
 
-    Object support(String configName, boolean isRetry, BackendService<Object> service) throws ReyInternalException;
-    Object support(String serviceName, String configName, boolean isRetry, BackendService<Object> service) throws ReyInternalException;
+    T support(String configName, boolean isRetry, BackendService<T> service) throws ReyInternalException;
+    T support(String serviceName, String configName, boolean isRetry, BackendService<T> service) throws ReyInternalException;
 }
