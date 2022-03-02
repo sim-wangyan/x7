@@ -28,8 +28,9 @@ public class RemoteExceptionProto {
 
     private int status;
     private String traceId;
-    private String message;
+    private String error;
     private String stack;
+    private String path;
     private String fallback;
 
     public RemoteExceptionProto(){
@@ -37,25 +38,26 @@ public class RemoteExceptionProto {
 
     public RemoteExceptionProto(ReyInternalException exception, String traceId){
         this.status = exception.getStatus();
-        this.message = exception.getMessage();
+        this.error = exception.getMessage();
         this.stack = exception.getStack();
         this.traceId = StringUtil.isNullOrEmpty(exception.getTraceId()) ? traceId : exception.getTraceId();
         this.fallback = exception.getFallback();
+        this.path = exception.getPath();
     }
 
-    public RemoteExceptionProto(int status, String message, String statck, String traceId){
+    public RemoteExceptionProto(int status, String error, String statck, String traceId){
         this.status = status;
-        this.message = message;
+        this.error = error;
         this.stack = statck;
         this.traceId = traceId;
-        if (StringUtil.isNullOrEmpty(this.message)){
-            this.message = this.stack;
+        if (StringUtil.isNullOrEmpty(this.error)){
+            this.error = this.stack;
             this.stack = null;
         }
     }
 
     public ReyInternalException create(ReyHttpStatus reyHttpStatus) {
-        return ReyInternalException.create(reyHttpStatus,this.status,this.message,this.stack,this.fallback, this.traceId);
+        return ReyInternalException.create(reyHttpStatus,this.status,this.error,this.stack,this.fallback,this.path, this.traceId);
     }
 
     public int getStatus() {
@@ -74,12 +76,12 @@ public class RemoteExceptionProto {
         this.traceId = traceId;
     }
 
-    public String getMessage() {
-        return message;
+    public String getError() {
+        return error;
     }
 
-    public void setMessage(String message) {
-        this.message = message;
+    public void setError(String error) {
+        this.error = error;
     }
 
     public String getStack() {
@@ -88,6 +90,14 @@ public class RemoteExceptionProto {
 
     public void setStack(String stack) {
         this.stack = stack;
+    }
+
+    public String getPath() {
+        return path;
+    }
+
+    public void setPath(String path) {
+        this.path = path;
     }
 
     public String getFallback() {
@@ -99,11 +109,7 @@ public class RemoteExceptionProto {
     }
 
     public String toJson(){
-        System.out.println(this.message);
-        System.out.println(this.fallback);
-        String str = JsonX.toJson(this);
-        System.out.println(str);
-        return str;
+        return JsonX.toJson(this);
     }
 
     @Override

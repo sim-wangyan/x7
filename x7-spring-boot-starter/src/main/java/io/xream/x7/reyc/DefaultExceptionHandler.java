@@ -21,6 +21,7 @@ import io.opentracing.Tracer;
 import io.xream.x7.base.api.ReyHttpStatus;
 import io.xream.x7.base.exception.BizException;
 import io.xream.x7.base.exception.FallbackUnexpectedReturnTypeException;
+import io.xream.x7.base.exception.ReyBizException;
 import io.xream.x7.base.util.ExceptionUtil;
 import io.xream.x7.base.web.RemoteExceptionProto;
 import org.slf4j.Logger;
@@ -62,6 +63,8 @@ public class DefaultExceptionHandler {
         if (e instanceof NullPointerException){
             message = stack;
         }else if (e instanceof FallbackUnexpectedReturnTypeException){
+            throw e;
+        }else if (e instanceof ReyBizException){
             throw e;
         }else {
             message = e.getMessage();

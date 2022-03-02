@@ -18,5 +18,5 @@ package io.xream.x7.base.api;
 
 public interface BackendService<T> {
     T handle();
-    Object fallback(Throwable e);
+    Object fallback(Throwable e) throws Throwable;
 }

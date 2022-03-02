@@ -152,6 +152,8 @@ public class ClientBackendImpl implements ClientBackend {
                     try {
                         return backendService.fallback(rie);
                     }catch (Throwable t) {
+                        if (t instanceof ReyInternalException)
+                            throw rie;
                         rie.setFallback(ExceptionUtil.getMessage(t));
                         throw rie;
                     }

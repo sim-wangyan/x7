@@ -16,7 +16,6 @@
  */
 package io.xream.x7.fallback;
 
-import io.xream.x7.base.exception.ReyBizException;
 import io.xream.x7.fallback.internal.FallbacKey;
 import io.xream.x7.fallback.internal.FallbackParsed;
 import io.xream.x7.fallback.internal.FallbackParser;
@@ -28,15 +27,11 @@ import java.lang.reflect.InvocationTargetException;
  */
 public interface Fallback {
 
-    default Object fallback(FallbacKey key, Object[] args, Throwable e) {
+    default Object fallback(FallbacKey key, Object[] args, Throwable e) throws Throwable{
         FallbackParsed parsed = FallbackParser.get(key);
 
         if (parsed == null) {
-            if (e instanceof RuntimeException) {
-                throw (RuntimeException)e;
-            }else {
-                throw new ReyBizException(e);
-            }
+            throw e;
         }
         boolean isCatchRequired = false;
         Class[] es = parsed.getExceptions();
@@ -49,11 +44,7 @@ public interface Fallback {
             }
         }
         if (isCatchRequired) {
-            if (e instanceof RuntimeException) {
-                throw (RuntimeException)e;
-            }else {
-                throw new ReyBizException(e);
-            }
+            throw e;
         }
         try {
             if (parsed.getMethod().getReturnType() == void.class) {
@@ -70,18 +61,9 @@ public interface Fallback {
                 return parsed.getMethod().invoke(parsed.getFallback(), args);
             }
         }catch (InvocationTargetException tte){
-            Throwable t = tte.getTargetException();
-            if (t instanceof RuntimeException){
-                throw (RuntimeException) t;
-            }else {
-                throw new RuntimeException(t);
-            }
+            throw tte.getTargetException();
         }catch (Exception ee) {
-            if (ee instanceof RuntimeException){
-                throw (RuntimeException) ee;
-            }else {
-                throw new RuntimeException(ee);
-            }
+            throw ee;
         }
     }
 

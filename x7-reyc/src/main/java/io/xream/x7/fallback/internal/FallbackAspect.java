@@ -17,7 +17,6 @@
 package io.xream.x7.fallback.internal;
 
 import io.xream.x7.annotation.Fallback;
-import io.xream.x7.base.exception.FallbackUnexpectedReturnTypeException;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.Signature;
 import org.aspectj.lang.annotation.Around;
@@ -47,7 +46,7 @@ public class FallbackAspect implements io.xream.x7.fallback.Fallback {
     }
 
     @Around("cut() && @annotation(fallback) ")
-    public Object around(ProceedingJoinPoint proceedingJoinPoint, Fallback fallback) {
+    public Object around(ProceedingJoinPoint proceedingJoinPoint, Fallback fallback) throws Throwable {
 
         Object[] args = proceedingJoinPoint.getArgs();
 
@@ -77,11 +76,7 @@ public class FallbackAspect implements io.xream.x7.fallback.Fallback {
                 }
             }
 
-            if (e instanceof RuntimeException) {
-                throw (RuntimeException) e;
-            }else {
-                throw new FallbackUnexpectedReturnTypeException(e);
-            }
+            throw e;
 
         }
 

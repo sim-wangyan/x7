@@ -76,7 +76,7 @@ public class ClientBackendInvocationHandler implements InvocationHandler {
                 }
 
                 @Override
-                public Object fallback(Throwable e) {
+                public Object fallback(Throwable e) throws Throwable{
                     return clientBackend.fallback(FallbacKey.of(method),args,e);
                 }
             });
@@ -93,8 +93,12 @@ public class ClientBackendInvocationHandler implements InvocationHandler {
                 throw new FallbackUnexpectedReturnTypeException("FALLBACK AND GET RESULT, catch to invoke e.getTag() ",result);
             }
         } catch (RuntimeException re){
+            re.printStackTrace();
             throw re;
         } catch (ReyInternalException rie){
+            if (rie.getCause() instanceof ReyInternalException) {
+                throw rie.getCause();
+            }
             throw rie;
         } finally{
             long endTime = System.currentTimeMillis();

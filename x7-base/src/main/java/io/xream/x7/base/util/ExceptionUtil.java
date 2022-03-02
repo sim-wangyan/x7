@@ -70,7 +70,8 @@ public class ExceptionUtil {
                     || startWithJava(str)
                     || startWithOrg(str)
                     || startWithIO(str)
-                    || str.startsWith("com.sun");
+                    || str.startsWith("com.sun")
+                    || str.startsWith("com.alibaba.fastjson");
             if (
                     !notAppend
             ) {

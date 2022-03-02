@@ -18,6 +18,7 @@ package io.xream.x7.reyc;
 
 import io.opentracing.Span;
 import io.opentracing.Tracer;
+import io.xream.x7.base.api.ReyHttpStatus;
 import io.xream.x7.base.exception.ReyInternalException;
 import io.xream.x7.base.web.RemoteExceptionProto;
 import org.slf4j.Logger;
@@ -40,14 +41,13 @@ public class RemoteExceptionHandler {
             ReyInternalException.class
     })
     @ResponseBody
-    public ResponseEntity<RemoteExceptionProto> handlerDemoteResourceAccessException(ReyInternalException exception){
+    public ResponseEntity<RemoteExceptionProto> handlerDemoteResourceAccessException(ReyInternalException exception) {
 
         Span span = tracer.scopeManager().activeSpan();
-        String traceId = span == null ? "" : span.context().toTraceId()+ ":" + span.context().toSpanId();
+        String traceId = span == null ? "" : span.context().toTraceId() + ":" + span.context().toSpanId();
 
-        RemoteExceptionProto proto = new RemoteExceptionProto(exception,traceId);
-                logger.error(proto.toJson());
-        return ResponseEntity.status(exception.httpStatus()).body(
+        RemoteExceptionProto proto = new RemoteExceptionProto(exception, traceId);
+        return ResponseEntity.status(ReyHttpStatus.TO_CLIENT.getStatus()).body(
                 proto
         );
     }
