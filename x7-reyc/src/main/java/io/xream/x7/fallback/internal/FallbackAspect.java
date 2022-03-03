@@ -67,13 +67,7 @@ public class FallbackAspect implements io.xream.x7.fallback.Fallback {
 
             Class fallbackClzz = fallback.fallback();
             if (fallbackClzz != void.class) {
-                Class<? extends Throwable>[] exceptionClzzArr = fallback.exceptions();
-
-                for (Class ec : exceptionClzzArr) {
-                    if (e.getClass() == ec || e.getClass().isAssignableFrom(ec)) {
-                        return fallback(FallbacKey.of(method), args,e);
-                    }
-                }
+                return fallback(FallbacKey.of(method), args,e);
             }
 
             throw e;
