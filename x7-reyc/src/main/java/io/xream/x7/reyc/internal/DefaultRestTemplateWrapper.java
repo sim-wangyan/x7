@@ -83,7 +83,13 @@ public class DefaultRestTemplateWrapper implements RestTemplateWrapper {
         }
 
         // check content type
-        if (headers.getContentType() == null) {
+        if (headers.getContentType() == null
+        && (
+                method == HttpMethod.POST
+                || method == HttpMethod.PUT
+                || method == HttpMethod.DELETE
+                || method == HttpMethod.PATCH
+                )) {
             headers.setContentType(MediaType.APPLICATION_JSON);
         }
 

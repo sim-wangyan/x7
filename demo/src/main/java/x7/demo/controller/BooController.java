@@ -3,6 +3,7 @@ package x7.demo.controller;
 import io.github.resilience4j.ratelimiter.RateLimiter;
 import io.github.resilience4j.ratelimiter.RateLimiterRegistry;
 import io.xream.sqli.builder.RefreshBuilder;
+import io.xream.x7.annotation.Fallback;
 import io.xream.x7.base.util.ExceptionUtil;
 import io.xream.x7.base.web.ViewEntity;
 import org.slf4j.Logger;

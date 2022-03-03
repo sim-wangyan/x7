@@ -3,6 +3,7 @@ package x7.config;
 import io.opentracing.Span;
 import io.opentracing.Tracer;
 import org.slf4j.MDC;
+import org.springframework.boot.autoconfigure.data.redis.RedisAutoConfiguration;
 
 import javax.annotation.Resource;
 import javax.servlet.*;
@@ -26,7 +27,7 @@ public class TraceIdFilter implements Filter {
 
     @Override
     public void doFilter(ServletRequest servletRequest, ServletResponse servletResponse, FilterChain filterChain) throws IOException, ServletException {
-
+        RedisAutoConfiguration d;
         HttpServletRequest request = (HttpServletRequest) servletRequest;
         String traceId = request.getHeader(TRACE_ID);
         if (Objects.isNull(traceId)){

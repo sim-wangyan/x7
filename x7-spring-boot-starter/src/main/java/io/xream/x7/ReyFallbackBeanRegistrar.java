@@ -73,46 +73,44 @@ public class ReyFallbackBeanRegistrar implements ImportBeanDefinitionRegistrar, 
 
 //            createAop(annotation.fallback(),clz);
 
-            Object target = this.beanFactory.getBean(clz);
-            //interceptorNames
+//            Object target = this.beanFactory.getBean(clz);
+//            //interceptorNames
+//
+//
+//            Method[] fallbackMethodArr = annotation.fallback().getDeclaredMethods();
+//            int length = fallbackMethodArr.length;
+//            if (length == 0)
+//                continue;
+//            String[] nameArr = new String[fallbackMethodArr.length];
+//            for (int i=0; i<length; i++) {
+//                nameArr[i] = fallbackMethodArr[i].getName();
+//            }
 
-
-            Method[] fallbackMethodArr = annotation.fallback().getDeclaredMethods();
-            int length = fallbackMethodArr.length;
-            if (length == 0)
-                continue;
-            String[] nameArr = new String[fallbackMethodArr.length];
-            for (int i=0; i<length; i++) {
-                nameArr[i] = fallbackMethodArr[i].getName();
-            }
-
-            MethodInterceptor interceptor = this.beanFactory.getBean(FallbackInterceptor.class);
-
-            if (interceptor == null)
-                throw new RuntimeException("No instance ofMethodInterceptor");
-
-
-            final String advisorName = clz.getSimpleName()+"Advisor";
-
-            BeanDefinitionBuilder advisorBuilder = BeanDefinitionBuilder.genericBeanDefinition(NameMatchMethodPointcutAdvisor.class);
-            GenericBeanDefinition advisorDefinition = (GenericBeanDefinition) advisorBuilder.getRawBeanDefinition();
-            advisorDefinition.getPropertyValues().add("mappedNames", nameArr);
-            advisorDefinition.getPropertyValues().add("advice", interceptor);
-            advisorDefinition.setBeanClass(NameMatchMethodPointcutAdvisor.class);
-            advisorDefinition.setAutowireMode(GenericBeanDefinition.AUTOWIRE_BY_TYPE);
-            registry.registerBeanDefinition(advisorName, advisorDefinition);
-
-
-            BeanDefinitionBuilder builder = BeanDefinitionBuilder.genericBeanDefinition(clz);
-            GenericBeanDefinition definition = (GenericBeanDefinition) builder.getRawBeanDefinition();
-            definition.getPropertyValues().add("target", target);
-            definition.getPropertyValues().add("interceptorNames", advisorName);
-//            definition.setAttribute("advice",interceptor);
-//            advisorDefinition.setAttribute("proxyTargetClass", true);
-            definition.setBeanClass(ProxyFactoryBean.class);
-            definition.setAutowireMode(GenericBeanDefinition.AUTOWIRE_BY_TYPE);
-
-            registry.registerBeanDefinition(clz.getSimpleName()+"Aop", definition);
+//            MethodInterceptor interceptor = this.beanFactory.getBean(FallbackInterceptor.class);
+//
+//            if (interceptor == null)
+//                throw new RuntimeException("No instance ofMethodInterceptor");
+//
+//
+//            final String advisorName = clz.getSimpleName()+"Advisor";
+//
+//            BeanDefinitionBuilder advisorBuilder = BeanDefinitionBuilder.genericBeanDefinition(NameMatchMethodPointcutAdvisor.class);
+//            GenericBeanDefinition advisorDefinition = (GenericBeanDefinition) advisorBuilder.getRawBeanDefinition();
+//            advisorDefinition.getPropertyValues().add("mappedNames", nameArr);
+//            advisorDefinition.getPropertyValues().add("advice", interceptor);
+//            advisorDefinition.setBeanClass(NameMatchMethodPointcutAdvisor.class);
+//            advisorDefinition.setAutowireMode(GenericBeanDefinition.AUTOWIRE_BY_TYPE);
+//            registry.registerBeanDefinition(advisorName, advisorDefinition);
+//
+//
+//            BeanDefinitionBuilder builder = BeanDefinitionBuilder.genericBeanDefinition(clz);
+//            GenericBeanDefinition definition = (GenericBeanDefinition) builder.getRawBeanDefinition();
+//            definition.getPropertyValues().add("target", target);
+//            definition.getPropertyValues().add("interceptorNames", advisorName);
+//            definition.setBeanClass(ProxyFactoryBean.class);
+//            definition.setAutowireMode(GenericBeanDefinition.AUTOWIRE_BY_TYPE);
+//
+//            registry.registerBeanDefinition(clz.getSimpleName()+"Aop", definition);
 
         }
     }

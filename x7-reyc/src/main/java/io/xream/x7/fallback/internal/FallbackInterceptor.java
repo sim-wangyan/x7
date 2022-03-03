@@ -7,7 +7,7 @@ import org.aopalliance.intercept.MethodInvocation;
 import java.lang.reflect.Method;
 
 /**
- * @Author Sim
+ * @author Sim
  */
 public class FallbackInterceptor implements MethodInterceptor, Fallback {
     @Override

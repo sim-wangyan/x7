@@ -22,7 +22,7 @@ import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean
 import org.springframework.context.annotation.Bean;
 
 /**
- * @Author Sim
+ * @author Sim
  */
 public class ReyTemplateAutoConfiguration {
 
