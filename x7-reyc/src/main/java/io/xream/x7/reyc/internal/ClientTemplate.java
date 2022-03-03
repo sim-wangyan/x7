@@ -24,7 +24,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 /**
  * @author Sim
  */
-public interface RestTemplateWrapper {
+public interface ClientTemplate {
 
     void wrap(Object impl);
     void headerInterceptor(ClientHeaderInterceptor interceptor);

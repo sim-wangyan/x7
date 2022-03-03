@@ -33,7 +33,7 @@ import java.util.stream.Collectors;
 /**
  * @author Sim
  */
-public class DefaultRestTemplateWrapper implements RestTemplateWrapper {
+public class DefaultClientTemplate implements ClientTemplate {
 
     private RestTemplate restTemplate;
 

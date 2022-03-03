@@ -40,10 +40,10 @@ public class ClientBackendImpl implements ClientBackend {
 
     private ReyTemplate reyTemplate;
 
-    private RestTemplateWrapper restTemplateWrapper;
+    private ClientTemplate clientTemplate;
 
-    public ClientBackendImpl(RestTemplateWrapper wrapper) {
-        this.restTemplateWrapper = wrapper;
+    public ClientBackendImpl(ClientTemplate wrapper) {
+        this.clientTemplate = wrapper;
     }
 
     @Override
@@ -51,8 +51,8 @@ public class ClientBackendImpl implements ClientBackend {
         this.clientExceptionHandler = clientExceptionHandler;
     }
 
-    public void setRestTemplateWrapper(RestTemplateWrapper restTemplate) {
-        this.restTemplateWrapper = restTemplate;
+    public void setClientTemplate(ClientTemplate restTemplate) {
+        this.clientTemplate = restTemplate;
     }
 
     public void setReyTemplate( ReyTemplate reyTemplate) {
@@ -86,13 +86,13 @@ public class ClientBackendImpl implements ClientBackend {
             for (int i = 0; i < size; i++) {
                 url = url.replace(regExList.get(i), args[i].toString());
             }
-            result = restTemplateWrapper.exchange(clz,url,null,headers,requestMethod);
+            result = clientTemplate.exchange(clz,url,null,headers,requestMethod);
 
         } else {
             if (args != null && args.length > 0) {
-                result = restTemplateWrapper.exchange(clz,url,args[0],headers,requestMethod);
+                result = clientTemplate.exchange(clz,url,args[0],headers,requestMethod);
             } else {
-                result = restTemplateWrapper.exchange(clz,url,null,headers,requestMethod);
+                result = clientTemplate.exchange(clz,url,null,headers,requestMethod);
             }
         }
 

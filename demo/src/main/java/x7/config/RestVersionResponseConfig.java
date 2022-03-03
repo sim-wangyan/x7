@@ -1,7 +1,7 @@
 package x7.config;
 
 import io.xream.x7.reyc.api.ClientHeaderInterceptor;
-import io.xream.x7.reyc.internal.RestTemplateWrapper;
+import io.xream.x7.reyc.internal.ClientTemplate;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -17,9 +17,9 @@ public class RestVersionResponseConfig {
     private String version;
 
     @Bean
-    public VersionClientHeaderInterceptor versionRequestInterceptor(RestTemplateWrapper restTemplateWrapper){
+    public VersionClientHeaderInterceptor versionRequestInterceptor(ClientTemplate clientTemplate){
         VersionClientHeaderInterceptor interceptor = new VersionClientHeaderInterceptor();
-        restTemplateWrapper.headerInterceptor(interceptor);
+        clientTemplate.headerInterceptor(interceptor);
         return interceptor;
     }
 

@@ -98,10 +98,10 @@ public class ReyListener implements
             RestTemplateCustomizer bean = event.getApplicationContext().getBean(RestTemplateCustomizer.class);
             if (bean == null)
                 return;
-            RestTemplateWrapper wrapper = bean.customize();
+            ClientTemplate wrapper = bean.customize();
             if (wrapper != null){
                 ClientBackendImpl clientBackend = event.getApplicationContext().getBean(ClientBackendImpl.class);
-                clientBackend.setRestTemplateWrapper(wrapper);
+                clientBackend.setClientTemplate(wrapper);
             }
 
         }catch (Exception e) {
@@ -113,7 +113,7 @@ public class ReyListener implements
     private void wrap(ApplicationStartedEvent event){
         try{
             RestTemplate restTemplate = restTemplate(event);
-            RestTemplateWrapper wrapper = event.getApplicationContext().getBean(RestTemplateWrapper.class);
+            ClientTemplate wrapper = event.getApplicationContext().getBean(ClientTemplate.class);
             wrapper.wrap(restTemplate);
             wrapR4jTemplate(event);
             headerInterceptor(wrapper,event);
@@ -122,7 +122,7 @@ public class ReyListener implements
         }
     }
 
-    private void headerInterceptor(RestTemplateWrapper wrapper, ApplicationStartedEvent event) {
+    private void headerInterceptor(ClientTemplate wrapper, ApplicationStartedEvent event) {
         try{
             Tracer tracer = event.getApplicationContext().getBean(Tracer.class);
             ClientHeaderInterceptor clientHeaderInterceptor = new TracingClientHeaderInterceptor(tracer);
