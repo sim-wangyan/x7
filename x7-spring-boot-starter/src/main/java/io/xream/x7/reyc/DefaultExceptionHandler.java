@@ -67,7 +67,6 @@ public class DefaultExceptionHandler {
         }else {
             message = e.getMessage();
         }
-
         return ResponseEntity.status(ReyHttpStatus.INTERNAL_SERVER_ERROR.getStatus()).body(
                 new RemoteExceptionProto(status,message,stack,traceId)
         );

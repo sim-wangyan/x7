@@ -29,6 +29,7 @@ public class RemoteExceptionProto {
     private int status;
     private String traceId;
     private String error;
+    private String message;
     private String stack;
     private String path;
     private String fallback;
@@ -50,10 +51,7 @@ public class RemoteExceptionProto {
         this.error = error;
         this.stack = statck;
         this.traceId = traceId;
-        if (StringUtil.isNullOrEmpty(this.error)){
-            this.error = this.stack;
-            this.stack = null;
-        }
+        this.message = error;
     }
 
     public ReyInternalException create(ReyHttpStatus reyHttpStatus) {
@@ -90,6 +88,14 @@ public class RemoteExceptionProto {
 
     public void setStack(String stack) {
         this.stack = stack;
+    }
+
+    public String getMessage() {
+        return message;
+    }
+
+    public void setMessage(String message) {
+        this.message = message;
     }
 
     public String getPath() {
