@@ -47,6 +47,7 @@ public class RemoteExceptionHandler {
         String traceId = span == null ? "" : span.context().toTraceId() + ":" + span.context().toSpanId();
 
         RemoteExceptionProto proto = new RemoteExceptionProto(exception, traceId);
+        System.out.println("proto: " + proto);
         return ResponseEntity.status(ReyHttpStatus.TO_CLIENT.getStatus()).body(
                 proto
         );
