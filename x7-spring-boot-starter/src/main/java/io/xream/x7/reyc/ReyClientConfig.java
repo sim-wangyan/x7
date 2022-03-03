@@ -17,7 +17,11 @@
 package io.xream.x7.reyc;
 
 import io.xream.x7.fallback.internal.FallbackInterceptor;
-import io.xream.x7.reyc.internal.*;
+import io.xream.x7.reyc.api.ClientTemplate;
+import io.xream.x7.reyc.internal.ClientBackend;
+import io.xream.x7.reyc.internal.ClientBackendImpl;
+import io.xream.x7.reyc.internal.ClientExceptionHandler;
+import io.xream.x7.reyc.internal.DefaultClientTemplate;
 import org.springframework.context.annotation.Bean;
 
 /**

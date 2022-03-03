@@ -23,6 +23,7 @@ import io.xream.x7.base.util.ExceptionUtil;
 import io.xream.x7.base.util.JsonX;
 import io.xream.x7.base.util.StringUtil;
 import io.xream.x7.base.web.ResponseString;
+import io.xream.x7.reyc.api.ClientTemplate;
 import io.xream.x7.reyc.api.ReyTemplate;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.bind.annotation.RequestMethod;

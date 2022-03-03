@@ -14,10 +14,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.xream.x7.reyc.internal;
+package io.xream.x7.reyc.api;
 
 import io.xream.x7.base.web.ResponseString;
-import io.xream.x7.reyc.api.ClientHeaderInterceptor;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.bind.annotation.RequestMethod;
 

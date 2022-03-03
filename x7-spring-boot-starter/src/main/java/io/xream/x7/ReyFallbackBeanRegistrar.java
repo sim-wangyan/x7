@@ -19,21 +19,14 @@ package io.xream.x7;
 
 import io.xream.x7.annotation.Fallback;
 import io.xream.x7.base.util.ClassFileReader;
-import io.xream.x7.fallback.internal.FallbackInterceptor;
 import io.xream.x7.fallback.internal.FallbackParser;
-import org.aopalliance.intercept.MethodInterceptor;
-import org.springframework.aop.framework.ProxyFactoryBean;
-import org.springframework.aop.support.NameMatchMethodPointcutAdvisor;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.BeanFactory;
 import org.springframework.beans.factory.BeanFactoryAware;
-import org.springframework.beans.factory.support.BeanDefinitionBuilder;
 import org.springframework.beans.factory.support.BeanDefinitionRegistry;
-import org.springframework.beans.factory.support.GenericBeanDefinition;
 import org.springframework.context.annotation.ImportBeanDefinitionRegistrar;
 import org.springframework.core.type.AnnotationMetadata;
 
-import java.lang.reflect.Method;
 import java.util.Map;
 import java.util.Set;
 

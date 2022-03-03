@@ -16,7 +16,7 @@
  */
 package io.xream.x7.reyc.api.custom;
 
-import io.xream.x7.reyc.internal.ClientTemplate;
+import io.xream.x7.reyc.api.ClientTemplate;
 
 /**
  * @author Sim

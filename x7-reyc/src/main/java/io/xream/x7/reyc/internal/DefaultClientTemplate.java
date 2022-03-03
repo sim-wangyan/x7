@@ -21,6 +21,7 @@ import io.xream.x7.base.util.LoggerProxy;
 import io.xream.x7.base.util.StringUtil;
 import io.xream.x7.base.web.ResponseString;
 import io.xream.x7.reyc.api.ClientHeaderInterceptor;
+import io.xream.x7.reyc.api.ClientTemplate;
 import org.springframework.http.*;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.bind.annotation.RequestMethod;
