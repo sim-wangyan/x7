@@ -62,7 +62,7 @@ public class RepositoryInvocationHandler implements InvocationHandler, DynamicDi
 
             return obj;
         } catch (InvocationTargetException e){
-            throw e.getCause();
+            throw e.getTargetException();
         }finally {
             removeDialectKey();
         }
