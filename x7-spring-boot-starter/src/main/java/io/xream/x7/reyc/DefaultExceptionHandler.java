@@ -49,8 +49,7 @@ public class DefaultExceptionHandler {
     @ResponseBody
     public ResponseEntity<RemoteExceptionProto> handleDefaultException(RuntimeException e){
 
-        final String stack = ExceptionUtil.getMessage(e);
-        logger.error(stack);
+        logger.error(ExceptionUtil.getMessage(e));
 
         if (e.getClass().getName().startsWith("org.springframework.http"))
             throw e;
@@ -58,11 +57,10 @@ public class DefaultExceptionHandler {
         Span span = tracer.scopeManager().activeSpan();
         String traceId = span == null ? "" : span.context().toTraceId()+ ":" + span.context().toSpanId();
 
+        final String stack = ExceptionUtil.getStack(e);
         int status = 500;
         String message = null;
-        if (e instanceof NullPointerException){
-            message = stack;
-        }else if (e instanceof FallbackUnexpectedReturnTypeException){
+        if (e instanceof FallbackUnexpectedReturnTypeException){
             throw e;
         }else if (e instanceof ReyBizException){
             throw e;
