@@ -23,17 +23,17 @@ import io.xream.x7.base.api.TaggedException;
  * Created by Sim on 2018/6/22.
  * catch it and handle if fallback return obj
  */
-public class FallbackUnexpectedReturnTypeException extends TaggedException {
+public class MismatchedReturnTypeException extends TaggedException {
 
-    public FallbackUnexpectedReturnTypeException(Throwable e){
+    public MismatchedReturnTypeException(Throwable e){
         super(e);
     }
 
-    public FallbackUnexpectedReturnTypeException(String message){
+    public MismatchedReturnTypeException(String message){
         super(message);
     }
 
-    public FallbackUnexpectedReturnTypeException(String message, Object tag){
+    public MismatchedReturnTypeException(String message, Object tag){
         super(message);
         super.setTag(tag);
     }

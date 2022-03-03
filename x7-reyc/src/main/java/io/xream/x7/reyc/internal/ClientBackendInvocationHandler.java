@@ -17,7 +17,7 @@
 package io.xream.x7.reyc.internal;
 
 import io.xream.x7.base.api.BackendService;
-import io.xream.x7.base.exception.FallbackUnexpectedReturnTypeException;
+import io.xream.x7.base.exception.MismatchedReturnTypeException;
 import io.xream.x7.base.exception.ReyInternalException;
 import io.xream.x7.base.util.LoggerProxy;
 import io.xream.x7.base.web.ResponseString;
@@ -90,10 +90,10 @@ public class ClientBackendInvocationHandler implements InvocationHandler {
             }else if (result.getClass() == r.getReturnType()){
                 return result;
             }else {
-                throw new FallbackUnexpectedReturnTypeException("FALLBACK AND GET RESULT, catch to invoke e.getTag() ",result);
+                throw new MismatchedReturnTypeException("FALLBACK AND GET MISMATCHED RESULT, " +
+                        "catch and invoke e.getTag() to handle",result);
             }
         } catch (RuntimeException re){
-            re.printStackTrace();
             throw re;
         } catch (ReyInternalException rie){
             if (rie.getCause() instanceof ReyInternalException) {

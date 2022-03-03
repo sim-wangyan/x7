@@ -20,7 +20,7 @@ import io.opentracing.Span;
 import io.opentracing.Tracer;
 import io.xream.x7.base.api.ReyHttpStatus;
 import io.xream.x7.base.exception.BizException;
-import io.xream.x7.base.exception.FallbackUnexpectedReturnTypeException;
+import io.xream.x7.base.exception.MismatchedReturnTypeException;
 import io.xream.x7.base.exception.ReyBizException;
 import io.xream.x7.base.util.ExceptionUtil;
 import io.xream.x7.base.web.RemoteExceptionProto;
@@ -41,9 +41,6 @@ public class DefaultExceptionHandler {
     private Tracer tracer;
 
     @ExceptionHandler({
-            NullPointerException.class,
-            IllegalArgumentException.class,
-            BizException.class,
             RuntimeException.class
     })
     @ResponseBody
@@ -60,15 +57,18 @@ public class DefaultExceptionHandler {
         final String stack = ExceptionUtil.getStack(e);
         int status = 500;
         String message = null;
-        if (e instanceof FallbackUnexpectedReturnTypeException){
-            throw e;
+        if (e instanceof MismatchedReturnTypeException){
+            message = "("+MismatchedReturnTypeException.class.getName() + ") " + e.getMessage();
         }else if (e instanceof ReyBizException){
-            throw e;
-        }else {
+            message = "("+ReyBizException.class.getName() + ") " + e.getMessage();
+        }else if (e instanceof BizException){
+            message = "("+BizException.class.getName() + ") " + e.getMessage();
+        } else {
             message = e.getMessage();
         }
+        RemoteExceptionProto proto = new RemoteExceptionProto(status,message,stack,traceId);
         return ResponseEntity.status(ReyHttpStatus.INTERNAL_SERVER_ERROR.getStatus()).body(
-                new RemoteExceptionProto(status,message,stack,traceId)
+                proto
         );
     }
 
