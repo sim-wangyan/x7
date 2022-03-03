@@ -57,7 +57,7 @@ public class DefaultClientExceptionResolver implements ClientExceptionResolver {
     public void handleException(Throwable e) throws ReyInternalException{
 
         if (e instanceof CallNotPermittedException) {//503
-            throw ReyInternalException.create(ReyHttpStatus.TO_CLIENT, 503 ,e.getMessage(), ExceptionUtil.getMessage(e),null,null,null);
+            throw ReyInternalException.create(ReyHttpStatus.TO_CLIENT, 503 ,e.getMessage(), ExceptionUtil.getStack(e),null,null,null);
         }
 
         if (e instanceof ResourceAccessException){
@@ -67,9 +67,9 @@ public class DefaultClientExceptionResolver implements ClientExceptionResolver {
             String[] arr = str.split(";");
             final String message = arr[0];
             if (t instanceof ConnectException) {
-                throw ReyInternalException.create(ReyHttpStatus.TO_CLIENT, -1 ,message, ExceptionUtil.getMessage(e),null,null,null);
+                throw ReyInternalException.create(ReyHttpStatus.TO_CLIENT, -1 ,message, ExceptionUtil.getStack(e),null,null,null);
             }else if (t instanceof SocketTimeoutException) {
-                throw ReyInternalException.create(ReyHttpStatus.TO_CLIENT, -2 ,message,ExceptionUtil.getMessage(e),null,null,null);
+                throw ReyInternalException.create(ReyHttpStatus.TO_CLIENT, -2 ,message,ExceptionUtil.getStack(e),null,null,null);
             }
         }else if (e instanceof HttpClientErrorException){
             HttpClientErrorException ee = (HttpClientErrorException)e;
@@ -80,7 +80,8 @@ public class DefaultClientExceptionResolver implements ClientExceptionResolver {
             Map<String,Object> map = JsonX.toMap(str);
             String message = MapUtils.getString(map,"error");
             String path = MapUtils.getString(map, "path");
-            throw ReyInternalException.create(ReyHttpStatus.TO_CLIENT, ee.getStatusCode().value() ,message,ExceptionUtil.getMessage(e),null,path,null);
+            String stack = ExceptionUtil.getStack(e);
+            throw ReyInternalException.create(ReyHttpStatus.TO_CLIENT, ee.getStatusCode().value() ,message,stack,null,path,null);
         }else if (e instanceof HttpServerErrorException) {
             HttpServerErrorException hse = (HttpServerErrorException)e;
             hse.printStackTrace();
@@ -99,7 +100,7 @@ public class DefaultClientExceptionResolver implements ClientExceptionResolver {
             Map<String,Object> map = JsonX.toMap(str);
             String stack = MapUtils.getString(map,"stack");
             if (stack == null) {
-                stack = ExceptionUtil.getMessage(e);
+                stack = ExceptionUtil.getStack(e);
             }
             String message = MapUtils.getString(map,"error");
             String path = MapUtils.getString(map,"path");

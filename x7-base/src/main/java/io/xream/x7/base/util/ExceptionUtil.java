@@ -56,6 +56,33 @@ public class ExceptionUtil {
         return false;
     }
 
+    public static String getStack(Throwable e) {
+        String msg = "";
+        StackTraceElement[] eleArr = e.getStackTrace();
+        if (eleArr == null || eleArr.length == 0)
+            return msg;
+
+        int i = 11;
+        for (StackTraceElement ele : eleArr) {
+            String str = ele.toString();
+            boolean notAppend = str.startsWith("sun.reflect")
+                    || startWithJava(str)
+                    || startWithOrg(str)
+                    || startWithIO(str)
+                    || str.startsWith("com.sun");
+            if (
+                    !notAppend
+            ) {
+                msg += str;
+                msg += " ";
+                if (--i == 0)
+                    break;
+            }
+        }
+
+        return msg;
+    }
+
     public static String getMessage(Throwable e) {
         String msg = e.getMessage();
         msg += " ";
@@ -63,15 +90,14 @@ public class ExceptionUtil {
         if (eleArr == null || eleArr.length == 0)
             return msg;
 
-        int i = 7;
+        int i = 11;
         for (StackTraceElement ele : eleArr) {
             String str = ele.toString();
             boolean notAppend = str.startsWith("sun.reflect")
                     || startWithJava(str)
                     || startWithOrg(str)
                     || startWithIO(str)
-                    || str.startsWith("com.sun")
-                    || str.startsWith("com.alibaba.fastjson");
+                    || str.startsWith("com.sun");
             if (
                     !notAppend
             ) {
