@@ -16,7 +16,7 @@
  */
 package io.xream.x7.reyc;
 
-import io.xream.x7.fallback.internal.FallbackInterceptor;
+import io.xream.x7.fallback.internal.aop.FallbackInterceptor;
 import io.xream.x7.reyc.api.ClientTemplate;
 import io.xream.x7.reyc.internal.ClientBackend;
 import io.xream.x7.reyc.internal.ClientBackendImpl;

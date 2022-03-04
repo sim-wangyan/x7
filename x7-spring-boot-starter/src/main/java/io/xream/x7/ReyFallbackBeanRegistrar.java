@@ -52,7 +52,6 @@ public class ReyFallbackBeanRegistrar implements ImportBeanDefinitionRegistrar, 
                 }
             }
         }catch (Exception e) {
-            System.out.println("---------------------------");
             return;
         }
 
@@ -63,47 +62,6 @@ public class ReyFallbackBeanRegistrar implements ImportBeanDefinitionRegistrar, 
 
             FallbackParser.parse(annotation.exceptions(), clz,
                     annotation.fallback(), fallback -> beanFactory.getBean(fallback));
-
-//            createAop(annotation.fallback(),clz);
-
-//            Object target = this.beanFactory.getBean(clz);
-//            //interceptorNames
-//
-//
-//            Method[] fallbackMethodArr = annotation.fallback().getDeclaredMethods();
-//            int length = fallbackMethodArr.length;
-//            if (length == 0)
-//                continue;
-//            String[] nameArr = new String[fallbackMethodArr.length];
-//            for (int i=0; i<length; i++) {
-//                nameArr[i] = fallbackMethodArr[i].getName();
-//            }
-
-//            MethodInterceptor interceptor = this.beanFactory.getBean(FallbackInterceptor.class);
-//
-//            if (interceptor == null)
-//                throw new RuntimeException("No instance ofMethodInterceptor");
-//
-//
-//            final String advisorName = clz.getSimpleName()+"Advisor";
-//
-//            BeanDefinitionBuilder advisorBuilder = BeanDefinitionBuilder.genericBeanDefinition(NameMatchMethodPointcutAdvisor.class);
-//            GenericBeanDefinition advisorDefinition = (GenericBeanDefinition) advisorBuilder.getRawBeanDefinition();
-//            advisorDefinition.getPropertyValues().add("mappedNames", nameArr);
-//            advisorDefinition.getPropertyValues().add("advice", interceptor);
-//            advisorDefinition.setBeanClass(NameMatchMethodPointcutAdvisor.class);
-//            advisorDefinition.setAutowireMode(GenericBeanDefinition.AUTOWIRE_BY_TYPE);
-//            registry.registerBeanDefinition(advisorName, advisorDefinition);
-//
-//
-//            BeanDefinitionBuilder builder = BeanDefinitionBuilder.genericBeanDefinition(clz);
-//            GenericBeanDefinition definition = (GenericBeanDefinition) builder.getRawBeanDefinition();
-//            definition.getPropertyValues().add("target", target);
-//            definition.getPropertyValues().add("interceptorNames", advisorName);
-//            definition.setBeanClass(ProxyFactoryBean.class);
-//            definition.setAutowireMode(GenericBeanDefinition.AUTOWIRE_BY_TYPE);
-//
-//            registry.registerBeanDefinition(clz.getSimpleName()+"Aop", definition);
 
         }
     }

@@ -16,19 +16,21 @@
  */
 package io.xream.x7;
 
-import org.springframework.context.annotation.Import;
-
-import java.lang.annotation.*;
+import io.xream.x7.fallback.internal.aop.FallbackInterceptor;
+import io.xream.x7.fallback.internal.aop.FallbackProxy;
+import org.springframework.context.annotation.Bean;
 
 /**
  * @author Sim
  */
-@Retention(RetentionPolicy.RUNTIME)
-@Target(ElementType.TYPE)
-@Documented
-//@Import({ReyFallbackBeanRegistrar.class,FallbackAspect.class})
-//@Import({ReyFallbackAspectJAutoProxyRegistrar.class})
-@Import({ReyFallbackBeanRegistrar.class,FallbackConfig.class})
-public @interface EnableFallback {
-    String[] basePackages() default {};
+public class FallbackConfig {
+
+    @Bean
+    FallbackProxy fallbackProxy(FallbackInterceptor fallbackInterceptor){
+
+        FallbackProxy fallbackProxy = new FallbackProxy();
+        fallbackProxy.setAdvice(fallbackInterceptor);
+        return fallbackProxy;
+    }
+
 }
