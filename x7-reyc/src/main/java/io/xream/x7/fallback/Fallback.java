@@ -43,7 +43,7 @@ public interface Fallback {
                 }
             }
         }
-        if (isCatchRequired) {
+        if (!isCatchRequired) {
             throw e;
         }
         try {
