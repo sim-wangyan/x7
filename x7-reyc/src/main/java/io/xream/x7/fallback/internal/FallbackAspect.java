@@ -45,7 +45,7 @@ public class FallbackAspect implements io.xream.x7.fallback.Fallback {
     public void cut() {
     }
 
-    @Around("cut() && @annotation(fallback) ")
+    @Around(value =  "@within(fallback)")
     public Object around(ProceedingJoinPoint proceedingJoinPoint, Fallback fallback) throws Throwable {
 
         Object[] args = proceedingJoinPoint.getArgs();

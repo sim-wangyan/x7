@@ -16,6 +16,9 @@
  */
 package io.xream.x7;
 
+import io.xream.x7.fallback.internal.FallbackAspect;
+import org.springframework.context.annotation.Import;
+
 import java.lang.annotation.*;
 
 /**
@@ -24,7 +27,7 @@ import java.lang.annotation.*;
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.TYPE)
 @Documented
-//@Import({ReyFallbackBeanRegistrar.class})
+@Import({FallbackAspect.class})
 public @interface EnableFallback {
     String[] basePackages() default {};
 }
