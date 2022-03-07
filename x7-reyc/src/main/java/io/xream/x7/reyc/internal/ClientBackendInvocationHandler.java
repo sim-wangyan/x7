@@ -93,10 +93,9 @@ public class ClientBackendInvocationHandler implements InvocationHandler {
                 throw new MismatchedReturnTypeException("FALLBACK AND GET MISMATCHED RESULT, " +
                         "catch and invoke e.getTag() to handle",result);
             }
-        } catch (RuntimeException re){
-            throw re;
-        } catch (ReyInternalException rie){
-            if (rie.getCause() instanceof ReyInternalException) {
+        } catch (RuntimeException rie){
+            Throwable throwable = rie.getCause();
+            if (throwable != null && throwable instanceof ReyInternalException) {
                 throw rie.getCause();
             }
             throw rie;

@@ -31,7 +31,6 @@ public class FallbackInterceptor implements MethodInterceptor, Fallback {
     public Object invoke(MethodInvocation methodInvocation) throws Throwable {
 
         Method method = methodInvocation.getMethod();
-        System.out.println("MethodInvocation.method: " + method.toString());
         Object[] args = methodInvocation.getArguments();
         Class rc = method.getReturnType();
         try{

@@ -35,7 +35,7 @@ public class ReyClientConfig  {
     }
 
     @Bean
-    public ClientTemplate restTemplateWrapper() {
+    public ClientTemplate clientTemplate() {
         return new DefaultClientTemplate();
     }
     @Bean

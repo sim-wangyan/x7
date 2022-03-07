@@ -36,7 +36,7 @@ public class FallbackParser {
         return map.get(key);
     }
 
-    public static void parse(Class<? extends Throwable>[] exceptionClzzList,  Class<?> serviceClz, Class<?> fallbackClz,
+    public static void parse(Class<? extends Throwable>[] ignoreExceptions,  Class<?> serviceClz, Class<?> fallbackClz,
                              FallbackInstance fallbackInstance) {
 
         if (fallbackClz != null && fallbackClz != void.class) {
@@ -48,7 +48,7 @@ public class FallbackParser {
                 for (Method reyMethod : arr) {
                     if (reyMethod.getName().equals(fm.getName())) {
                         map.put(FallbacKey.of(reyMethod),
-                                FallbackParsed.of(fm,fallback,exceptionClzzList,serviceClz)
+                                FallbackParsed.of(fm,fallback,ignoreExceptions,serviceClz)
                         );
                     }
                 }

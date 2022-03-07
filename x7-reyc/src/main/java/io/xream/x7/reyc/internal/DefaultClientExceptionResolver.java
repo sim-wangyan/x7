@@ -74,9 +74,7 @@ public class DefaultClientExceptionResolver implements ClientExceptionResolver {
         }else if (e instanceof HttpClientErrorException){
             HttpClientErrorException ee = (HttpClientErrorException)e;
             String str = ee.getLocalizedMessage();
-            str = str.split(": ")[1].trim();
-            str = str.replace("[","");
-            str = str.replace("]","");
+            str = adaptJson(str);
             Map<String,Object> map = JsonX.toMap(str);
             String message = MapUtils.getString(map,"error");
             String path = MapUtils.getString(map, "path");
@@ -86,17 +84,7 @@ public class DefaultClientExceptionResolver implements ClientExceptionResolver {
             HttpServerErrorException hse = (HttpServerErrorException)e;
             hse.printStackTrace();
             String str = hse.getLocalizedMessage();
-            str = str.split(": ")[1].trim();
-            str = str.replace("[","");
-            str = str.replace("]","");
-            if (! (str.endsWith("}") )) {
-                if ((str.endsWith("null") || str.endsWith("\"") )) {
-                    str += "}";
-                }else {
-                    str += "\"}";
-                }
-            }
-
+            str = adaptJson(str);
             Map<String,Object> map = JsonX.toMap(str);
             String stack = MapUtils.getString(map,"stack");
             if (stack == null) {
@@ -111,6 +99,8 @@ public class DefaultClientExceptionResolver implements ClientExceptionResolver {
                     path,
                     MapUtils.getString(map,"traceId")
             );
+        }else if (e instanceof IllegalArgumentException) {
+            throw ReyInternalException.create(ReyHttpStatus.TO_CLIENT, 400, e.getMessage(), ExceptionUtil.getStack(e),null,null,null);
         }
 
         throw new ReyBizException(e);

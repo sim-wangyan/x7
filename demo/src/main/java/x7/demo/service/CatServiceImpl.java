@@ -12,7 +12,7 @@ import x7.demo.repository.CatRepository;
 import java.util.List;
 import java.util.Map;
 
-@Fallback(exceptions = {RuntimeException.class}, fallback = CatServiceFallback.class)
+@Fallback(ignoreExceptions = {RuntimeException.class}, fallback = CatServiceFallback.class)
 @Service
 public class CatServiceImpl implements CatService{
 

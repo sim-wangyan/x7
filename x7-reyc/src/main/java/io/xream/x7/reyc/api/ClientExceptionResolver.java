@@ -26,4 +26,18 @@ public interface ClientExceptionResolver {
     void convertNot200ToException(int status, String response) throws ReyInternalException;
     void handleException(Throwable e) throws ReyInternalException;
     FallbackHandler fallbackHandler();
+
+    default String adaptJson(String str) {
+        str = str.split(": ")[1].trim();
+        str = str.replace("[","");
+        str = str.replace("]","");
+        if (! (str.endsWith("}") )) {
+            if ((str.endsWith("null") || str.endsWith("\"") )) {
+                str += "}";
+            }else {
+                str += "\"}";
+            }
+        }
+        return str;
+    }
 }

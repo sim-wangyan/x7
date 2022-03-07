@@ -21,7 +21,7 @@ import io.xream.x7.base.api.ReyHttpStatus;
 /**
  * @author Sim
  */
-public class ReyInternalException extends Exception {
+public class ReyInternalException extends RuntimeException {
 
     private int status;
     private String traceId;
@@ -87,10 +87,29 @@ public class ReyInternalException extends Exception {
                                               String path,
                                               String traceId){
         if (reyHttpStatus == ReyHttpStatus.INTERNAL_SERVER_ERROR){
-            return new ReyInternalException.InternalServerError(status,error,stack,fallback,path,traceId);
+            return new InternalServerError(status,error,stack,fallback,path,traceId);
+        }else if (reyHttpStatus == ReyHttpStatus.BAD_REQUEST){
+            return new BadRequest(error,stack,fallback,path,traceId);
         }else {
             return new ToClient(status,error,stack,fallback,path,traceId);
         }
+    }
+
+    public static final class BadRequest extends ReyInternalException {
+
+        private BadRequest(String message,String stack,String fallback,String path, String traceId) {
+            super(message);
+            super.setStatus(400);
+            super.setStack(stack);
+            super.setFallback(fallback);
+            super.setPath(path);
+            super.setTraceId(traceId);
+        }
+
+        public int httpStatus(){
+            return ReyHttpStatus.BAD_REQUEST.getStatus();
+        }
+
     }
 
     public static final class InternalServerError extends ReyInternalException {
@@ -109,6 +128,7 @@ public class ReyInternalException extends Exception {
         }
 
     }
+
 
     public static final class ToClient extends ReyInternalException {
 

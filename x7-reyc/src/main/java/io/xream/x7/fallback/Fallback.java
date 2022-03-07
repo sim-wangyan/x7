@@ -16,6 +16,7 @@
  */
 package io.xream.x7.fallback;
 
+import io.xream.x7.base.exception.ReyInternalException;
 import io.xream.x7.fallback.internal.FallbacKey;
 import io.xream.x7.fallback.internal.FallbackParsed;
 import io.xream.x7.fallback.internal.FallbackParser;
@@ -33,17 +34,22 @@ public interface Fallback {
         if (parsed == null) {
             throw e;
         }
-        boolean isCatchRequired = false;
-        Class[] es = parsed.getExceptions();
+        if (e instanceof ReyInternalException.BadRequest
+            || e instanceof IllegalArgumentException
+        ){
+            throw e;
+        }
+        boolean isNotRequiredCatch = false;
+        Class[] es = parsed.getIgnoreExceptions();
         if (es != null && es.length > 0) {
-            for (Class ec: parsed.getExceptions()) {
+            for (Class ec: parsed.getIgnoreExceptions()) {
                 if (e.getClass() == ec || e.getClass().isAssignableFrom(ec)) {
-                    isCatchRequired = true;
+                    isNotRequiredCatch = true;
                     break;
                 }
             }
         }
-        if (!isCatchRequired) {
+        if (isNotRequiredCatch) {
             throw e;
         }
         try {

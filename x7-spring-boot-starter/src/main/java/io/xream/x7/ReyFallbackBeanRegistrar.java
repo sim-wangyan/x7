@@ -60,7 +60,7 @@ public class ReyFallbackBeanRegistrar implements ImportBeanDefinitionRegistrar, 
             if (annotation == null)
                 continue;
 
-            FallbackParser.parse(annotation.exceptions(), clz,
+            FallbackParser.parse(annotation.ignoreExceptions(), clz,
                     annotation.fallback(), fallback -> beanFactory.getBean(fallback));
 
         }

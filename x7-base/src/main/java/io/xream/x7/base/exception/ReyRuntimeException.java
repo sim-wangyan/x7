@@ -24,4 +24,5 @@ public class ReyRuntimeException extends RuntimeException{
     public ReyRuntimeException(Throwable e){
         super(e);
     }
+
 }

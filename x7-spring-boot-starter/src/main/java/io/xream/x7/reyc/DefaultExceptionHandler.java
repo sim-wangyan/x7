@@ -18,8 +18,6 @@ package io.xream.x7.reyc;
 
 import io.opentracing.Span;
 import io.opentracing.Tracer;
-import io.xream.x7.base.api.ReyHttpStatus;
-import io.xream.x7.base.exception.BizException;
 import io.xream.x7.base.exception.MismatchedReturnTypeException;
 import io.xream.x7.base.exception.ReyBizException;
 import io.xream.x7.base.util.ExceptionUtil;
@@ -30,6 +28,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+import org.springframework.web.method.annotation.MethodArgumentConversionNotSupportedException;
+import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 
 import javax.annotation.Resource;
 
@@ -54,20 +54,24 @@ public class DefaultExceptionHandler {
         Span span = tracer.scopeManager().activeSpan();
         String traceId = span == null ? "" : span.context().toTraceId()+ ":" + span.context().toSpanId();
 
-        final String stack = ExceptionUtil.getStack(e);
+        String stack = ExceptionUtil.getStack(e);
         int status = 500;
         String message = null;
-        if (e instanceof MismatchedReturnTypeException){
+        if (e instanceof IllegalArgumentException
+                || e instanceof MethodArgumentTypeMismatchException
+                || e instanceof MethodArgumentConversionNotSupportedException
+        ) {
+            status = 400;
+            message = e.getMessage();
+        }else if (e instanceof MismatchedReturnTypeException){
             message = "("+MismatchedReturnTypeException.class.getName() + ") " + e.getMessage();
         }else if (e instanceof ReyBizException){
             message = "("+ReyBizException.class.getName() + ") " + e.getMessage();
-        }else if (e instanceof BizException){
-            message = "("+BizException.class.getName() + ") " + e.getMessage();
         } else {
             message = e.getMessage();
         }
         RemoteExceptionProto proto = new RemoteExceptionProto(status,message,stack,traceId);
-        return ResponseEntity.status(ReyHttpStatus.INTERNAL_SERVER_ERROR.getStatus()).body(
+        return ResponseEntity.status(status == 400 ? 400 : 500).body(
                 proto
         );
     }

@@ -22,6 +22,7 @@ package io.xream.x7.base.api;
 public enum ReyHttpStatus {
 
     INTERNAL_SERVER_ERROR(500),
+    BAD_REQUEST(400),
     TO_CLIENT(222);
 
     private int status;

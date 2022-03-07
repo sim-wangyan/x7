@@ -110,10 +110,10 @@ public class ReyListener implements
     private void wrap(ApplicationStartedEvent event){
         try{
             RestTemplate restTemplate = restTemplate(event);
-            ClientTemplate wrapper = event.getApplicationContext().getBean(ClientTemplate.class);
-            wrapper.wrap(restTemplate);
+            ClientTemplate clientTemplate = event.getApplicationContext().getBean(ClientTemplate.class);
+            clientTemplate.wrap(restTemplate);
             wrapR4jTemplate(event);
-            headerInterceptor(wrapper,event);
+            headerInterceptor(clientTemplate,event);
         }catch (Exception e) {
 
         }

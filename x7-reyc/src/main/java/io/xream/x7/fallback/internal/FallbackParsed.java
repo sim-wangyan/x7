@@ -26,24 +26,24 @@ public class FallbackParsed {
 
     private Method method;
     private Object fallback;
-    private Class<? extends Throwable>[] exceptions;
+    private Class<? extends Throwable>[] ignoreExceptions;
     private Class targetClass;
 
-    public static FallbackParsed of(Method method, Object fallback, Class<? extends Throwable>[] exceptions) {
+    public static FallbackParsed of(Method method, Object fallback, Class<? extends Throwable>[] ignoreExceptions) {
         FallbackParsed fallbackParsed = new FallbackParsed();
         fallbackParsed.method= method;
         fallbackParsed.fallback = fallback;
-        fallbackParsed.exceptions = exceptions;
+        fallbackParsed.ignoreExceptions = ignoreExceptions;
         return fallbackParsed;
     }
 
     public static FallbackParsed of(Method method, Object fallback,
-                                    Class<? extends Throwable>[] exceptions,
+                                    Class<? extends Throwable>[] ignoreExceptions,
                                     Class targetClass) {
         FallbackParsed fallbackParsed = new FallbackParsed();
         fallbackParsed.method= method;
         fallbackParsed.fallback = fallback;
-        fallbackParsed.exceptions = exceptions;
+        fallbackParsed.ignoreExceptions = ignoreExceptions;
         fallbackParsed.targetClass = targetClass;
         return fallbackParsed;
     }
@@ -64,12 +64,12 @@ public class FallbackParsed {
         this.fallback = fallback;
     }
 
-    public Class<? extends Throwable>[] getExceptions() {
-        return exceptions;
+    public Class<? extends Throwable>[] getIgnoreExceptions() {
+        return ignoreExceptions;
     }
 
-    public void setExceptions(Class<? extends Throwable>[] exceptions) {
-        this.exceptions = exceptions;
+    public void setIgnoreExceptions(Class<? extends Throwable>[] ignoreExceptions) {
+        this.ignoreExceptions = ignoreExceptions;
     }
 
     public Class getTargetClass() {
@@ -85,7 +85,7 @@ public class FallbackParsed {
         return "FallbackParsed{" +
                 "method=" + method +
                 ", fallback=" + fallback +
-                ", exceptions=" + Arrays.toString(exceptions) +
+                ", ignoreExceptions=" + Arrays.toString(ignoreExceptions) +
                 ", targetClass=" + targetClass +
                 '}';
     }

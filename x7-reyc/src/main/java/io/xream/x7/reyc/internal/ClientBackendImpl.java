@@ -80,15 +80,17 @@ public class ClientBackendImpl implements ClientBackend {
             url = url.replace(router.replaceHolder(),router.replaceValue(arg));
         }
 
-        ResponseString result = null;
-        if (requestMethod == RequestMethod.GET) {
+        if (url.contains("{")) {
             List<String> regExList = StringUtil.listByRegEx(url, pattern);
             int size = regExList.size();
             for (int i = 0; i < size; i++) {
                 url = url.replace(regExList.get(i), args[i].toString());
             }
-            result = clientTemplate.exchange(clz,url,null,headers,requestMethod);
+        }
 
+        ResponseString result = null;
+        if (requestMethod == RequestMethod.GET) {
+            result = clientTemplate.exchange(clz,url,null,headers,requestMethod);
         } else {
             if (args != null && args.length > 0) {
                 result = clientTemplate.exchange(clz,url,args[0],headers,requestMethod);

@@ -21,6 +21,7 @@ import io.xream.x7.reyc.RemoteExceptionHandler;
 import io.xream.x7.reyc.RestTemplateConfig;
 import io.xream.x7.reyc.ReyClientConfig;
 import io.xream.x7.reyc.internal.ClientExceptionHandler;
+import io.xream.x7.reyc.internal.ClientHeaderInterceptorRegistrar;
 import org.springframework.context.annotation.Import;
 
 import java.lang.annotation.*;
@@ -34,7 +35,8 @@ import java.lang.annotation.*;
         ReyClientConfig.class,
         ReyClientBeanRegistrar.class,
         RemoteExceptionHandler.class,
-        DefaultExceptionHandler.class
+        DefaultExceptionHandler.class,
+        ClientHeaderInterceptorRegistrar.class
 })
 public @interface EnableReyClient {
 
