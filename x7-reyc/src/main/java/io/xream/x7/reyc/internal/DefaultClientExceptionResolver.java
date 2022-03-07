@@ -18,8 +18,8 @@ package io.xream.x7.reyc.internal;
 
 import io.github.resilience4j.circuitbreaker.CallNotPermittedException;
 import io.xream.x7.base.api.ReyHttpStatus;
-import io.xream.x7.base.exception.ReyBizException;
 import io.xream.x7.base.exception.ReyInternalException;
+import io.xream.x7.base.exception.ReyRuntimeException;
 import io.xream.x7.base.util.ExceptionUtil;
 import io.xream.x7.base.util.JsonX;
 import io.xream.x7.base.web.RemoteExceptionProto;
@@ -103,7 +103,7 @@ public class DefaultClientExceptionResolver implements ClientExceptionResolver {
             throw ReyInternalException.create(ReyHttpStatus.TO_CLIENT, 400, e.getMessage(), ExceptionUtil.getStack(e),null,null,null);
         }
 
-        throw new ReyBizException(e);
+        throw new ReyRuntimeException(e);
     }
 
     @Override

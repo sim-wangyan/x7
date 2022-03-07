@@ -65,7 +65,6 @@ public class FallbackProxy implements BeanPostProcessor {
             }
         }
 
-
         return bean;
     }
 }

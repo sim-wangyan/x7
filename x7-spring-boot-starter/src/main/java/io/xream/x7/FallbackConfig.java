@@ -26,6 +26,11 @@ import org.springframework.context.annotation.Bean;
 public class FallbackConfig {
 
     @Bean
+    public FallbackInterceptor fallbackInterceptor(){
+        return new FallbackInterceptor();
+    }
+
+    @Bean
     FallbackProxy fallbackProxy(FallbackInterceptor fallbackInterceptor){
 
         FallbackProxy fallbackProxy = new FallbackProxy();

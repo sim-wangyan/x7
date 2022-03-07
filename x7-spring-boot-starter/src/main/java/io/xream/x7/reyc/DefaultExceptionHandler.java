@@ -19,7 +19,7 @@ package io.xream.x7.reyc;
 import io.opentracing.Span;
 import io.opentracing.Tracer;
 import io.xream.x7.base.exception.MismatchedReturnTypeException;
-import io.xream.x7.base.exception.ReyBizException;
+import io.xream.x7.base.exception.ReyRuntimeException;
 import io.xream.x7.base.util.ExceptionUtil;
 import io.xream.x7.base.web.RemoteExceptionProto;
 import org.slf4j.Logger;
@@ -65,8 +65,8 @@ public class DefaultExceptionHandler {
             message = e.getMessage();
         }else if (e instanceof MismatchedReturnTypeException){
             message = "("+MismatchedReturnTypeException.class.getName() + ") " + e.getMessage();
-        }else if (e instanceof ReyBizException){
-            message = "("+ReyBizException.class.getName() + ") " + e.getMessage();
+        }else if (e instanceof ReyRuntimeException){
+            message = "("+ ReyRuntimeException.class.getName() + ") " + e.getMessage();
         } else {
             message = e.getMessage();
         }
