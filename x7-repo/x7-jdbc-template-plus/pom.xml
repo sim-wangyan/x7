@@ -12,7 +12,7 @@
 
 	<name>x7-jdbc-template-plus</name>
 	<description>http://x7.xream.io</description>
-	<urlParamed>http://x7.xream.io</urlParamed>
+	<url>http://x7.xream.io</url>
 
 	<dependencies>
 
