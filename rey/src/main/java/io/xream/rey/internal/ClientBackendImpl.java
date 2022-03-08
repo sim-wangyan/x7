@@ -16,15 +16,15 @@
  */
 package io.xream.rey.internal;
 
+import io.xream.internal.util.ExceptionUtil;
+import io.xream.internal.util.JsonX;
+import io.xream.internal.util.StringUtil;
 import io.xream.rey.api.BackendService;
 import io.xream.rey.api.ClientTemplate;
 import io.xream.rey.api.GroupRouter;
 import io.xream.rey.api.ReyTemplate;
 import io.xream.rey.exception.ReyInternalException;
 import io.xream.rey.proto.ResponseString;
-import io.xream.x7.base.util.ExceptionUtil;
-import io.xream.x7.base.util.JsonX;
-import io.xream.x7.base.util.StringUtil;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.bind.annotation.RequestMethod;
 

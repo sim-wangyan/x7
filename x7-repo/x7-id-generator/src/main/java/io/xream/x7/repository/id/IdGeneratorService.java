@@ -17,6 +17,7 @@
 package io.xream.x7.repository.id;
 
 
+import io.xream.internal.util.VerifyUtil;
 import io.xream.sqli.api.BaseRepository;
 import io.xream.sqli.api.ResultMapRepository;
 import io.xream.sqli.builder.Criteria;
@@ -26,7 +27,6 @@ import io.xream.sqli.parser.BeanElement;
 import io.xream.sqli.parser.Parsed;
 import io.xream.sqli.parser.Parser;
 import io.xream.sqli.spi.IdGeneratorProxy;
-import io.xream.x7.base.util.VerifyUtil;
 import org.slf4j.Logger;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.data.redis.core.script.DefaultRedisScript;

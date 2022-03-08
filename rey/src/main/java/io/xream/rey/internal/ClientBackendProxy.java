@@ -16,7 +16,7 @@
  */
 package io.xream.rey.internal;
 
-import io.xream.x7.base.util.LoggerProxy;
+import io.xream.internal.util.LoggerProxy;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.FactoryBean;
 

@@ -9,25 +9,26 @@
         <groupId>io.xream.x7</groupId>
         <version>3.0.0</version>
     </parent>
-    <artifactId>x7-reyc</artifactId>
-    <description>http://x7.xream.io</description>
-    <url>http://x7.xream.io</url>
+    <artifactId>rey</artifactId>
+    <description>http://rey.xream.io</description>
+    <url>http://rey.xream.io</url>
 
     <properties>
-        <brave.version>3.9.0</brave.version>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <maven.compiler.source>1.8</maven.compiler.source>
+        <maven.compiler.target>1.8</maven.compiler.target>
+        <maven.compiler.compilerVersion>1.8</maven.compiler.compilerVersion>
+        <maven.test.skip>true</maven.test.skip>
+        <fastjson.version>1.2.79</fastjson.version>
+        <resilience4j.version>1.4.0</resilience4j.version>
+        <io.xream.util>1.0.0</io.xream.util>
     </properties>
 
     <dependencies>
         <dependency>
-            <groupId>io.xream.x7</groupId>
-            <artifactId>x7-base</artifactId>
-            <version>3.0.0</version>
-            <exclusions>
-                <exclusion>
-                    <groupId>org.apache.httpcomponents</groupId>
-                    <artifactId>httpclient</artifactId>
-                </exclusion>
-            </exclusions>
+            <groupId>io.xream.internal-util</groupId>
+            <artifactId>internal-util</artifactId>
+            <version>${io.xream.util}</version>
         </dependency>
         <!-- https://mvnrepository.com/artifact/io.github.resilience4j/resilience4j-spring-boot2 -->
         <dependency>

@@ -17,14 +17,14 @@
 package io.xream.rey.internal;
 
 import io.github.resilience4j.circuitbreaker.CallNotPermittedException;
+import io.xream.internal.util.ExceptionUtil;
+import io.xream.internal.util.JsonX;
 import io.xream.rey.api.ClientExceptionResolver;
 import io.xream.rey.api.FallbackHandler;
 import io.xream.rey.api.ReyHttpStatus;
 import io.xream.rey.exception.ReyInternalException;
 import io.xream.rey.exception.ReyRuntimeException;
 import io.xream.rey.proto.RemoteExceptionProto;
-import io.xream.x7.base.util.ExceptionUtil;
-import io.xream.x7.base.util.JsonX;
 import org.apache.commons.collections.MapUtils;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.HttpServerErrorException;

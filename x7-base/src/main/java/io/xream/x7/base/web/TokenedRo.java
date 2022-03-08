@@ -17,7 +17,7 @@
 package io.xream.x7.base.web;
 
 
-import io.xream.x7.base.util.StringUtil;
+import io.xream.internal.util.StringUtil;
 
 public class TokenedRo implements Tokened{
 

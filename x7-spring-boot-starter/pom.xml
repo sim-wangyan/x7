@@ -84,7 +84,7 @@
 		</dependency>
 		<dependency>
 			<groupId>io.xream.x7</groupId>
-			<artifactId>x7-reyc</artifactId>
+			<artifactId>rey</artifactId>
 			<version>3.0.0</version>
 		</dependency>
 

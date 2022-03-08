@@ -1,9 +1,9 @@
 package x7.demo.remote;
 
+import io.xream.internal.util.StringUtil;
+import io.xream.internal.util.VerifyUtil;
 import io.xream.rey.api.GroupRouter;
 import io.xream.sqli.api.Routable;
-import io.xream.x7.base.util.StringUtil;
-import io.xream.x7.base.util.VerifyUtil;
 import x7.demo.entity.Cat;
 import x7.demo.ro.CatFindRo;
 

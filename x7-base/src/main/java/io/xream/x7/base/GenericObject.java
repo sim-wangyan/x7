@@ -17,8 +17,8 @@
 package io.xream.x7.base;
 
 
-import io.xream.x7.base.util.ExceptionUtil;
-import io.xream.x7.base.util.JsonX;
+import io.xream.internal.util.ExceptionUtil;
+import io.xream.internal.util.JsonX;
 
 public class GenericObject<T> {
 

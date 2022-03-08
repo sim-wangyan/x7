@@ -16,6 +16,9 @@
  */
 package io.xream.x7.base.util;
 
+import io.xream.internal.util.ExceptionUtil;
+import io.xream.internal.util.JsonX;
+import io.xream.internal.util.StringUtil;
 import io.xream.x7.base.KV;
 import org.apache.http.HttpEntity;
 import org.apache.http.client.config.RequestConfig;

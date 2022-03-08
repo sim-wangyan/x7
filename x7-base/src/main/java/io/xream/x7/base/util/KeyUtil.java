@@ -16,6 +16,8 @@
  */
 package io.xream.x7.base.util;
 
+import io.xream.internal.util.VerifyUtil;
+
 import java.lang.reflect.Method;
 
 public class KeyUtil {

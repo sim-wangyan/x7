@@ -1,9 +1,9 @@
 package x7;
 
+import io.xream.internal.util.JsonX;
 import io.xream.sqli.builder.*;
 import io.xream.sqli.page.Page;
 import io.xream.sqli.util.SqliJsonUtil;
-import io.xream.x7.base.util.JsonX;
 import io.xream.x7.base.web.ViewEntity;
 import x7.demo.entity.Cat;
 import x7.demo.entity.TestBoo;

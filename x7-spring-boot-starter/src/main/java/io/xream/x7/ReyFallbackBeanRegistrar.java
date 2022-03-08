@@ -17,9 +17,9 @@
 package io.xream.x7;
 
 
+import io.xream.internal.util.ClassFileReader;
 import io.xream.rey.annotation.Fallback;
 import io.xream.rey.fallback.FallbackParser;
-import io.xream.x7.base.util.ClassFileReader;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.BeanFactory;
 import org.springframework.beans.factory.BeanFactoryAware;

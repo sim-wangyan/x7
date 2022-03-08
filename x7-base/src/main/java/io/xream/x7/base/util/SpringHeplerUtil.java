@@ -16,6 +16,7 @@
  */
 package io.xream.x7.base.util;
 
+import io.xream.internal.util.StringUtil;
 import org.springframework.core.LocalVariableTableParameterNameDiscoverer;
 import org.springframework.expression.EvaluationContext;
 import org.springframework.expression.ExpressionParser;

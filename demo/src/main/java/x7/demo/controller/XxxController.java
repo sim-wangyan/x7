@@ -1,11 +1,11 @@
 package x7.demo.controller;
 
 
+import io.xream.internal.util.JsonX;
 import io.xream.sqli.builder.*;
 import io.xream.sqli.converter.ResultMapToBean;
 import io.xream.sqli.page.Page;
 import io.xream.sqli.util.SqliJsonUtil;
-import io.xream.x7.base.util.JsonX;
 import io.xream.x7.base.web.ViewEntity;
 import org.apache.commons.beanutils.BeanUtils;
 import org.slf4j.Logger;

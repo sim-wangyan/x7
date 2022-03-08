@@ -16,12 +16,12 @@
  */
 package io.xream.rey.internal;
 
+import io.xream.internal.util.LoggerProxy;
 import io.xream.rey.api.BackendService;
 import io.xream.rey.exception.MismatchedReturnTypeException;
 import io.xream.rey.exception.ReyInternalException;
 import io.xream.rey.fallback.FallbacKey;
 import io.xream.rey.proto.ResponseString;
-import io.xream.x7.base.util.LoggerProxy;
 
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;

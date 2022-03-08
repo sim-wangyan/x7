@@ -13,6 +13,11 @@
 
     <dependencies>
         <dependency>
+            <groupId>io.xream.internal-util</groupId>
+            <artifactId>internal-util</artifactId>
+            <version>1.0.0</version>
+        </dependency>
+        <dependency>
             <groupId>io.xream.sqli</groupId>
             <artifactId>sqli-core</artifactId>
             <version>${sqli.version}</version>

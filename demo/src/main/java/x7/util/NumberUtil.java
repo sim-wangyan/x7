@@ -16,7 +16,7 @@
   */
  package x7.util;
 
- import io.xream.x7.base.util.StringUtil;
+ import io.xream.internal.util.StringUtil;
 
  import java.math.BigDecimal;
  import java.util.regex.Pattern;

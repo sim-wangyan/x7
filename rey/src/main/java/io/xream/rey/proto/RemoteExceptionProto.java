@@ -16,10 +16,10 @@
  */
 package io.xream.rey.proto;
 
+import io.xream.internal.util.JsonX;
+import io.xream.internal.util.StringUtil;
 import io.xream.rey.api.ReyHttpStatus;
 import io.xream.rey.exception.ReyInternalException;
-import io.xream.x7.base.util.JsonX;
-import io.xream.x7.base.util.StringUtil;
 
 /**
  * @author Sim

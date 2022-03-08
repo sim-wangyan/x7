@@ -21,6 +21,7 @@
         <x7.version>3.0.0</x7.version>
         <fastjson.version>1.2.79</fastjson.version>
         <resilience4j.version>1.4.0</resilience4j.version>
+        <io.xream.util>1.0.0</io.xream.util>
     </properties>
 
     <scm>
@@ -61,8 +62,8 @@
 
     <modules>
         <module>x7-base</module>
+        <module>rey</module>
         <module>x7-repo</module>
-        <module>x7-reyc</module>
         <module>x7-spring-boot-starter</module>
     </modules>
 
@@ -160,6 +161,12 @@
             <artifactId>fastjson</artifactId>
             <version>${fastjson.version}</version>
             <scope>provided</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>io.xream.internal-util</groupId>
+            <artifactId>internal-util</artifactId>
+            <version>1.0.0</version>
         </dependency>
 
     </dependencies>

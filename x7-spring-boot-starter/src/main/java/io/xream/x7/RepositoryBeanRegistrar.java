@@ -16,10 +16,10 @@
  */
 package io.xream.x7;
 
+import io.xream.internal.util.ClassFileReader;
 import io.xream.sqli.api.BaseRepository;
 import io.xream.sqli.api.ResultMapRepository;
 import io.xream.sqli.filter.BaseTypeFilter;
-import io.xream.x7.base.util.ClassFileReader;
 import io.xream.x7.sqli.repository.proxy.RepositoryProxy;
 import org.springframework.beans.factory.support.BeanDefinitionBuilder;
 import org.springframework.beans.factory.support.BeanDefinitionRegistry;

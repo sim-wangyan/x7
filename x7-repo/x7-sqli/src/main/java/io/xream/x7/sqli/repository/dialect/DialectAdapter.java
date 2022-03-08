@@ -16,8 +16,8 @@
  */
 package io.xream.x7.sqli.repository.dialect;
 
+import io.xream.internal.util.StringUtil;
 import io.xream.sqli.dialect.Dialect;
-import io.xream.x7.base.util.StringUtil;
 import org.springframework.core.env.Environment;
 
 /**

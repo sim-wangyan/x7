@@ -23,11 +23,11 @@ import io.github.resilience4j.retry.Retry;
 import io.github.resilience4j.retry.RetryConfig;
 import io.github.resilience4j.retry.RetryRegistry;
 import io.vavr.control.Try;
+import io.xream.internal.util.StringUtil;
 import io.xream.rey.api.BackendService;
 import io.xream.rey.api.ReyTemplate;
 import io.xream.rey.exception.ReyInternalException;
 import io.xream.rey.exception.ReyRuntimeException;
-import io.xream.x7.base.util.StringUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

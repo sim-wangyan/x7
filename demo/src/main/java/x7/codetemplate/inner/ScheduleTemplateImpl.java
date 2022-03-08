@@ -1,6 +1,6 @@
 package x7.codetemplate.inner;
 
-import io.xream.x7.base.util.ExceptionUtil;
+import io.xream.internal.util.ExceptionUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import x7.codetemplate.ScheduleTemplate;

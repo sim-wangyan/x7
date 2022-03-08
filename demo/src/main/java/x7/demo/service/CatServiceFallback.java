@@ -1,7 +1,7 @@
 package x7.demo.service;
 
+import io.xream.internal.util.JsonX;
 import io.xream.sqli.builder.RefreshCondition;
-import io.xream.x7.base.util.JsonX;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
