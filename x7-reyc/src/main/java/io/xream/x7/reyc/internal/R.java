@@ -111,8 +111,8 @@ public class R {
         if (args != null) {
             for (Object arg : args) {
                 if (arg != null && arg instanceof UrlParamed) {
-                    UrlParamed dynamicUrlParamed = (UrlParamed) arg;
-                    url = dynamicUrlParamed.value();
+                    UrlParamed urlParamed = (UrlParamed) arg;
+                    url = urlParamed.value();
                 }else if (arg != null && arg instanceof MultiValueMap) {
                     headers.addAll((MultiValueMap)arg);
                 } else {
