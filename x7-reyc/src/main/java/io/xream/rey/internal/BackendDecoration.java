@@ -14,31 +14,38 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.xream.x7.rey;
-
-import io.opentracing.Span;
-import io.opentracing.Tracer;
-import io.xream.rey.api.ClientHeaderInterceptor;
-import org.springframework.http.HttpHeaders;
+package io.xream.rey.internal;
 
 /**
  * @author Sim
  */
-public class TracingClientHeaderInterceptor implements ClientHeaderInterceptor {
+public class BackendDecoration {
 
-    private Tracer tracer;
+    private String serviceName;
+    private String configName;
+    private boolean retry;
 
-    public TracingClientHeaderInterceptor(Tracer tracer) {
-        this.tracer = tracer;
+    public String getServiceName() {
+        return serviceName;
     }
 
-    @Override
-    public void apply(HttpHeaders httpHeaders) {
+    public void setServiceName(String serviceName) {
+        this.serviceName = serviceName;
+    }
 
-        Span span = tracer.scopeManager().activeSpan();
-        if (span == null)
-            return;
-        String traceId = span.context().toTraceId();
-        httpHeaders.add("TraceId",traceId);
+    public String getConfigName() {
+        return configName;
+    }
+
+    public void setConfigName(String configName) {
+        this.configName = configName;
+    }
+
+    public boolean isRetry() {
+        return retry;
+    }
+
+    public void setRetry(boolean retry) {
+        this.retry = retry;
     }
 }

@@ -14,31 +14,34 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.xream.x7.rey;
+package io.xream.rey.fallback.aop;
 
-import io.opentracing.Span;
-import io.opentracing.Tracer;
-import io.xream.rey.api.ClientHeaderInterceptor;
-import org.springframework.http.HttpHeaders;
+import io.xream.rey.fallback.Fallback;
+import io.xream.rey.fallback.FallbacKey;
+import org.aopalliance.intercept.MethodInterceptor;
+import org.aopalliance.intercept.MethodInvocation;
+
+import java.lang.reflect.Method;
 
 /**
  * @author Sim
  */
-public class TracingClientHeaderInterceptor implements ClientHeaderInterceptor {
-
-    private Tracer tracer;
-
-    public TracingClientHeaderInterceptor(Tracer tracer) {
-        this.tracer = tracer;
-    }
-
+public class FallbackInterceptor implements MethodInterceptor, Fallback {
     @Override
-    public void apply(HttpHeaders httpHeaders) {
+    public Object invoke(MethodInvocation methodInvocation) throws Throwable {
 
-        Span span = tracer.scopeManager().activeSpan();
-        if (span == null)
-            return;
-        String traceId = span.context().toTraceId();
-        httpHeaders.add("TraceId",traceId);
+        Method method = methodInvocation.getMethod();
+        Object[] args = methodInvocation.getArguments();
+        Class rc = method.getReturnType();
+        try{
+            if (rc == void.class){
+                methodInvocation.proceed();
+                return null;
+            }
+            return methodInvocation.proceed();
+        }catch (Exception e){
+            return fallback(FallbacKey.of(method),args,e);
+        }
     }
+
 }

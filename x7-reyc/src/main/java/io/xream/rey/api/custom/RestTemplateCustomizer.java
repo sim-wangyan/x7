@@ -14,31 +14,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.xream.x7.rey;
+package io.xream.rey.api.custom;
 
-import io.opentracing.Span;
-import io.opentracing.Tracer;
-import io.xream.rey.api.ClientHeaderInterceptor;
-import org.springframework.http.HttpHeaders;
+import io.xream.rey.api.ClientTemplate;
 
 /**
  * @author Sim
  */
-public class TracingClientHeaderInterceptor implements ClientHeaderInterceptor {
+public interface RestTemplateCustomizer {
 
-    private Tracer tracer;
-
-    public TracingClientHeaderInterceptor(Tracer tracer) {
-        this.tracer = tracer;
-    }
-
-    @Override
-    public void apply(HttpHeaders httpHeaders) {
-
-        Span span = tracer.scopeManager().activeSpan();
-        if (span == null)
-            return;
-        String traceId = span.context().toTraceId();
-        httpHeaders.add("TraceId",traceId);
-    }
+    ClientTemplate customize();
 }

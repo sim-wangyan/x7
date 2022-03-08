@@ -14,30 +14,30 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.xream.x7.rey;
+package io.xream.rey.api;
 
-import io.xream.rey.api.ClientTemplate;
-import io.xream.rey.internal.ClientBackend;
-import io.xream.rey.internal.ClientBackendImpl;
-import io.xream.rey.internal.ClientExceptionHandler;
-import io.xream.rey.internal.DefaultClientTemplate;
-import org.springframework.context.annotation.Bean;
+import io.xream.x7.base.exception.ReyInternalException;
 
 /**
- * @author Rolyer Luo
+ * @author Sim
  */
-public class ReyClientConfig  {
+public interface ClientExceptionResolver {
 
-    @Bean
-    public ClientTemplate clientTemplate() {
-        return new DefaultClientTemplate();
+    void convertNot200ToException(int status, String response) throws ReyInternalException;
+    void handleException(Throwable e) throws ReyInternalException;
+    FallbackHandler fallbackHandler();
+
+    default String adaptJson(String str) {
+        str = str.split(": ")[1].trim();
+        str = str.replace("[","");
+        str = str.replace("]","");
+        if (! (str.endsWith("}") )) {
+            if ((str.endsWith("null") || str.endsWith("\"") )) {
+                str += "}";
+            }else {
+                str += "\"}";
+            }
+        }
+        return str;
     }
-    @Bean
-    public ClientBackend clientBackend(ClientExceptionHandler clientExceptionHandler, ClientTemplate wrapper)  {
-
-        ClientBackendImpl clientBackend = new ClientBackendImpl(wrapper);
-        clientBackend.setClientExceptionHandler(clientExceptionHandler);
-        return clientBackend;
-    }
-
 }

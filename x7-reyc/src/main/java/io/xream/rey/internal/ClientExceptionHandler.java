@@ -14,30 +14,22 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.xream.x7.rey;
+package io.xream.rey.internal;
 
-import io.xream.rey.api.ClientTemplate;
-import io.xream.rey.internal.ClientBackend;
-import io.xream.rey.internal.ClientBackendImpl;
-import io.xream.rey.internal.ClientExceptionHandler;
-import io.xream.rey.internal.DefaultClientTemplate;
-import org.springframework.context.annotation.Bean;
+import io.xream.rey.api.ClientExceptionResolver;
 
 /**
- * @author Rolyer Luo
+ * @author Sim
  */
-public class ReyClientConfig  {
+public final class ClientExceptionHandler {
 
-    @Bean
-    public ClientTemplate clientTemplate() {
-        return new DefaultClientTemplate();
-    }
-    @Bean
-    public ClientBackend clientBackend(ClientExceptionHandler clientExceptionHandler, ClientTemplate wrapper)  {
+    private ClientExceptionResolver clientExceptionResolver;
 
-        ClientBackendImpl clientBackend = new ClientBackendImpl(wrapper);
-        clientBackend.setClientExceptionHandler(clientExceptionHandler);
-        return clientBackend;
+    public ClientExceptionResolver resolver() {
+        return clientExceptionResolver;
     }
 
+    public void setClientExceptionResolver(ClientExceptionResolver clientExceptionResolver) {
+        this.clientExceptionResolver = clientExceptionResolver;
+    }
 }

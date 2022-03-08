@@ -14,31 +14,19 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.xream.x7.rey;
+package io.xream.rey.internal;
 
-import io.opentracing.Span;
-import io.opentracing.Tracer;
-import io.xream.rey.api.ClientHeaderInterceptor;
-import org.springframework.http.HttpHeaders;
+import io.xream.x7.base.api.BackendService;
+import io.xream.x7.base.exception.ReyInternalException;
+import io.xream.x7.base.web.ResponseString;
+import io.xream.rey.fallback.Fallback;
+
 
 /**
  * @author Sim
  */
-public class TracingClientHeaderInterceptor implements ClientHeaderInterceptor {
+public interface ReyClient extends Fallback {
 
-    private Tracer tracer;
+    Object service(BackendDecoration backendDecoration, BackendService<ResponseString> backendService) throws ReyInternalException;
 
-    public TracingClientHeaderInterceptor(Tracer tracer) {
-        this.tracer = tracer;
-    }
-
-    @Override
-    public void apply(HttpHeaders httpHeaders) {
-
-        Span span = tracer.scopeManager().activeSpan();
-        if (span == null)
-            return;
-        String traceId = span.context().toTraceId();
-        httpHeaders.add("TraceId",traceId);
-    }
 }

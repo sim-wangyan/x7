@@ -14,31 +14,18 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.xream.x7.rey;
+package io.xream.rey.api;
 
-import io.opentracing.Span;
-import io.opentracing.Tracer;
-import io.xream.rey.api.ClientHeaderInterceptor;
-import org.springframework.http.HttpHeaders;
+import io.xream.x7.base.web.ResponseString;
+import org.springframework.util.MultiValueMap;
+import org.springframework.web.bind.annotation.RequestMethod;
 
 /**
  * @author Sim
  */
-public class TracingClientHeaderInterceptor implements ClientHeaderInterceptor {
+public interface ClientTemplate {
 
-    private Tracer tracer;
-
-    public TracingClientHeaderInterceptor(Tracer tracer) {
-        this.tracer = tracer;
-    }
-
-    @Override
-    public void apply(HttpHeaders httpHeaders) {
-
-        Span span = tracer.scopeManager().activeSpan();
-        if (span == null)
-            return;
-        String traceId = span.context().toTraceId();
-        httpHeaders.add("TraceId",traceId);
-    }
+    void wrap(Object impl);
+    void headerInterceptor(ClientHeaderInterceptor interceptor);
+    ResponseString exchange(Class clz, String url, Object request, MultiValueMap headers, RequestMethod httpMethod);
 }

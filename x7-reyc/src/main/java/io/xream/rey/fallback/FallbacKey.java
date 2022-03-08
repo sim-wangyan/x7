@@ -14,31 +14,39 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.xream.x7.rey;
+package io.xream.rey.fallback;
 
-import io.opentracing.Span;
-import io.opentracing.Tracer;
-import io.xream.rey.api.ClientHeaderInterceptor;
-import org.springframework.http.HttpHeaders;
+import java.lang.reflect.Method;
+import java.util.Objects;
 
 /**
  * @author Sim
  */
-public class TracingClientHeaderInterceptor implements ClientHeaderInterceptor {
+public class FallbacKey {
 
-    private Tracer tracer;
+    private Method method;
 
-    public TracingClientHeaderInterceptor(Tracer tracer) {
-        this.tracer = tracer;
+    public static FallbacKey of(Method method) {
+        FallbacKey key = new FallbacKey();
+        key.method = method;
+        return key;
     }
 
     @Override
-    public void apply(HttpHeaders httpHeaders) {
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        FallbacKey that = (FallbacKey) o;
+        return Objects.equals(method, that.method);
+    }
 
-        Span span = tracer.scopeManager().activeSpan();
-        if (span == null)
-            return;
-        String traceId = span.context().toTraceId();
-        httpHeaders.add("TraceId",traceId);
+    @Override
+    public int hashCode() {
+        return Objects.hash(method);
+    }
+
+    @Override
+    public String toString() {
+        return method.toString();
     }
 }

@@ -14,31 +14,25 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.xream.x7.rey;
+package io.xream.rey.internal;
 
-import io.opentracing.Span;
-import io.opentracing.Tracer;
-import io.xream.rey.api.ClientHeaderInterceptor;
-import org.springframework.http.HttpHeaders;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.Configuration;
 
 /**
  * @author Sim
  */
-public class TracingClientHeaderInterceptor implements ClientHeaderInterceptor {
+@Configuration
+public class ReyProperties {
 
-    private Tracer tracer;
+    @Value("${x7.reyc.fallback.remote-exception:'RemoteException'}")
+    private String remoteException;
 
-    public TracingClientHeaderInterceptor(Tracer tracer) {
-        this.tracer = tracer;
+    public String getRemoteException() {
+        return remoteException;
     }
 
-    @Override
-    public void apply(HttpHeaders httpHeaders) {
-
-        Span span = tracer.scopeManager().activeSpan();
-        if (span == null)
-            return;
-        String traceId = span.context().toTraceId();
-        httpHeaders.add("TraceId",traceId);
+    public void setRemoteException(String remoteException) {
+        this.remoteException = remoteException;
     }
 }

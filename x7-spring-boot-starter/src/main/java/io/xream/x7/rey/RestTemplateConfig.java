@@ -16,7 +16,7 @@
  */
 package io.xream.x7.rey;
 
-import io.xream.x7.rey.internal.HttpProperties;
+import io.xream.rey.internal.HttpProperties;
 import okhttp3.ConnectionPool;
 import okhttp3.OkHttpClient;
 import org.springframework.context.annotation.Bean;

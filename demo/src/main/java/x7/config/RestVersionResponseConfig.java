@@ -1,7 +1,7 @@
 package x7.config;
 
-import io.xream.x7.rey.api.ClientHeaderInterceptor;
-import io.xream.x7.rey.api.ClientTemplate;
+import io.xream.rey.api.ClientHeaderInterceptor;
+import io.xream.rey.api.ClientTemplate;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
