@@ -17,6 +17,7 @@
 package io.xream.x7.annotation;
 
 import io.xream.x7.base.api.GroupRouter;
+import io.xream.x7.base.exception.ReyInternalException;
 
 import java.lang.annotation.*;
 
@@ -50,6 +51,7 @@ public @interface ReyClient {
      */
     Class<?> fallback() default void.class;
 
+    Class<? extends Throwable>[] ignoreExceptions() default {ReyInternalException.BadRequest.class};
     /**
      * route to service grouped, like k8s namespace with suffix of sharding key
      */

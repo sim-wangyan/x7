@@ -16,8 +16,10 @@
  */
 package io.xream.x7;
 
+import io.micrometer.core.instrument.MeterRegistry;
 import io.xream.x7.fallback.internal.aop.FallbackInterceptor;
 import io.xream.x7.fallback.internal.aop.FallbackProxy;
+import io.xream.x7.fallback.monitor.FallbackCounter;
 import org.springframework.context.annotation.Bean;
 
 /**
@@ -38,4 +40,8 @@ public class FallbackConfig {
         return fallbackProxy;
     }
 
+    @Bean
+    FallbackCounter fallbackCounter(MeterRegistry registry) {
+        return new FallbackCounter(registry);
+    }
 }

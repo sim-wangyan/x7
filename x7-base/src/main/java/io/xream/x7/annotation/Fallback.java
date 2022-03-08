@@ -26,6 +26,6 @@ import java.lang.annotation.*;
 @Documented
 public @interface Fallback {
 
-    Class<? extends Throwable>[] ignoreExceptions() default {Throwable.class};
+    Class<? extends Throwable>[] ignoreExceptions() default {IllegalArgumentException.class};
     Class<?> fallback() default void.class;
 }

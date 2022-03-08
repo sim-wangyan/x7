@@ -56,10 +56,6 @@ public class FallbackParser {
         }
     }
 
-    public static void parse( Class<?> serviceClz,Class<?> fallbackClz,FallbackInstance fallbackInstance) {
-        parse(null,serviceClz,fallbackClz,fallbackInstance);
-    }
-
     public interface FallbackInstance {
         Object get(Class<?> fallback);
     }

@@ -73,7 +73,7 @@ public class ReyParser {
         /*
          * fallback
          */
-        FallbackParser.parse(clz,reyClient.fallback(),fallbackInstance);
+        FallbackParser.parse(reyClient.ignoreExceptions(),clz,reyClient.fallback(),fallbackInstance);
 
         /*
          * groupRouter

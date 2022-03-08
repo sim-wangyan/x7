@@ -20,6 +20,7 @@ import io.xream.x7.base.exception.ReyInternalException;
 import io.xream.x7.fallback.internal.FallbacKey;
 import io.xream.x7.fallback.internal.FallbackParsed;
 import io.xream.x7.fallback.internal.FallbackParser;
+import io.xream.x7.fallback.monitor.FallbackCounter;
 
 import java.lang.reflect.InvocationTargetException;
 
@@ -28,31 +29,32 @@ import java.lang.reflect.InvocationTargetException;
  */
 public interface Fallback {
 
-    default Object fallback(FallbacKey key, Object[] args, Throwable e) throws Throwable{
+    default Object fallback(FallbacKey key, Object[] args, Throwable ignoredException) throws Throwable{
         FallbackParsed parsed = FallbackParser.get(key);
 
         if (parsed == null) {
-            throw e;
+            throw ignoredException;
         }
-        if (e instanceof ReyInternalException.BadRequest
-            || e instanceof IllegalArgumentException
-        ){
-            throw e;
+        if (ignoredException instanceof ReyInternalException.BadRequest){
+            throw ignoredException;
         }
         boolean isNotRequiredCatch = false;
         Class[] es = parsed.getIgnoreExceptions();
         if (es != null && es.length > 0) {
             for (Class ec: parsed.getIgnoreExceptions()) {
-                if (e.getClass() == ec || e.getClass().isAssignableFrom(ec)) {
+                if (ignoredException.getClass() == ec || ignoredException.getClass().isAssignableFrom(ec)) {
                     isNotRequiredCatch = true;
                     break;
                 }
             }
         }
         if (isNotRequiredCatch) {
-            throw e;
+            throw ignoredException;
         }
         try {
+            String uri = ignoredException instanceof ReyInternalException ? ((ReyInternalException) ignoredException).getPath() :"";
+            String exceptionName = ignoredException.getClass().getSimpleName();
+            FallbackCounter.increment(parsed.getTargetClass().getSimpleName(),parsed.getMethod().getName(),uri,exceptionName);
             if (parsed.getMethod().getReturnType() == void.class) {
                 if (args == null || args.length == 0) {
                     parsed.getMethod().invoke(parsed.getFallback());

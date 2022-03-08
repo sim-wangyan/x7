@@ -47,6 +47,10 @@
             <artifactId>okhttp</artifactId>
             <version>4.9.1</version>
         </dependency>
-        
+        <dependency>
+            <groupId>io.micrometer</groupId>
+            <artifactId>micrometer-core</artifactId>
+        </dependency>
+
     </dependencies>
 </project>
