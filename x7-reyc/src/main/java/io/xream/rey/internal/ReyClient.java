@@ -16,10 +16,10 @@
  */
 package io.xream.rey.internal;
 
-import io.xream.x7.base.api.BackendService;
-import io.xream.x7.base.exception.ReyInternalException;
-import io.xream.x7.base.web.ResponseString;
+import io.xream.rey.api.BackendService;
+import io.xream.rey.exception.ReyInternalException;
 import io.xream.rey.fallback.Fallback;
+import io.xream.rey.proto.ResponseString;
 
 
 /**

@@ -16,8 +16,8 @@
  */
 package io.xream.rey.internal;
 
+import io.xream.rey.api.GroupRouter;
 import io.xream.rey.api.UrlParamed;
-import io.xream.x7.base.api.GroupRouter;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.bind.annotation.RequestMethod;

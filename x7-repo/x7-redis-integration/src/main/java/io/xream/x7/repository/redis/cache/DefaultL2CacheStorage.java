@@ -22,7 +22,6 @@ import io.github.resilience4j.circuitbreaker.CircuitBreakerConfig;
 import io.github.resilience4j.circuitbreaker.CircuitBreakerRegistry;
 import io.vavr.control.Try;
 import io.xream.sqli.spi.L2CacheStorage;
-import io.xream.x7.base.api.BackendService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.redis.core.StringRedisTemplate;
@@ -168,4 +167,8 @@ public final class DefaultL2CacheStorage implements L2CacheStorage {
         });
     }
 
+    public interface BackendService<T> {
+        T handle();
+        Object fallback(Throwable e) throws Throwable;
+    }
 }

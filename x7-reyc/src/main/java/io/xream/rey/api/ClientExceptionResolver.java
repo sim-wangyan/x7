@@ -16,7 +16,7 @@
  */
 package io.xream.rey.api;
 
-import io.xream.x7.base.exception.ReyInternalException;
+import io.xream.rey.exception.ReyInternalException;
 
 /**
  * @author Sim

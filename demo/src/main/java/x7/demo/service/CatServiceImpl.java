@@ -1,9 +1,9 @@
 package x7.demo.service;
 
+import io.xream.rey.annotation.Fallback;
 import io.xream.sqli.builder.Criteria;
 import io.xream.sqli.builder.RefreshCondition;
 import io.xream.sqli.core.RowHandler;
-import io.xream.x7.annotation.Fallback;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import x7.demo.entity.Cat;

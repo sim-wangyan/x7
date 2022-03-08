@@ -14,13 +14,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.xream.x7.annotation;
-
-import io.xream.x7.base.api.GroupRouter;
-import io.xream.x7.base.exception.ReyInternalException;
+package io.xream.rey.annotation;
 
 import java.lang.annotation.*;
-
 
 /**
  * @author Sim
@@ -28,32 +24,8 @@ import java.lang.annotation.*;
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.TYPE)
 @Documented
-public @interface ReyClient {
+public @interface Fallback {
 
-    /**
-     * dns or value
-     */
-    String value() default  "";
-
-    /**
-     * "" or configed backend name in application.properties
-     */
-    String circuitBreaker() default " ";
-
-    /**
-     * true | false
-     */
-    boolean retry() default false;
-
-    /**
-     * handle fallback for the important method <br>
-     * Fallback class,  the method name must same as the method of service. and the parameters must same
-     */
+    Class<? extends Throwable>[] ignoreExceptions() default {IllegalArgumentException.class};
     Class<?> fallback() default void.class;
-
-    Class<? extends Throwable>[] ignoreExceptions() default {ReyInternalException.BadRequest.class};
-    /**
-     * route to service grouped, like k8s namespace with suffix of sharding key
-     */
-    Class<? extends GroupRouter> groupRouter() default GroupRouter.class;
 }

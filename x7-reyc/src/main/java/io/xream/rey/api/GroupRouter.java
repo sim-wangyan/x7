@@ -14,32 +14,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.xream.x7.base.exception;
-
-import io.xream.x7.base.api.TaggedException;
+package io.xream.rey.api;
 
 /**
+ * route to service grouped, like k8s namespace with suffix of sharding key
  * @author Sim
- * Created by Sim on 2018/6/22.
- * catch it and handle if fallback return obj
  */
-public class MismatchedReturnTypeException extends TaggedException {
-
-    public MismatchedReturnTypeException(Throwable e){
-        super(e);
-    }
-
-    public MismatchedReturnTypeException(String message){
-        super(message);
-    }
-
-    public MismatchedReturnTypeException(String message, Object tag){
-        super(message);
-        super.setTag(tag);
-    }
-
-    public String getType(){
-        return "FALLBACK";
-    }
-
+public interface GroupRouter {
+    String replaceHolder();
+    String replaceValue(Object obj);
 }

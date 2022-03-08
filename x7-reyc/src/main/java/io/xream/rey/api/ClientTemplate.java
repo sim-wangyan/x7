@@ -16,7 +16,7 @@
  */
 package io.xream.rey.api;
 
-import io.xream.x7.base.web.ResponseString;
+import io.xream.rey.proto.ResponseString;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.bind.annotation.RequestMethod;
 

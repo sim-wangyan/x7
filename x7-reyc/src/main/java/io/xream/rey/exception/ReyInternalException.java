@@ -14,9 +14,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.xream.x7.base.exception;
+package io.xream.rey.exception;
 
-import io.xream.x7.base.api.ReyHttpStatus;
+import io.xream.rey.api.ReyHttpStatus;
 
 /**
  * @author Sim

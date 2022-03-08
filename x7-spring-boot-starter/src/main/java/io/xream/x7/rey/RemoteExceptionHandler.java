@@ -18,9 +18,9 @@ package io.xream.x7.rey;
 
 import io.opentracing.Span;
 import io.opentracing.Tracer;
-import io.xream.x7.base.api.ReyHttpStatus;
-import io.xream.x7.base.exception.ReyInternalException;
-import io.xream.x7.base.web.RemoteExceptionProto;
+import io.xream.rey.api.ReyHttpStatus;
+import io.xream.rey.exception.ReyInternalException;
+import io.xream.rey.proto.RemoteExceptionProto;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.ResponseEntity;

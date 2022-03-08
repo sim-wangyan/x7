@@ -16,8 +16,8 @@
  */
 package io.xream.rey.fallback.aop;
 
-import io.xream.rey.fallback.Fallback;
 import io.xream.rey.fallback.FallbacKey;
+import io.xream.rey.fallback.Fallback;
 import org.aopalliance.intercept.MethodInterceptor;
 import org.aopalliance.intercept.MethodInvocation;
 

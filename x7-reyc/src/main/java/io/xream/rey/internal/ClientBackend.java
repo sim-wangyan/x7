@@ -16,7 +16,7 @@
  */
 package io.xream.rey.internal;
 
-import io.xream.x7.base.web.ResponseString;
+import io.xream.rey.proto.ResponseString;
 
 /**
  * @author Sim

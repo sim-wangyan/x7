@@ -16,7 +16,7 @@
  */
 package io.xream.rey.fallback;
 
-import io.xream.x7.base.exception.ReyInternalException;
+import io.xream.rey.exception.ReyInternalException;
 import io.xream.rey.fallback.monitor.FallbackCounter;
 
 import java.lang.reflect.InvocationTargetException;

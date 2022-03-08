@@ -16,12 +16,12 @@
  */
 package io.xream.rey.internal;
 
+import io.xream.rey.api.ClientHeaderInterceptor;
 import io.xream.rey.api.ClientTemplate;
+import io.xream.rey.proto.ResponseString;
 import io.xream.x7.base.util.JsonX;
 import io.xream.x7.base.util.LoggerProxy;
 import io.xream.x7.base.util.StringUtil;
-import io.xream.x7.base.web.ResponseString;
-import io.xream.rey.api.ClientHeaderInterceptor;
 import org.springframework.http.*;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.bind.annotation.RequestMethod;

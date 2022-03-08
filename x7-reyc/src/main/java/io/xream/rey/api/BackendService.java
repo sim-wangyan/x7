@@ -14,23 +14,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.xream.x7.base.api;
+package io.xream.rey.api;
 
-/**
- * @author Sim
- */
-public enum ReyHttpStatus {
-
-    INTERNAL_SERVER_ERROR(500),
-    BAD_REQUEST(400),
-    TO_CLIENT(222);
-
-    private int status;
-    public int getStatus(){
-        return this.status;
-    }
-    ReyHttpStatus(int status) {
-        this.status = status;
-    }
-
+public interface BackendService<T> {
+    T handle();
+    Object fallback(Throwable e) throws Throwable;
 }

@@ -16,8 +16,8 @@
  */
 package io.xream.rey.internal;
 
-import io.xream.x7.annotation.ReyClient;
-import io.xream.x7.base.api.GroupRouter;
+import io.xream.rey.annotation.ReyClient;
+import io.xream.rey.api.GroupRouter;
 import io.xream.rey.fallback.FallbackParser;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

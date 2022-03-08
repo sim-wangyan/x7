@@ -17,12 +17,12 @@
 package io.xream.x7;
 
 
-import io.xream.x7.annotation.ReyClient;
-import io.xream.x7.base.util.ClassFileReader;
+import io.xream.rey.annotation.ReyClient;
 import io.xream.rey.internal.BackendDecoration;
 import io.xream.rey.internal.ClientBackend;
 import io.xream.rey.internal.ClientBackendProxy;
 import io.xream.rey.internal.ReyParser;
+import io.xream.x7.base.util.ClassFileReader;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.BeanFactory;
 import org.springframework.beans.factory.BeanFactoryAware;

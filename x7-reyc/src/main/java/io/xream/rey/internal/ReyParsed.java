@@ -16,7 +16,7 @@
  */
 package io.xream.rey.internal;
 
-import io.xream.x7.base.api.GroupRouter;
+import io.xream.rey.api.GroupRouter;
 
 import java.util.HashMap;
 import java.util.Map;

@@ -14,28 +14,15 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.xream.x7.base.api;
+package io.xream.rey.exception;
 
 /**
  * @author Sim
  */
-public class TaggedException extends RuntimeException{
+public class ReyRuntimeException extends RuntimeException{
 
-    private Object tag;
-
-    public TaggedException(Throwable e) {
+    public ReyRuntimeException(Throwable e){
         super(e);
     }
 
-    public TaggedException(String message) {
-        super(message);
-    }
-
-    public Object getTag() {
-        return tag;
-    }
-
-    public void setTag(Object tag) {
-        this.tag = tag;
-    }
 }

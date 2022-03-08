@@ -16,12 +16,12 @@
  */
 package io.xream.x7;
 
+import io.xream.rey.internal.ClientExceptionHandler;
+import io.xream.rey.internal.ClientHeaderInterceptorRegistrar;
 import io.xream.x7.rey.DefaultExceptionHandler;
 import io.xream.x7.rey.RemoteExceptionHandler;
 import io.xream.x7.rey.RestTemplateConfig;
 import io.xream.x7.rey.ReyClientConfig;
-import io.xream.rey.internal.ClientExceptionHandler;
-import io.xream.rey.internal.ClientHeaderInterceptorRegistrar;
 import org.springframework.context.annotation.Import;
 
 import java.lang.annotation.*;

@@ -14,18 +14,29 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.xream.x7.annotation;
-
-import java.lang.annotation.*;
+package io.xream.rey.proto;
 
 /**
  * @author Sim
  */
-@Retention(RetentionPolicy.RUNTIME)
-@Target(ElementType.TYPE)
-@Documented
-public @interface Fallback {
+public class ResponseString {
 
-    Class<? extends Throwable>[] ignoreExceptions() default {IllegalArgumentException.class};
-    Class<?> fallback() default void.class;
+    private int status;
+    private String body;
+
+    public int getStatus() {
+        return status;
+    }
+
+    public void setStatus(int status) {
+        this.status = status;
+    }
+
+    public String getBody() {
+        return body;
+    }
+
+    public void setBody(String body) {
+        this.body = body;
+    }
 }
