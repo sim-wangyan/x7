@@ -59,8 +59,8 @@ public class FallbackProxy implements BeanPostProcessor {
                 ProxyFactoryBean proxyFactoryBean = new ProxyFactoryBean();
                 proxyFactoryBean.addAdvisor(advisor);
                 proxyFactoryBean.setTarget(bean);
-                proxyFactoryBean.setAutodetectInterfaces(false);
-                proxyFactoryBean.setProxyTargetClass(true);
+                proxyFactoryBean.setAutodetectInterfaces(true);
+                proxyFactoryBean.setProxyTargetClass(false);
                 return proxyFactoryBean.getObject();
             }
         }

@@ -2,7 +2,8 @@ org.springframework.boot.autoconfigure.EnableAutoConfiguration=\
  io.xream.x7.BootConfiguration,\
  io.xream.x7.repository.redis.autoconfigure.L2CacheStorageAutoConfiguration,\
  io.xream.x7.repository.redis.autoconfigure.LockProviderAutoConfiguration,\
- io.xream.x7.reyc.autoconfigure.ReyTemplateAutoConfiguration
+ io.xream.x7.reyc.autoconfigure.ReyTemplateAutoConfiguration,\
+ io.xream.x7.reyc.autoconfigure.IgnoreFallbackExceptionHandlerAutoConfiguration
 
 org.springframework.context.ApplicationListener=\
  io.xream.x7.RepositoryListener,\

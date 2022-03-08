@@ -14,30 +14,15 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.xream.x7.base.exception;
+package io.xream.x7.reyc.autoconfigure;
 
-import io.xream.x7.base.api.TaggedException;
+import io.xream.x7.reyc.IgnoreFallbackExceptionHandler;
+import org.springframework.context.annotation.Import;
 
 /**
  * @author Sim
  */
-public class ReyBizException extends TaggedException {
-
-    public ReyBizException(Throwable e){
-        super(e);
-    }
-
-    public ReyBizException(String message){
-        super(message);
-    }
-
-    public ReyBizException(String message, Object tag){
-        super(message);
-        super.setTag(tag);
-    }
-
-    public String getType(){
-        return "REMOTE_BIZ";
-    }
+@Import(IgnoreFallbackExceptionHandler.class)
+public class IgnoreFallbackExceptionHandlerAutoConfiguration {
 
 }

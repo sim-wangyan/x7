@@ -48,7 +48,8 @@ public class ExceptionUtil {
         if (str.startsWith("org")) {
             return (str.startsWith("org.spring")
                     && !(
-                            str.startsWith("org.springframework.jdbc")
+                            str.startsWith("org.springframework.util.Assert")
+                            || str.startsWith("org.springframework.jdbc")
                         )
                     )
                     || str.startsWith("org.jboss");
