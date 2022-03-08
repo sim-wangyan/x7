@@ -24,5 +24,4 @@ import org.springframework.context.annotation.Import;
  */
 @Import(IgnoreFallbackExceptionHandler.class)
 public class IgnoreFallbackExceptionHandlerAutoConfiguration {
-
 }
