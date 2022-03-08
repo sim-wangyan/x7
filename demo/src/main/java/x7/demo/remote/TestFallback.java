@@ -1,6 +1,6 @@
 package x7.demo.remote;
 
-import io.xream.x7.reyc.api.UrlPara;
+import io.xream.x7.reyc.api.UrlParamed;
 import org.springframework.stereotype.Service;
 import x7.demo.ro.CatFindRo;
 
@@ -16,7 +16,7 @@ public class TestFallback {
         System.out.println("fallBack");
     }
 
-    public void test(CatFindRo ro, UrlPara urlPara){
+    public void test(CatFindRo ro, UrlParamed urlParamed){
 
         /*
          * send to kafka

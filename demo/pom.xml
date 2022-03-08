@@ -7,7 +7,7 @@
     <packaging>jar</packaging>
     <name>x7-demo</name>
     <description>http://x7.xream.io</description>
-    <urlPara>http://x7.xream.io</urlPara>
+    <urlParamed>http://x7.xream.io</urlParamed>
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -41,7 +41,7 @@
         <repository>
             <id>alimaven</id>
             <name>aliyun maven</name>
-            <urlPara>http://maven.aliyun.com/nexus/content/groups/public/</urlPara>
+            <urlParamed>http://maven.aliyun.com/nexus/content/groups/public/</urlParamed>
         </repository>
     </repositories>
 

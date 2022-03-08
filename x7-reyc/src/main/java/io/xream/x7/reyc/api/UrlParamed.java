@@ -19,7 +19,7 @@ package io.xream.x7.reyc.api;
 /**
  * @author Sim
  */
-public interface UrlPara {
+public interface UrlParamed {
 
     String value();
 }

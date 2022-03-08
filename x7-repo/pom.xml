@@ -12,7 +12,7 @@
 
 	<name>x7-repo</name>
 	<description>http://x7.xream.io</description>
-	<urlPara>http://x7.xream.io</urlPara>
+	<urlParamed>http://x7.xream.io</urlParamed>
 
 	<modules>
 		<module>x7-lock</module>

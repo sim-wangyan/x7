@@ -11,7 +11,7 @@
     </parent>
     <artifactId>x7-reyc</artifactId>
     <description>http://x7.xream.io</description>
-    <urlPara>http://x7.xream.io</urlPara>
+    <urlParamed>http://x7.xream.io</urlParamed>
 
     <properties>
         <brave.version>3.9.0</brave.version>

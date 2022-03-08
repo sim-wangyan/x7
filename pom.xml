@@ -8,7 +8,7 @@
     <packaging>pom</packaging>
     <name>x7-parent</name>
     <description>http://x7.xream.io</description>
-    <urlPara>http://x7.xream.io</urlPara>
+    <urlParamed>http://x7.xream.io</urlParamed>
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -26,14 +26,14 @@
     <scm>
         <connection>scm:git:https://github.com/x-ream/x7</connection>
         <developerConnection>scm:git:https://github.com/x-ream/x7</developerConnection>
-        <urlPara>scm:git:https://github.com/x-ream/x7</urlPara>
+        <urlParamed>scm:git:https://github.com/x-ream/x7</urlParamed>
         <tag>3.0.0</tag>
     </scm>
 
     <licenses>
         <license>
             <name>Apache 2</name>
-            <urlPara>http://www.apache.org/licenses/LICENSE-2.0</urlPara>
+            <urlParamed>http://www.apache.org/licenses/LICENSE-2.0</urlParamed>
             <distribution>repo</distribution>
             <comments>A business-friendly OSS license</comments>
         </license>
@@ -50,12 +50,12 @@
         <snapshotRepository>
             <id>oss-s</id>
             <name>x7 snapshots repo</name>
-            <urlPara>https://oss.sonatype.org/content/repositories/snapshots</urlPara>
+            <urlParamed>https://oss.sonatype.org/content/repositories/snapshots</urlParamed>
         </snapshotRepository>
         <repository>
             <id>oss-r</id>
             <name>x7 release repo</name>
-            <urlPara>https://oss.sonatype.org/service/local/staging/deploy/maven2</urlPara>
+            <urlParamed>https://oss.sonatype.org/service/local/staging/deploy/maven2</urlParamed>
         </repository>
     </distributionManagement>
 

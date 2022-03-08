@@ -17,7 +17,7 @@
 package io.xream.x7.reyc.internal;
 
 import io.xream.x7.base.api.GroupRouter;
-import io.xream.x7.reyc.api.UrlPara;
+import io.xream.x7.reyc.api.UrlParamed;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -110,9 +110,9 @@ public class R {
         headers.addAll(methodParsed.getHeaders());
         if (args != null) {
             for (Object arg : args) {
-                if (arg != null && arg instanceof UrlPara) {
-                    UrlPara dynamicUrlPara = (UrlPara) arg;
-                    url = dynamicUrlPara.value();
+                if (arg != null && arg instanceof UrlParamed) {
+                    UrlParamed dynamicUrlParamed = (UrlParamed) arg;
+                    url = dynamicUrlParamed.value();
                 }else if (arg != null && arg instanceof MultiValueMap) {
                     headers.addAll((MultiValueMap)arg);
                 } else {
