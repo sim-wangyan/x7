@@ -1,6 +1,6 @@
 package x7.demo.remote;
 
-import io.xream.x7.reyc.api.UrlParamed;
+import io.xream.x7.rey.api.UrlParamed;
 import org.springframework.stereotype.Service;
 import x7.demo.ro.CatFindRo;
 

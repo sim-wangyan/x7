@@ -14,32 +14,30 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.xream.x7;
+package io.xream.x7.rey;
 
-import io.xream.x7.rey.DefaultExceptionHandler;
-import io.xream.x7.rey.RemoteExceptionHandler;
-import io.xream.x7.rey.RestTemplateConfig;
-import io.xream.x7.rey.ReyClientConfig;
+import io.xream.x7.rey.api.ClientTemplate;
+import io.xream.x7.rey.internal.ClientBackend;
+import io.xream.x7.rey.internal.ClientBackendImpl;
 import io.xream.x7.rey.internal.ClientExceptionHandler;
-import io.xream.x7.rey.internal.ClientHeaderInterceptorRegistrar;
-import org.springframework.context.annotation.Import;
+import io.xream.x7.rey.internal.DefaultClientTemplate;
+import org.springframework.context.annotation.Bean;
 
-import java.lang.annotation.*;
+/**
+ * @author Rolyer Luo
+ */
+public class ReyClientConfig  {
 
-@Retention(RetentionPolicy.RUNTIME)
-@Target(ElementType.TYPE)
-@Documented
-@Import({
-        ClientExceptionHandler.class,
-        RestTemplateConfig.class,
-        ReyClientConfig.class,
-        ReyClientBeanRegistrar.class,
-        RemoteExceptionHandler.class,
-        DefaultExceptionHandler.class,
-        ClientHeaderInterceptorRegistrar.class
-})
-public @interface EnableReyClient {
+    @Bean
+    public ClientTemplate clientTemplate() {
+        return new DefaultClientTemplate();
+    }
+    @Bean
+    public ClientBackend clientBackend(ClientExceptionHandler clientExceptionHandler, ClientTemplate wrapper)  {
 
-    String[] basePackages() default {};
-    boolean isReyTemplateNotRequired() default false;
+        ClientBackendImpl clientBackend = new ClientBackendImpl(wrapper);
+        clientBackend.setClientExceptionHandler(clientExceptionHandler);
+        return clientBackend;
+    }
+
 }
