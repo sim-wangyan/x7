@@ -25,6 +25,43 @@
         <io.xream.util.version>1.0.0</io.xream.util.version>
     </properties>
 
+
+    <scm>
+        <connection>scm:git:https://github.com/x-ream/rey</connection>
+        <developerConnection>scm:git:https://github.com/x-ream/rey</developerConnection>
+        <url>scm:git:https://github.com/x-ream/rey</url>
+        <tag>3.0.0</tag>
+    </scm>
+
+    <licenses>
+        <license>
+            <name>Apache 2</name>
+            <url>http://www.apache.org/licenses/LICENSE-2.0</url>
+            <distribution>repo</distribution>
+            <comments>A business-friendly OSS license</comments>
+        </license>
+    </licenses>
+
+    <developers>
+        <developer>
+            <name>Sim Wang</name>
+            <email>8966188@qq.com</email>
+        </developer>
+    </developers>
+
+    <distributionManagement>
+        <snapshotRepository>
+            <id>oss-s</id>
+            <name>rey snapshots repo</name>
+            <url>https://oss.sonatype.org/content/repositories/snapshots</url>
+        </snapshotRepository>
+        <repository>
+            <id>oss-r</id>
+            <name>rey release repo</name>
+            <url>https://oss.sonatype.org/service/local/staging/deploy/maven2</url>
+        </repository>
+    </distributionManagement>
+
     <dependencies>
         <dependency>
             <groupId>io.xream.internal-util</groupId>
