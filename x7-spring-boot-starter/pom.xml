@@ -82,11 +82,7 @@
 			<artifactId>x7-redis-integration</artifactId>
 			<version>3.0.0</version>
 		</dependency>
-		<dependency>
-			<groupId>io.xream.x7</groupId>
-			<artifactId>rey</artifactId>
-			<version>3.0.0</version>
-		</dependency>
+
 
 		<dependency>
 			<groupId>io.opentracing.contrib</groupId>

@@ -39,7 +39,7 @@ import java.util.Objects;
 import java.util.Set;
 
 
-public class ReyClientBeanRegistrar implements EnvironmentAware,ImportBeanDefinitionRegistrar, BeanFactoryAware {
+class ReyClientBeanRegistrar implements EnvironmentAware,ImportBeanDefinitionRegistrar, BeanFactoryAware {
 
 
     @Override

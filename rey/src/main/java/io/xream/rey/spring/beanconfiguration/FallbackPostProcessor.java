@@ -14,7 +14,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.xream.rey.fallback.aop;
+package io.xream.rey.spring.beanconfiguration;
 
 import io.xream.rey.fallback.FallbackParsed;
 import io.xream.rey.fallback.FallbackParser;
@@ -29,7 +29,7 @@ import java.lang.reflect.Method;
 /**
  * @author Sim
  */
-public class FallbackProxy implements BeanPostProcessor {
+public class FallbackPostProcessor implements BeanPostProcessor {
 
     private Advice advice;
 

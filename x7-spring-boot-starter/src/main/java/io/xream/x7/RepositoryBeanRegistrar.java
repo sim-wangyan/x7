@@ -37,7 +37,7 @@ import java.util.Map;
 import java.util.Set;
 
 
-public class RepositoryBeanRegistrar implements ImportBeanDefinitionRegistrar {
+class RepositoryBeanRegistrar implements ImportBeanDefinitionRegistrar {
 
 
     @Override

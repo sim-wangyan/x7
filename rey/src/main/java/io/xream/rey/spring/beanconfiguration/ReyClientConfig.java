@@ -14,7 +14,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.xream.x7.rey;
+package io.xream.rey.spring.beanconfiguration;
 
 import io.xream.rey.api.ClientTemplate;
 import io.xream.rey.internal.ClientBackend;

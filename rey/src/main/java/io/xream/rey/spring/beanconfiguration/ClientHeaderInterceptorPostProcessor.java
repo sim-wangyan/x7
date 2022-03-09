@@ -14,7 +14,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.xream.rey.internal;
+package io.xream.rey.spring.beanconfiguration;
 
 import io.xream.rey.api.ClientHeaderInterceptor;
 import io.xream.rey.api.ClientTemplate;
@@ -26,7 +26,7 @@ import org.springframework.beans.factory.config.BeanPostProcessor;
 /**
  * @author Sim
  */
-public class ClientHeaderInterceptorRegistrar implements BeanPostProcessor, BeanFactoryAware {
+public class ClientHeaderInterceptorPostProcessor implements BeanPostProcessor, BeanFactoryAware {
 
 
     @Override

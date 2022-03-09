@@ -14,11 +14,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.xream.x7;
+package io.xream.rey.spring.beanconfiguration;
 
 import io.micrometer.core.instrument.MeterRegistry;
 import io.xream.rey.fallback.aop.FallbackInterceptor;
-import io.xream.rey.fallback.aop.FallbackProxy;
 import io.xream.rey.fallback.monitor.FallbackCounter;
 import org.springframework.context.annotation.Bean;
 
@@ -33,11 +32,11 @@ public class FallbackConfig {
     }
 
     @Bean
-    FallbackProxy fallbackProxy(FallbackInterceptor fallbackInterceptor){
+    FallbackPostProcessor fallbackProxy(FallbackInterceptor fallbackInterceptor){
 
-        FallbackProxy fallbackProxy = new FallbackProxy();
-        fallbackProxy.setAdvice(fallbackInterceptor);
-        return fallbackProxy;
+        FallbackPostProcessor fallbackPostProcessor = new FallbackPostProcessor();
+        fallbackPostProcessor.setAdvice(fallbackInterceptor);
+        return fallbackPostProcessor;
     }
 
     @Bean

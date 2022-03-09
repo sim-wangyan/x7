@@ -16,7 +16,7 @@
  */
 package io.xream.x7.rey.autoconfigure;
 
-import io.xream.x7.rey.IgnoreFallbackExceptionHandler;
+import io.xream.rey.spring.exception.IgnoreFallbackExceptionHandler;
 import org.springframework.context.annotation.Import;
 
 /**

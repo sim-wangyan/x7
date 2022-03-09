@@ -31,7 +31,7 @@ import java.util.Map;
 import java.util.Set;
 
 
-public class ReyFallbackBeanRegistrar implements ImportBeanDefinitionRegistrar, BeanFactoryAware {
+class ReyFallbackBeanRegistrar implements ImportBeanDefinitionRegistrar, BeanFactoryAware {
 
 
     @Override

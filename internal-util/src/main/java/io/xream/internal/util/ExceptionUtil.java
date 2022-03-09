@@ -38,6 +38,7 @@ public class ExceptionUtil {
             return str.startsWith("io.github.resili")
                     || str.startsWith("io.vavr")
                     || str.startsWith("io.undertow")
+                    || str.startsWith("io.xream.x7")
                     || str.startsWith("io.xream.rey")
                     || str.startsWith("io.opentracing");
         }

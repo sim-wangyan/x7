@@ -17,11 +17,11 @@
 package io.xream.x7;
 
 import io.xream.rey.internal.ClientExceptionHandler;
-import io.xream.rey.internal.ClientHeaderInterceptorRegistrar;
-import io.xream.x7.rey.DefaultExceptionHandler;
-import io.xream.x7.rey.RemoteExceptionHandler;
-import io.xream.x7.rey.RestTemplateConfig;
-import io.xream.x7.rey.ReyClientConfig;
+import io.xream.rey.spring.beanconfiguration.ClientHeaderInterceptorPostProcessor;
+import io.xream.rey.spring.beanconfiguration.RestTemplateConfig;
+import io.xream.rey.spring.beanconfiguration.ReyClientConfig;
+import io.xream.rey.spring.exception.ReyInternalExceptionHandler;
+import io.xream.rey.spring.exception.ReyRuntimeExceptionHandler;
 import org.springframework.context.annotation.Import;
 
 import java.lang.annotation.*;
@@ -34,9 +34,9 @@ import java.lang.annotation.*;
         RestTemplateConfig.class,
         ReyClientConfig.class,
         ReyClientBeanRegistrar.class,
-        RemoteExceptionHandler.class,
-        DefaultExceptionHandler.class,
-        ClientHeaderInterceptorRegistrar.class
+        ReyInternalExceptionHandler.class,
+        ReyRuntimeExceptionHandler.class,
+        ClientHeaderInterceptorPostProcessor.class
 })
 public @interface EnableReyClient {
 

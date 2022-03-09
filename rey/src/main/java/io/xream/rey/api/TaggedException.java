@@ -16,10 +16,12 @@
  */
 package io.xream.rey.api;
 
+import io.xream.rey.exception.ReyRuntimeException;
+
 /**
  * @author Sim
  */
-public class TaggedException extends RuntimeException{
+public class TaggedException extends ReyRuntimeException{
 
     private Object tag;
 

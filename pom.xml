@@ -62,7 +62,6 @@
 
     <modules>
         <module>x7-base</module>
-        <module>rey</module>
         <module>x7-repo</module>
         <module>x7-spring-boot-starter</module>
     </modules>
@@ -166,6 +165,12 @@
         <dependency>
             <groupId>io.xream.internal-util</groupId>
             <artifactId>internal-util</artifactId>
+            <version>1.0.0</version>
+        </dependency>
+
+        <dependency>
+            <groupId>io.xream.rey</groupId>
+            <artifactId>rey</artifactId>
             <version>1.0.0</version>
         </dependency>
 

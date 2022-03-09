@@ -14,11 +14,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.xream.x7.rey;
+package io.xream.rey.spring.exception;
 
 import io.opentracing.Span;
 import io.opentracing.Tracer;
-import io.xream.internal.util.ExceptionUtil;
+import io.xream.rey.api.ReyHttpStatus;
+import io.xream.rey.exception.ReyInternalException;
 import io.xream.rey.proto.RemoteExceptionProto;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -26,44 +27,27 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
-import org.springframework.web.method.annotation.MethodArgumentConversionNotSupportedException;
-import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 
 import javax.annotation.Resource;
 
 @RestControllerAdvice
-public class IgnoreFallbackExceptionHandler {
+public class ReyInternalExceptionHandler {
 
-    private static final Logger logger = LoggerFactory.getLogger(IgnoreFallbackExceptionHandler.class);
+    private static final Logger logger = LoggerFactory.getLogger(ReyInternalExceptionHandler.class);
     @Resource
     private Tracer tracer;
 
     @ExceptionHandler({
-            IllegalArgumentException.class,
-            MethodArgumentTypeMismatchException.class,
-            MethodArgumentConversionNotSupportedException.class,
+            ReyInternalException.class
     })
     @ResponseBody
-    public ResponseEntity<RemoteExceptionProto> handleDefaultException(RuntimeException e) {
-
-        logger.error(ExceptionUtil.getMessage(e));
-
-        if (e.getClass().getName().startsWith("org.springframework.http"))
-            throw e;
+    public ResponseEntity<RemoteExceptionProto> handlerDemoteResourceAccessException(ReyInternalException exception) {
 
         Span span = tracer.scopeManager().activeSpan();
         String traceId = span == null ? "" : span.context().toTraceId() + ":" + span.context().toSpanId();
 
-        String stack = ExceptionUtil.getStack(e);
-        int status = 400;
-        String message = e.getMessage();
-
-        if (!stack.startsWith("org.springframework")) {
-            status = 500;
-        }
-
-        RemoteExceptionProto proto = new RemoteExceptionProto(status, message, stack, traceId);
-        return ResponseEntity.status(status == 400 ? 400 : 500).body(
+        RemoteExceptionProto proto = new RemoteExceptionProto(exception, traceId);
+        return ResponseEntity.status(ReyHttpStatus.TO_CLIENT.getStatus()).body(
                 proto
         );
     }
