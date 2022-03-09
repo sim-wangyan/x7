@@ -20,8 +20,8 @@ import io.xream.rey.internal.ClientExceptionHandler;
 import io.xream.rey.spring.beanconfiguration.ClientHeaderInterceptorPostProcessor;
 import io.xream.rey.spring.beanconfiguration.RestTemplateConfig;
 import io.xream.rey.spring.beanconfiguration.ReyClientConfig;
-import io.xream.rey.spring.exception.ReyInternalExceptionHandler;
-import io.xream.rey.spring.exception.ReyRuntimeExceptionHandler;
+import io.xream.rey.spring.exceptionhandler.ReyInternalExceptionHandler;
+import io.xream.rey.spring.exceptionhandler.ReyRuntimeExceptionHandler;
 import org.springframework.context.annotation.Import;
 
 import java.lang.annotation.*;
