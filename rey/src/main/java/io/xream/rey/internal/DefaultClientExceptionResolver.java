@@ -61,7 +61,7 @@ public class DefaultClientExceptionResolver implements ClientExceptionResolver {
     @Override
     public void handleException(Throwable e) throws ReyInternalException{
 
-        this.circuitbreakerExceptionHandler.handle(e);
+        this.circuitbreakerExceptionHandler().handle(e);
 
         if (e instanceof ResourceAccessException){
             ResourceAccessException rae = (ResourceAccessException)e;
