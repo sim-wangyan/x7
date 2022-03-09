@@ -21,7 +21,7 @@
         <resilience4j.version>1.4.0</resilience4j.version>
         <io.micrometer.version>1.5.14</io.micrometer.version>
         <okhttp.version>4.9.1</okhttp.version>
-        <spring.version>5.2.15.RELEASE</spring.version>
+        <spring.version>5.2.19.RELEASE</spring.version>
         <io.xream.util.version>1.0.0</io.xream.util.version>
     </properties>
 
