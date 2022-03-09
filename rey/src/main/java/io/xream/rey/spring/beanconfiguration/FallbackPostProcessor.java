@@ -40,8 +40,13 @@ public class FallbackPostProcessor implements BeanPostProcessor {
     @Override
     public Object postProcessBeforeInitialization(Object bean, String beanName) throws BeansException {
 
+        if (!bean.getClass().getName().contains("io.rey"))
+            return bean;
+
         for (FallbackParsed parsed : FallbackParser.all()) {
-            if (parsed.getTargetClass() == bean.getClass()) {
+            if (parsed.getTargetClass() == bean.getClass()
+                    || parsed.getTargetClass().isAssignableFrom(bean.getClass())
+            ) {
 
                 Method[] fallbackMethodArr = parsed.getFallback().getClass().getDeclaredMethods();
                 int length = fallbackMethodArr.length;

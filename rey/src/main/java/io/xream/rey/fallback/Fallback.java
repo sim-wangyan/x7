@@ -39,7 +39,7 @@ public interface Fallback {
         Class[] es = parsed.getIgnoreExceptions();
         if (es != null && es.length > 0) {
             for (Class ec: parsed.getIgnoreExceptions()) {
-                if (ignoredException.getClass() == ec || ignoredException.getClass().isAssignableFrom(ec)) {
+                if (ec == ignoredException.getClass() || ec.isAssignableFrom(ignoredException.getClass())) {
                     isNotRequiredCatch = true;
                     break;
                 }
