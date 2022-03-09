@@ -23,6 +23,8 @@ import io.xream.rey.api.*;
 import io.xream.rey.api.custom.ClientExceptionResolverCustomizer;
 import io.xream.rey.api.custom.RestTemplateCustomizer;
 import io.xream.rey.internal.*;
+import io.xream.rey.resilience4j.R4JCircuitbreakerExceptionHandler;
+import io.xream.rey.resilience4j.R4JTemplate;
 import org.springframework.boot.context.event.ApplicationStartedEvent;
 import org.springframework.context.ApplicationListener;
 import org.springframework.web.client.RestTemplate;
@@ -61,6 +63,18 @@ public class ReyListener implements
                         .getBean(FallbackHandler.class);
                 if (fallbackHandler != null) {
                     defaultClientExceptionResolver.setFallbackHandler(fallbackHandler);
+                }
+            }catch (Exception e){
+
+            }
+
+            defaultClientExceptionResolver.setCircuitbreakerExceptionHandler(new R4JCircuitbreakerExceptionHandler());
+
+            try{
+                CircuitbreakerExceptionHandler circuitbreakerExceptionHandler = event.getApplicationContext()
+                        .getBean(CircuitbreakerExceptionHandler.class);
+                if (circuitbreakerExceptionHandler != null) {
+                    defaultClientExceptionResolver.setCircuitbreakerExceptionHandler(circuitbreakerExceptionHandler);
                 }
             }catch (Exception e){
 

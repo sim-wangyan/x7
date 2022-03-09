@@ -14,21 +14,22 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.xream.x7.rey.autoconfigure;
+package io.xream.rey.resilience4j;
 
-import io.xream.rey.api.ReyTemplate;
-import io.xream.rey.resilience4j.R4JTemplate;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
-import org.springframework.context.annotation.Bean;
+import io.github.resilience4j.circuitbreaker.CallNotPermittedException;
+import io.xream.internal.util.ExceptionUtil;
+import io.xream.rey.api.CircuitbreakerExceptionHandler;
+import io.xream.rey.api.ReyHttpStatus;
+import io.xream.rey.exception.ReyInternalException;
 
 /**
  * @author Sim
  */
-public class ReyTemplateAutoConfiguration {
+public class R4JCircuitbreakerExceptionHandler implements CircuitbreakerExceptionHandler {
 
-    @ConditionalOnMissingBean(ReyTemplate.class)
-    @Bean
-    public ReyTemplate reyTemplate() {
-        return new R4JTemplate();
+    public void handle(Throwable e) {
+        if (e instanceof CallNotPermittedException) {//503
+            throw ReyInternalException.create(ReyHttpStatus.TO_CLIENT, 503, e.getMessage(), ExceptionUtil.getStack(e), null, null, null);
+        }
     }
 }

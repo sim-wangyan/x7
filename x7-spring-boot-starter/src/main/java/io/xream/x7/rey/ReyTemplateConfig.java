@@ -17,7 +17,7 @@
 package io.xream.x7.rey;
 
 import io.xream.rey.api.ReyTemplate;
-import io.xream.rey.internal.R4JTemplate;
+import io.xream.rey.resilience4j.R4JTemplate;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.context.annotation.Bean;
 

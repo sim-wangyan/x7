@@ -16,9 +16,9 @@
  */
 package io.xream.rey.internal;
 
-import io.github.resilience4j.circuitbreaker.CallNotPermittedException;
 import io.xream.internal.util.ExceptionUtil;
 import io.xream.internal.util.JsonX;
+import io.xream.rey.api.CircuitbreakerExceptionHandler;
 import io.xream.rey.api.ClientExceptionResolver;
 import io.xream.rey.api.FallbackHandler;
 import io.xream.rey.api.ReyHttpStatus;
@@ -39,7 +39,12 @@ import java.util.Map;
  */
 public class DefaultClientExceptionResolver implements ClientExceptionResolver {
 
+    private CircuitbreakerExceptionHandler circuitbreakerExceptionHandler;
     private FallbackHandler fallbackHandler;
+
+    public void setCircuitbreakerExceptionHandler(CircuitbreakerExceptionHandler handler) {
+        this.circuitbreakerExceptionHandler = handler;
+    }
 
     public void setFallbackHandler(FallbackHandler fallbackHandler) {
         this.fallbackHandler = fallbackHandler;
@@ -56,9 +61,7 @@ public class DefaultClientExceptionResolver implements ClientExceptionResolver {
     @Override
     public void handleException(Throwable e) throws ReyInternalException{
 
-        if (e instanceof CallNotPermittedException) {//503
-            throw ReyInternalException.create(ReyHttpStatus.TO_CLIENT, 503 ,e.getMessage(), ExceptionUtil.getStack(e),null,null,null);
-        }
+        this.circuitbreakerExceptionHandler.handle(e);
 
         if (e instanceof ResourceAccessException){
             ResourceAccessException rae = (ResourceAccessException)e;
@@ -109,6 +112,11 @@ public class DefaultClientExceptionResolver implements ClientExceptionResolver {
     @Override
     public FallbackHandler fallbackHandler() {
         return this.fallbackHandler;
+    }
+
+    @Override
+    public CircuitbreakerExceptionHandler circuitbreakerExceptionHandler() {
+        return this.circuitbreakerExceptionHandler;
     }
 
 }

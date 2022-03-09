@@ -26,6 +26,7 @@ public interface ClientExceptionResolver {
     void convertNot200ToException(int status, String response) throws ReyInternalException;
     void handleException(Throwable e) throws ReyInternalException;
     FallbackHandler fallbackHandler();
+    CircuitbreakerExceptionHandler circuitbreakerExceptionHandler();
 
     default String adaptJson(String str) {
         str = str.split(": ")[1].trim();

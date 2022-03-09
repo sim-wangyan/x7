@@ -14,21 +14,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.xream.x7.rey.autoconfigure;
-
-import io.xream.rey.api.ReyTemplate;
-import io.xream.rey.resilience4j.R4JTemplate;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
-import org.springframework.context.annotation.Bean;
+package io.xream.rey.api;
 
 /**
  * @author Sim
  */
-public class ReyTemplateAutoConfiguration {
+public interface CircuitbreakerExceptionHandler {
 
-    @ConditionalOnMissingBean(ReyTemplate.class)
-    @Bean
-    public ReyTemplate reyTemplate() {
-        return new R4JTemplate();
-    }
+    void handle(Throwable e);
 }
